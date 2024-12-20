@@ -31,28 +31,17 @@ library(ggplot2)
 
   #load data
 ```{r}
-transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv")
-
-plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
 
 data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
 ```
 
-  #format response variables
-```{r}
-summary(data)
-
-```
-
-  
   #considering overdispersion and zero inflation 
-  
 ```{r}
 #check for overdispersion 
 mean_growth <- mean(data$kelp_growth, na.rm = TRUE)
 var_growth <- var(data$kelp_growth, na.rm = TRUE)
 overdispersion <- var_growth / mean_growth
-print(overdispersion)  #665 - high dispersion
+print(overdispersion)  #661- high dispersion
 
 #check for zero inflation 
 sum(data$kelp_growth == 0, na.rm = TRUE) / nrow(data) #a lot of zeros (48%), evidence of zero inflation
@@ -62,7 +51,7 @@ sum(data$kelp_growth == 0, na.rm = TRUE) / nrow(data) #a lot of zeros (48%), evi
 
   #checking correlation of predictos 
 ```{r}
-cor_matrix <- cor(data[, c("mean_light_lux", "mean_temperature_c", "bottom_salinity", "mean_depth_m", "bottom_do", "urchin_density", "percent_occuring_algae", "site_density", "shannon_div", "simp_div", "species_richness")], use = "complete.obs")
+cor_matrix <- cor(data[, c("mean_light_lux", "mean_temperature_c", "bottom_salinity", "bottom_ph", "mean_depth_m", "bottom_do", "urchin_density", "percent_occuring_algae", "site_density", "shannon_div", "simp_div", "species_richness")], use = "complete.obs")
 
 corrplot(cor_matrix, method = "circle")
 
@@ -70,7 +59,7 @@ corrplot(cor_matrix, method = "circle")
 #with all predictors 
 lm_model <- lm(kelp_growth ~ mean_light_lux + mean_temperature_c + bottom_salinity + bottom_ph +
                mean_depth_m + bottom_temp + bottom_do + species_richness + 
-               shannon_div + simp_div + kelp_growth + site_density + urchin_density, data = data)
+               shannon_div + simp_div + site_density + urchin_density, data = data)
 
 vif(lm_model) #so many >5
 
@@ -79,9 +68,6 @@ vif(lm_model) #so many >5
   #scaling predictors 
 ```{r}
 
-#log density 
-data$urchin_density <- log(data$urchin_density + 1)
-data$site_density <- log(data$site_density + 1)
 
 #standardizing predictors
 data$mean_temperature_c <- scale(data$mean_temperature_c)
@@ -105,7 +91,6 @@ data$plot_id <- as.factor(data$plot_id)
 ```
 
   #simplest model 
-  
 ```{r}
 # Fit the GLMM model
 simple_model <- glmmTMB(
@@ -114,7 +99,7 @@ simple_model <- glmmTMB(
   family = tweedie()
 )
 
-summary(kelp_model)
+summary(simple_model)
 ```
 
 #Visualize 
@@ -126,10 +111,13 @@ testDispersion(fittedModel) #check for overdispersion
 
 simulationOutput <- simulateResiduals(fittedModel = fittedModel, plot = T)
 simulationOutput
+
+
+
 ```
-#Step-wise predictor selection based on AIC  (w environmental predictors) 
+#Forward featyre selection based on AIC  (w environmental predictors) 
 ```{r}
-# Starting with a minimal model (only random effects)
+#starting with a minimal model (only random effects)
 base_model <- glmmTMB(kelp_growth ~ 1 + (1 | site)  + (1 | plot_id), 
                       family = tweedie(), 
                       data = data)
@@ -138,15 +126,15 @@ base_model <- glmmTMB(kelp_growth ~ 1 + (1 | site)  + (1 | plot_id),
 predictor_list <- c("percent_occuring_algae", "treatment", "site_density", "urchin_density",
                     "gravel_size", "mean_temperature_c", "mean_light_lux", "bottom_ph",
                     "bottom_do", "bottom_salinity", "mean_depth_m", 
-                    "simp_div", "species_richness", "shannon_div")
+                    "simp_div", "species_richness", "shannon_div", "month")
 
-# Initialize variables to store the results
+#initialize variables to store the results
 selected_predictors <- c()  # To keep track of selected predictors
 current_model <- base_model  # Start with the base model
 current_aic <- AIC(base_model)  # AIC of the base model
 aic_results <- data.frame(Model = "Base Model", AIC = current_aic)
 
-# Forward feature selection loop
+#forward feature selection loop
 for (predictor in predictor_list) {
   # Try adding each predictor to the current model
   formula <- as.formula(
@@ -154,20 +142,20 @@ for (predictor in predictor_list) {
           "+ (1 | site)  + (1 | plot_id)")
   )
   
-  # Fit the model with the new predictor
+  #fit the model with the new predictor
   new_model <- glmmTMB(
     formula,
     family = tweedie(),
     data = data
   )
   
-  # Compute AIC
+  #compute AIC
   new_aic <- AIC(new_model)
   
-  # Store results
+  #store results
   aic_results <- rbind(aic_results, data.frame(Model = paste("Add", predictor), AIC = new_aic))
   
-  # Check if the AIC improves
+  #check if the AIC improves
   if (new_aic < current_aic) {
     # Update the current model and AIC
     current_model <- new_model
@@ -176,12 +164,12 @@ for (predictor in predictor_list) {
   }
 }
 
-# Print results
+#print results
 print(aic_results)
 
 current_model 
 
-# Final selected model
+#final selected model
 summary(current_model)
 
 
@@ -196,6 +184,21 @@ testDispersion(fittedModel) #check for overdispersion
 
 simulationOutput <- simulateResiduals(fittedModel = fittedModel, plot = T)
 simulationOutput
+
+#save the testDispersion plot
+png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/growth_models/testDispersion_plot.png", width = 800, height = 600)
+testDispersion(fittedModel)
+dev.off()
+
+#save the QQ plot
+png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/growth_models/QQ_plot.png", width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+#save residual vs predictor plot
+png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/growth_models/residuals_vs_predictor.png", width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
 ```
 #co-efficient plot 
 #create coefficient plot 
@@ -227,7 +230,8 @@ print(dw)
 #left of zero = negative effect 
 
 
-
+#sve the dot-and-whisker plot as a PNG
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/growth_models/dot_and_whisker_plot.png", plot = dw, width = 8, height = 6, dpi = 300)
 ```
 
 

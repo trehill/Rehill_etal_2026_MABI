@@ -31,10 +31,6 @@ library(MASS)
 
   #load data
 ```{r}
-#transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv")
-
-#plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
-
 data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
 ```
 
@@ -126,7 +122,6 @@ data$treatment <- scale(data$treatment)
 data$month <- scale(data$month)
 data$site <- scale(data$site)
 
-
 ```
 
   #simplest model
@@ -169,7 +164,7 @@ predictor_groups <- list(
   group1 = c("shannon_div", "species_richness", "simp_div"),  # Diversity indices
   group2 = c("bottom_salinity", "bottom_do", "bottom_ph"),    # Bottom water properties
   group3 = c("mean_light_lux", "mean_temperature_c", "mean_depth_m"), # Environmental variables
-  group4 = c("treatment", "percent_occuring_algae","month", "site")  # Less correlated predictors
+  group4 = c("treatment", "percent_occuring_algae", "month", "site")  # Less correlated predictors
 )
 
 #initialize variables
@@ -234,8 +229,8 @@ summary(current_model)
 
 #checking collinearity among predictors  
 ```{r}
-lm_model <- lm(urchin_density ~  bottom_ph + bottom_do + mean_depth_m +  percent_occuring_algae +  
-               shannon_div + simp_div, data = data)
+lm_model <- lm(urchin_density ~  bottom_ph + bottom_do + mean_depth_m + mean_light_lux + percent_occuring_algae +  treatment +
+               shannon_div, data = data)
 
 vif(lm_model) #VIF over 5 can not be included together (exists for diversity indices)
 ```
@@ -310,11 +305,11 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_models/dot_and_wh
 ```{r}
 
 #select predictors at site level
-data <- data %>% 
-  select(month, site, bottom_do, site_density, 
-         mean_temperature_c, mean_light_lux, bottom_salinity, 
-         bottom_ph, mean_depth_m, species_richness, 
-         shannon_div, simp_div)
+data <- data %>%
+  dplyr::select(month, site, bottom_do, site_density, 
+                mean_temperature_c, mean_light_lux, bottom_salinity, 
+                bottom_ph, mean_depth_m, species_richness, 
+                shannon_div, simp_div)
 
 data <- distinct(data)
 
@@ -376,8 +371,6 @@ data$month <- as.numeric(data$month)
 
 #scale 
 data$month <- scale(data$month)
-
-
 
 ```
 
