@@ -1,0 +1,120 @@
+---
+title: "Processing_Environmental_Data"
+author: "Tessa Rehill"
+date: "2024-11-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Load libraries 
+
+```{r}
+library(readxl)
+library(dplyr)
+library(stringr)
+library(purrr)
+```
+
+#HOBO LOGGER DATA 
+```{r}
+#Set the path to your main folder
+main_folder <- "/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO"
+
+#Get a list of site folders within the main folder
+site_folders <- list.dirs(main_folder, recursive = FALSE)
+
+#Loop through each site folder
+for (site_folder in site_folders) {
+  #Get a list of Excel files in the current site folder
+  excel_files <- list.files(site_folder, pattern = "\\.xlsx$", full.names = TRUE)
+  
+  #Read and process each Excel file
+  site_data <- map_dfr(excel_files, function(file) {
+    data <- read_excel(file)
+    
+    #Rename columns
+    colnames(data) <- c('n', 'date', 'temperature_c', 'light_lux')
+    
+    #Return the data
+    return(data)
+  })
+  
+  #Create the output file path
+  output_file <- file.path(site_folder, "combined_dataset.csv")
+  
+  #Save the combined data for the site to the associated folder
+  write.csv(site_data, output_file, row.names = FALSE)
+  
+  cat(paste("Combined dataset saved in:", output_file, "\n"))
+}
+
+#Read each combined file and add another column called site 
+ek<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/ED_KING/combined_dataset.csv") 
+  ek$Site <- "EK"
+dx<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/DIXON/combined_dataset.csv") 
+  dx$Site <- "DX"
+es <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/ELLIS_S/combined_dataset.csv") 
+  es$Site <- "ES"
+en <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/ELLIS_N/combined_dataset.csv") 
+  en$Site <- "EN"
+tr <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/TAYLOR/combined_dataset.csv") 
+  tr$Site <- "TR"
+nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/NANAT/combined_dataset.csv") 
+  nn$Site <- "NN"
+
+#Combine all site files and add to processed data folder 
+hobo_combined <- rbind(ek, dx, es, en, tr, nn)
+
+write.csv(hobo_combined, 
+"/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv", 
+          row.names = FALSE)
+
+
+```
+#TILT CURRENT METERS 
+
+```{r}
+
+```
+
+#ENV LOGGER 
+
+```{r}
+for (site_folder in site_folders) {
+  tryCatch({
+    # Get a list of Excel files in the current site folder
+    excel_files <- list.files(site_folder, pattern = "\\.xlsx$", full.names = TRUE)
+    
+    if (length(excel_files) == 0) {
+      cat("No Excel files found in:", site_folder, "\n")
+      next
+    }
+    
+    # Read and process each Excel file
+    site_data <- map_dfr(excel_files, function(file) {
+      data <- read_excel(file)
+      
+      # Rename columns
+      colnames(data) <- c('n', 'date', 'temperature_c', 'light_lux')
+      
+      return(data)
+    })
+    
+    # Create the output file path
+    output_file <- file.path(site_folder, "combined_dataset.csv")
+    
+    # Save the combined data for the site to the associated folder
+    write.csv(site_data, output_file, row.names = FALSE)
+    
+    cat(paste("Combined dataset saved in:", output_file, "\n"))
+  }, error = function(e) {
+    cat("Error in site folder:", site_folder, "\n")
+    cat("Error message:", e$message, "\n")
+  })
+}
+
+```
+

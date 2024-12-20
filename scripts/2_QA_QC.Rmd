@@ -1,0 +1,435 @@
+---
+title: "Processing_Raw_Data"
+author: "Tessa Rehill"
+date: "2024-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#load necessary libraries
+```{r}
+library(here)
+library(dplyr)
+library(ggplot2)
+library(vegan)
+library(readr)
+library(lubridate)
+library(stringr)
+
+
+```
+
+#read data 
+```{r}
+
+setwd("/Users/tessarehill/Dropbox/MSc/Exclosures")
+
+urchin_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/urchin_monitoring_transects.csv")
+
+kelp_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/green_gravel_monitoring.csv")
+
+env_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/YSI_measurement.csv")
+
+#hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+hobo <- read_csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+
+```
+#Cleaning kelp data 
+```{r}
+
+#DATE ##################################
+#create a new column called 'month' 
+kelp_data$date <- as.Date(kelp_data$date, format="%Y-%m-%d")
+kelp_data$month <- month(kelp_data$date, label = TRUE, abbr = FALSE)
+
+#KELP TOTAL LENGTHS ###################
+#ensure kelp lengths are numeric
+kelp_data$kelp_total1 <- as.numeric(kelp_data$kelp_total1)
+kelp_data$kelp_total2 <- as.numeric(kelp_data$kelp_total2)
+kelp_data$kelp_total3 <- as.numeric(kelp_data$kelp_total3)
+kelp_data$kelp_total4 <- as.numeric(kelp_data$kelp_total4)
+kelp_data$kelp_total5 <- as.numeric(kelp_data$kelp_total5)
+
+kelp_data <- kelp_data %>% #make NA into 0 
+  mutate_at(vars(kelp_total1, kelp_total2, kelp_total3, kelp_total4, kelp_total5, n_gravel, n_kelp_gravel), ~replace(., is.na(.), 0))
+
+
+#KELP PLOT_IDs ########################
+#checking plot_id, should start with C or U, followed by S or L
+unique(kelp_data$plot_id)
+
+#need to change the errors (#lu3, lc1, sc2, su2, lu1)
+#ensure the required pattern is applied to the 'plot_id' column
+kelp_data$plot_id <- gsub("^(.*)(.*)(.*)$", "\\1\\2\\3", kelp_data$plot_id)
+
+#define a function to correct the plot_id format
+correct_plot_id <- function(plot_id) {
+  # Extract the valid characters using regular expressions
+  matches <- regmatches(plot_id, regexec("([cu])([ls])([123])", plot_id))
+  
+  # If matches are found, reconstruct the correct plot_id
+  if (length(matches[[1]]) == 4) {
+    return(paste0(matches[[1]][2], matches[[1]][3], matches[[1]][4]))
+  } else {
+    return(NA) # Assign NA if the pattern cannot be corrected
+  }
+}
+
+#apply the function to the plot_id column
+kelp_data$plot_id <- sapply(kelp_data$plot_id, correct_plot_id)
+
+#remove rows with NA in plot_id
+kelp_data <- kelp_data[!is.na(kelp_data$plot_id), ]
+
+unique(kelp_data$plot_id)
+
+#KELP TREATMENT ######################
+#if plot_id starts with c = caged, u = uncaged 
+kelp_data$treatment <- ifelse(substr(kelp_data$plot_id, 1, 1) == 'c', 'caged', #creates new column called treatment
+                              ifelse(substr(kelp_data$plot_id, 1, 1) == 'u', 'open', NA))
+
+#if plot_id has second letter l = large, s = small 
+kelp_data$gravel_size <- ifelse(substr(kelp_data$plot_id, 2, 2) == 'l', 'large', #creates new column called gravel size 
+                                ifelse(substr(kelp_data$plot_id, 2, 2) == 's', 'small', NA))
+
+#make new column called plot that removes caged/uncaged letter from plot_id column 
+kelp_data <- kelp_data %>%
+  mutate(plot = substr(plot_id, 2, nchar(plot_id)))
+
+#SITE ########
+# Replace "Ellis_S" with "Ellis S" and "Ellis_N" with "Ellis N"
+kelp_data$site <- gsub("Ellis_S", "Ellis S", kelp_data$site)
+kelp_data$site <- gsub("Ellis_N", "Ellis N", kelp_data$site)
+
+unique(kelp_data$site)
+
+#PERCENT KELP 
+#make a new column to determine the percentage of gravel with kelp 
+#perc_kelp = n_kelp_gravel/n_gravel x 100 
+#if n_gravel is equal to zero, the result is 0 
+kelp_data$kelp_survival <- ifelse(kelp_data$n_gravel == 0, 0, (kelp_data$n_kelp_gravel / kelp_data$n_gravel) * 100)
+
+kelp_filtered <- kelp_data[kelp_data$kelp_survival > 100, ] #make sure doesn't exceed 100
+
+#are there instances where n_kelp > n_gravel, if NA, n_gravel was taken from the most recent monitoring
+# Create a new dataframe with rows where n_kelp_gravel > n_gravel
+kelp_data_filtered <- kelp_data[kelp_data$n_kelp_gravel > kelp_data$n_gravel, ]
+
+#URCHIN DENSITY 
+#make a new column that describes urchin density per m^2
+#for open plots = total number urchins / 1 m^2 
+#for caged plots = total number urchins / 4.5 m^2 
+kelp_data$n_gu_side <- as.numeric(kelp_data$n_gu_side)
+kelp_data <- kelp_data %>%
+  mutate(
+    total_urchins = rowSums(across(c(n_ru, n_gu, n_pu, n_ru_side, n_pu_side, n_gu_side)), na.rm = TRUE),
+    urchin_density = case_when(
+      treatment == "caged" ~ total_urchins / 4.5,
+      treatment == "open" ~ total_urchins / 1,
+      TRUE ~ NA_real_
+    )
+  )
+
+#remove leading/trailing spaces from the 'site' columns in both datasets
+kelp_data$site <- stringr::str_trim(kelp_data$site)
+
+#ensure there are 12 plots per month in dataset 
+#summarize the data to count unique plot_id per month and site
+unique_plot_counts <- kelp_data %>%
+  group_by(month, site) %>%
+  summarize(unique_plot_count = n_distinct(plot_id), .groups = "drop")
+
+unique_plot_counts #ensure 12 plots per month
+
+View(unique_plot_counts) #duplicated data at TR and EK 
+
+#KELP GROWTH ###############################
+#sum kelp growth per plot 
+
+kelp_data$kelp_growth <- rowSums(kelp_data[, c("kelp_total1", "kelp_total2", "kelp_total3", "kelp_total4", "kelp_total5")])
+
+#remove August month 
+kelp_data <- kelp_data %>%
+  filter(!month %in% c("August"))
+
+
+#save the cleaned dataframe to a new CSV file
+write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv", row.names = FALSE)
+
+```
+
+#Cleaning urchin transect data
+```{r}
+
+#remove rows with NA in site and transect column 
+urchin_data <- urchin_data[!is.na(urchin_data$site), ]
+urchin_data <- urchin_data[!is.na(urchin_data$transect), ]
+
+#SITE ############################
+unique(urchin_data$site)
+
+urchin_data$site <- gsub("DX", "Dixon", urchin_data$site)
+urchin_data$site <- gsub("EN", "Ellis N", urchin_data$site)
+urchin_data$site <- gsub("ES", "Ellis S", urchin_data$site)
+urchin_data$site <- gsub("NN", "Nanat", urchin_data$site)
+urchin_data$site <- gsub("EK", "Ed King", urchin_data$site)
+urchin_data$site <- gsub("TR", "Taylor", urchin_data$site)
+
+#MONTH ###########################
+#remove any trailing blank spaces at the end 
+urchin_data <- urchin_data %>%
+  mutate(month = str_trim(month))
+
+#remove August 
+urchin_data <- urchin_data %>%
+  filter(!month %in% c("August"))
+
+#save the cleaned dataframe to a new CSV file
+write.csv(urchin_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv", row.names = FALSE)
+
+
+```
+
+#Environmental Data 
+```{r}
+
+#SITE ############################
+unique(env_data$site)
+
+env_data$site <- gsub("DX", "Dixon", env_data$site)
+env_data$site <- gsub("EN", "Ellis N", env_data$site)
+env_data$site <- gsub("ES", "Ellis S", env_data$site)
+env_data$site <- gsub("NN", "Nanat", env_data$site)
+env_data$site <- gsub("EK", "Ed King", env_data$site)
+env_data$site <- gsub("TR", "Taylor", env_data$site)
+
+#DATE ############################
+#create a new column called 'month' 
+env_data$date <- as.Date(env_data$date, format="%Y-%m-%d")
+env_data$month <- month(env_data$date, label = TRUE, abbr = FALSE)
+
+#remove columns .X and .X1 
+env_data <- dplyr::select(env_data, -X, -X.1)
+
+
+#save the cleaned dataframe to a new CSV file
+write.csv(env_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv", row.names = FALSE)
+
+
+```
+
+#HOBO loggers 
+```{r}
+#SITE ############################
+unique(hobo$Site)
+colnames(hobo)[colnames(hobo) == "Site"] <- "site"
+
+hobo$site <- gsub("DX", "Dixon", hobo$site)
+hobo$site <- gsub("EN", "Ellis N", hobo$site)
+hobo$site <- gsub("ES", "Ellis S", hobo$site)
+hobo$site <- gsub("NN", "Nanat", hobo$site)
+hobo$site <- gsub("EK", "Ed King", hobo$site)
+hobo$site <- gsub("TR", "Taylor", hobo$site)
+#change site names 
+
+#change dates 
+hobo$date <- as.Date(hobo$date)
+
+#extract month 
+hobo$month <- month(hobo$date, label = TRUE, abbr = FALSE)
+
+#extract the minimum and maximum date for every month 
+summary_hobo <- hobo %>%
+  group_by(site, month) %>%
+  summarize(
+    earliest_date = min(date),
+    latest_date = max(date),
+    .groups = 'drop'  # Avoid grouped output
+  )
+
+#remove n column 
+hobo <- hobo[, !names(hobo) %in% "n"]
+
+write.csv(summary_hobo, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/hobo_dates.csv", row.names = FALSE)
+
+
+#create mean bottom dataset (taking the means between monitoring periods for each site)
+monitoring_dates <- kelp_data %>%
+  dplyr::select(site, month, date) %>%
+  distinct()
+
+write.csv(monitoring_dates, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/monitoring_dates.csv", row.names = FALSE)
+
+#read in monitoring_periods, manually entered time periods to be assessed for each associated month 
+monitoring_periods<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/monitoring_periods.csv")
+
+#summarize HOBO data by removing zeros, and taking means between dates with associated monitoring periods
+#merge hobo with monitoring_periods and filter rows within the date range
+
+hobo$month <- as.character(hobo$month)
+
+#add associated_month to hobo based on the date range in monitoring_periods
+hobo <- hobo %>%
+  rowwise() %>%
+  mutate(
+    associated_month = monitoring_periods %>%
+      filter(
+        site == cur_data()$site, 
+        date >= start_date, 
+        date <= end_date
+      ) %>%
+      pull(associated_month) %>%
+      first()  # Ensures only one match is picked
+  ) %>%
+  ungroup()
+
+#summarize mean temperature per associated month, and mean light_lux (do not consider zeros here)
+summary_hobo <- hobo %>%
+  filter(!is.na(associated_month)) %>%  # Exclude rows without an associated_month
+  group_by(site, associated_month) %>%
+  summarize(
+    mean_temperature_c = mean(temperature_c, na.rm = TRUE),
+    mean_light_lux = mean(light_lux[light_lux != 0], na.rm = TRUE),  # Ignore zero values
+    .groups = 'drop'  # Ungroup after summarization
+  )
+
+#rename associated month to month 
+summary_hobo <- summary_hobo %>%
+  rename(month = associated_month)
+
+
+write.csv(summary_hobo, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo.csv", row.names = FALSE)
+
+```
+
+
+#Creating a combined dataset 
+  #load data
+```{r}
+
+transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv")
+
+plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
+
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv")
+
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo.csv")
+```
+
+  #make mean density per site and some other density metrics 
+```{r}
+#create a summary dataset, of site, month, transect, mean depth, number quadrats, summed number of organisms 
+transects_summary <- transects %>%
+  group_by(site, month) %>%
+  summarise(
+    total_n_ab = sum(n_ab, na.rm = TRUE),
+    total_n_ru = sum(n_ru, na.rm = TRUE),
+    total_n_gu = sum(n_gu, na.rm = TRUE),
+    total_n_pu = sum(n_pu, na.rm = TRUE),
+    total_n_sn = sum(n_sn, na.rm = TRUE),
+    total_n_pyc = sum(n_pyc, na.rm = TRUE),
+    total_n_cuc = sum(n_cuc, na.rm = TRUE),
+    mean_depth_m = mean(depth_m, na.rm = TRUE),
+    row_count = n()
+  )
+
+#determine baseline urchin densities across sites 
+
+#urchin densities by species 
+transects_summary <- transects_summary %>%
+  mutate(red_density = total_n_ru/row_count)
+
+transects_summary <- transects_summary %>%
+  mutate(green_density = total_n_gu/row_count)
+
+transects_summary <- transects_summary %>%
+  mutate(purple_density = total_n_pu/row_count)
+
+
+#create new row, total number of urchins 
+transects_summary <- transects_summary %>%
+  mutate(total_urchins = total_n_ru + total_n_gu + total_n_pu)
+
+transects_summary <- transects_summary %>%
+  mutate(urchin_density = total_urchins/row_count)
+
+#save data 
+#save this dataframe to a new CSV file
+write.csv(transects_summary, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/density_urchin_transects.csv", row.names = FALSE)
+```
+
+  #create species richness and diversity indices for transect data
+```{r}
+data <- transects_summary
+# Assuming your dataframe is named 'data'
+div_data <- data %>%
+  rowwise() %>%
+  mutate(
+    # Combine species counts into a vector
+    species_counts = list(c(total_n_ab, total_n_ru, total_n_gu, total_n_pu, 
+                            total_n_sn, total_n_pyc, total_n_cuc)),
+    # Calculate Species Richness
+    species_richness = sum(species_counts > 0, na.rm = TRUE),
+    # Shannon Diversity Index
+    shannon_div = diversity(species_counts, index = "shannon"),
+    # Simpson Diversity Index
+    simp_div = diversity(species_counts, index = "simpson")
+  ) %>%
+  ungroup()
+
+#rename urchin density to site density 
+div_data <- div_data %>%
+  rename(site_density = urchin_density)
+
+```
+  
+  #format env data
+```{r}
+#create env summary, for bottom temperature, do, ph, salinity
+bottom_data <- env %>%
+ group_by(site, month) %>%
+  summarize(
+    bottom_temp = temp[which.max(depth_m)],
+    bottom_do = do[which.max(depth_m)],
+    bottom_salinity = salinity[which.max(depth_m)],
+    bottom_ph = ph[which.max(depth_m)],
+    .groups = "drop" # Ungroups after summarization
+  )
+
+#make month a character
+bottom_data <- bottom_data %>%
+  mutate(month = as.character(month))
+```
+  
+  #merge dataframe 
+```{r}
+#merge hobo with plots
+plots <- plots %>%
+  left_join(hobo, by = c("site", "month"))
+
+#merge bottom_data with plots
+plots <- plots %>%
+  left_join(bottom_data, by = c("site", "month"))
+
+#merge div_data with plots
+plots <- plots %>%
+  left_join(div_data, by = c("site", "month"))
+
+data <- plots
+
+#select columns 
+data <- data %>%
+  select(site, plot_id, date, percent_occuring_algae, month, treatment, 
+         gravel_size, plot, kelp_survival, urchin_density, kelp_growth, 
+         mean_temperature_c, mean_light_lux, bottom_temp, bottom_do, 
+         bottom_salinity, bottom_ph, mean_depth_m, site_density, 
+         species_richness, shannon_div, simp_div)
+
+write.csv(data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv", row.names = FALSE)
+
+```
+
+

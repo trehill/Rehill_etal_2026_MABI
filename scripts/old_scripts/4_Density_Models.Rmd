@@ -1,0 +1,131 @@
+---
+title: "Density_Models"
+author: "Tessa Rehill"
+date: "2024-12-12"
+output: html_document
+---
+
+What is driving urchind densities (plot level)? 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#read libraries 
+```{r}
+library(lme4)
+library(corrplot)
+library(glmmTMB)
+library(DHARMa)
+
+```
+
+#Read in data 
+```{r}
+transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv")
+
+plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
+```
+
+#Formatting 
+```{r}
+plots_glm <- plots
+
+#log transform urchin density data (need to add a small constant because of zero values)
+plots_glm$log_urchin_density <- log(plots_glm$urchin_density + 1)
+
+#inspecting urchin distributions (to verify assumptions of fitting a GLMM)
+hist(plots_glm$log_urchin_density, main = "Histogram of (log) Urchin Density", xlab = "Urchin Density")
+
+#shapiro-Wilk test for normality, p less than 0.05, normally distributed
+shapiro.test(plots_glm$log_urchin_density) #normally distributed 
+shapiro.test(plots_glm$urchin_density) #normally distributed
+
+#check for overdispersion -log 
+mean_density <- mean(plots_glm$log_urchin_density, na.rm = TRUE)
+var_density <- var(plots_glm$log_urchin_density, na.rm = TRUE)
+overdispersion <- var_density / mean_density #0.653 (oof), close to 1 is good 
+print(overdispersion)  #0.65 = overdispersion - variance is greater than mean 
+
+#check for overdispersion 
+mean_density <- mean(plots_glm$urchin_density, na.rm = TRUE)
+var_density <- var(plots_glm$urchin_density, na.rm = TRUE)
+overdispersion <- var_density / mean_density #0.653 (oof), close to 1 is good 
+print(overdispersion)  #2.45 = overdispersion
+
+#variance > mean - GP, NB or CMP GLMs 
+
+#check for over zero inflation 
+sum(plots_glm$log_urchin_density == 0, na.rm = TRUE) / nrow(plots) #a lot of zeros (39%), indicated zero-inflated 
+
+#convert month to numeric 
+plots_glm$month <- as.factor(plots_glm$month)
+plots_glm$month <- as.numeric(plots_glm$month)
+
+colnames(plots_glm) #check numerical predictors 
+
+#correlation matrix of environmental variables 
+cor_matrix <- cor(plots_glm[, c("mean_light_lux", "mean_temperature_c", "bottom_salinity", "bottom_ph", "mean_depth_m", "bottom_temp", "bottom_do", "month", "species_richness", "shannon_div", "simp_div", "kelp_survival", "kelp_growth", "site_density")], use = "complete.obs")
+
+print(cor_matrix)
+
+#visualize with a heatmap 
+corrplot(cor_matrix, method = "circle")
+
+#VIF factor - VIF quantifies how much the variance of a predictor is inflated due to multicollinearity. High VIF values (>5 or 10) indicate problematic collinearity. 
+
+#with all predictors 
+lm_model <- lm(log_urchin_density ~ mean_light_lux + mean_temperature_c + bottom_salinity + bottom_ph +
+               mean_depth_m + bottom_temp + bottom_do + month + species_richness + 
+               shannon_div + simp_div + kelp_growth + site_density + kelp_survival, data = plots_glm)
+
+vif(lm_model) #so many >5
+
+#check vif of predictors we will use in our model
+#removed ph, salinity, and bottom_temp
+lm_model <- lm(log_urchin_density ~ mean_light_lux + mean_temperature_c +
+               mean_depth_m  + bottom_do + month  + kelp_survival + site_density, data = plots_glm)
+
+vif(lm_model)
+
+#check for NA 
+summary(plots_glm)
+colnames(plots_glm)
+
+#standardizing predictors
+plots_glm$mean_temperature_c <- scale(plots_glm$mean_temperature_c)
+plots_glm$bottom_do <- scale(plots_glm$bottom_do)
+plots_glm$mean_light_lux <- scale(plots_glm$mean_light_lux)
+plots_glm$mean_depth_m <- scale(plots_glm$mean_depth_m)
+plots_glm$month <- scale(plots_glm$month)
+plots_glm$site_density <- scale(plots_glm$site_density)
+plots_glm$simp_div <- scale(plots_glm$simp_div)
+
+#month needs to be turned back into a factor
+plots_glm$month <- factor(plots_glm$month)
+plots_glm$treatment <- as.factor(plots_glm$treatment)
+
+
+```
+
+Zero Inflated Negative Binomial GLMM
+```{r}
+#response variable as integer 
+plots_glm$log_urchin_density <- as.integer(plots_glm$log_urchin_density)
+plots_glm$urchin_density <- as.integer(plots_glm$urchin_density)
+
+#include ALL predictors in first model 
+model1 <- glmmTMB(urchin_density ~ treatment + mean_temperature_c  + bottom_do + (1 | site),
+                  zi = ~ treatment +  mean_temperature_c  + bottom_do,
+                  family = nbinom2, 
+                  data = plots_glm)
+
+summary(model1)
+AIC(model1) 
+
+
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

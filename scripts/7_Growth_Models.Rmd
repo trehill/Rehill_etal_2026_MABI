@@ -1,0 +1,234 @@
+---
+title: "Growth Models"
+author: "Tessa Rehill"
+date: "2024-12-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#load libraries 
+```{r}
+library(here)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(car)
+library(glmmTMB)
+library(DHARMa)
+library(caret)
+library(GGally)
+library(broom.mixed)
+library(dotwhisker)
+library(ggplot2)
+
+
+```
+
+#Run GLMM (Tweedie distribution)
+
+  #load data
+```{r}
+transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv")
+
+plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
+
+data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
+```
+
+  #format response variables
+```{r}
+summary(data)
+
+```
+
+  
+  #considering overdispersion and zero inflation 
+  
+```{r}
+#check for overdispersion 
+mean_growth <- mean(data$kelp_growth, na.rm = TRUE)
+var_growth <- var(data$kelp_growth, na.rm = TRUE)
+overdispersion <- var_growth / mean_growth
+print(overdispersion)  #665 - high dispersion
+
+#check for zero inflation 
+sum(data$kelp_growth == 0, na.rm = TRUE) / nrow(data) #a lot of zeros (48%), evidence of zero inflation
+  #rooted out using zero inflation model - similar outputs to standard beta models, zero inflation component does not add explanatory power
+
+```
+
+  #checking correlation of predictos 
+```{r}
+cor_matrix <- cor(data[, c("mean_light_lux", "mean_temperature_c", "bottom_salinity", "mean_depth_m", "bottom_do", "urchin_density", "percent_occuring_algae", "site_density", "shannon_div", "simp_div", "species_richness")], use = "complete.obs")
+
+corrplot(cor_matrix, method = "circle")
+
+#Compute VIF factor 
+#with all predictors 
+lm_model <- lm(kelp_growth ~ mean_light_lux + mean_temperature_c + bottom_salinity + bottom_ph +
+               mean_depth_m + bottom_temp + bottom_do + species_richness + 
+               shannon_div + simp_div + kelp_growth + site_density + urchin_density, data = data)
+
+vif(lm_model) #so many >5
+
+```
+
+  #scaling predictors 
+```{r}
+
+#log density 
+data$urchin_density <- log(data$urchin_density + 1)
+data$site_density <- log(data$site_density + 1)
+
+#standardizing predictors
+data$mean_temperature_c <- scale(data$mean_temperature_c)
+data$bottom_ph <- scale(data$bottom_ph)
+data$bottom_salinity <- scale(data$bottom_salinity)
+data$bottom_do <- scale(data$bottom_do)
+data$mean_light_lux <- scale(data$mean_light_lux)
+data$mean_depth_m <- scale(data$mean_depth_m)
+data$urchin_density <- scale(data$urchin_density)
+data$site_density <- scale(data$site_density)
+data$simp_div <- scale(data$simp_div)
+data$percent_occuring_algae <- scale(data$percent_occuring_algae)
+
+#month needs to be turned back into a factor
+data$site <- factor(data$site)
+data$month <- factor(data$month)
+data$treatment <- as.factor(data$treatment)
+data$gravel_size <- as.factor(data$gravel_size)
+data$plot_id <- as.factor(data$plot_id)
+
+```
+
+  #simplest model 
+  
+```{r}
+# Fit the GLMM model
+simple_model <- glmmTMB(
+  kelp_growth ~ month + gravel_size + urchin_density + treatment + (1 | site) + (1 |plot_id),
+  data = data,
+  family = tweedie()
+)
+
+summary(kelp_model)
+```
+
+#Visualize 
+```{r}
+#simple model 
+fittedModel <- simple_model
+
+testDispersion(fittedModel) #check for overdispersion
+
+simulationOutput <- simulateResiduals(fittedModel = fittedModel, plot = T)
+simulationOutput
+```
+#Step-wise predictor selection based on AIC  (w environmental predictors) 
+```{r}
+# Starting with a minimal model (only random effects)
+base_model <- glmmTMB(kelp_growth ~ 1 + (1 | site)  + (1 | plot_id), 
+                      family = tweedie(), 
+                      data = data)
+
+#predictors 
+predictor_list <- c("percent_occuring_algae", "treatment", "site_density", "urchin_density",
+                    "gravel_size", "mean_temperature_c", "mean_light_lux", "bottom_ph",
+                    "bottom_do", "bottom_salinity", "mean_depth_m", 
+                    "simp_div", "species_richness", "shannon_div")
+
+# Initialize variables to store the results
+selected_predictors <- c()  # To keep track of selected predictors
+current_model <- base_model  # Start with the base model
+current_aic <- AIC(base_model)  # AIC of the base model
+aic_results <- data.frame(Model = "Base Model", AIC = current_aic)
+
+# Forward feature selection loop
+for (predictor in predictor_list) {
+  # Try adding each predictor to the current model
+  formula <- as.formula(
+    paste("kelp_growth ~", paste(c(selected_predictors, predictor), collapse = " + "), 
+          "+ (1 | site)  + (1 | plot_id)")
+  )
+  
+  # Fit the model with the new predictor
+  new_model <- glmmTMB(
+    formula,
+    family = tweedie(),
+    data = data
+  )
+  
+  # Compute AIC
+  new_aic <- AIC(new_model)
+  
+  # Store results
+  aic_results <- rbind(aic_results, data.frame(Model = paste("Add", predictor), AIC = new_aic))
+  
+  # Check if the AIC improves
+  if (new_aic < current_aic) {
+    # Update the current model and AIC
+    current_model <- new_model
+    current_aic <- new_aic
+    selected_predictors <- c(selected_predictors, predictor)  # Add predictor to the list
+  }
+}
+
+# Print results
+print(aic_results)
+
+current_model 
+
+# Final selected model
+summary(current_model)
+
+
+
+```
+#Visualize 
+```{r}
+#simple model 
+fittedModel <- current_model
+
+testDispersion(fittedModel) #check for overdispersion
+
+simulationOutput <- simulateResiduals(fittedModel = fittedModel, plot = T)
+simulationOutput
+```
+#co-efficient plot 
+#create coefficient plot 
+```{r}
+# Load required libraries
+# Extract coefficients in tidy format
+coef_tidy <- broom.mixed::tidy(current_model, conf.int = TRUE)
+
+# Combine component and term for clarity
+coef_tidy <- coef_tidy %>%
+  mutate(term = paste(component, term, sep = "."))
+
+# Add the 'model' column
+coef_tidy$model <- "Model 1"
+
+# Create the dot-and-whisker plot
+dw <- dwplot(coef_tidy, conf.level = 0.95) + 
+  geom_vline(xintercept = 0, linetype = "dashed") +  # Add reference line at 0
+  theme_minimal() +
+  labs(title = "Model Coefficients with Confidence Intervals",
+       x = "Coefficient Estimate",
+       y = "Predictor",
+       color = "Component")
+
+# Print the plot
+print(dw)
+
+#right of zero = positive effect 
+#left of zero = negative effect 
+
+
+
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
