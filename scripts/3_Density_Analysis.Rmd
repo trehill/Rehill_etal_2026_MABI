@@ -89,7 +89,7 @@ plot <- ggplot(transects_summary_long, aes(x = site, y = density, fill = species
   labs(
     title = "Urchin Densities by Species", 
     x = "Site", 
-    y = "Urchin Density (m^2)"
+    y = "Urchin Density (m²)"
   ) + 
   scale_fill_manual(values = c("red_density" = "red", "green_density" = "green", "purple_density" = "purple")) + 
   theme_minimal() + 
@@ -144,17 +144,22 @@ dunn.test(transects_summary$urchin_density, transects_summary$site, kw = TRUE, l
 transects_summary$site <- factor(transects_summary$site, 
                                  levels = c("Taylor", "Ed King", "Dixon", "Ellis N", "Ellis S", "Nanat"))
 #visualize via boxplot 
-ggplot(transects_summary, aes(x = site, y = urchin_density)) +
+plot <- ggplot(transects_summary, aes(x = site, y = urchin_density)) +
   geom_boxplot() +
   labs(
     title = "Urchin Density Across Sites",
     x = "Site",
-    y = "Urchin Density (m^2)"
+    y = "Urchin Density (m²)"
   ) +
   theme_minimal()
 
+plot 
+
+#save
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bw_box_densities_by_site.png", plot = plot, width = 10, height = 8, dpi = 300)
+
 #color based on urchin density 
-ggplot(transects_summary, aes(x = site, y = urchin_density, fill = site)) + 
+plot <- ggplot(transects_summary, aes(x = site, y = urchin_density, fill = site)) + 
   geom_boxplot() + 
   scale_fill_manual(values = c(
     "Nanat" = "green", 
@@ -167,12 +172,13 @@ ggplot(transects_summary, aes(x = site, y = urchin_density, fill = site)) +
   labs(
     title = "Urchin Density Across Sites", 
     x = "Site", 
-    y = "Urchin Density (m^2)"
+    y = "Urchin Density (m²)"
   ) + 
   theme_minimal() + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
   guides(fill = "none")  # Remove the legend
 
+plot 
 #save
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/box_densities_by_site.png", plot = plot, width = 10, height = 8, dpi = 300)
 
@@ -202,7 +208,7 @@ ggplot(april_data, aes(x = site, y = urchin_density)) +
   labs(
     title = "Baseline Urchin Densities (April)",
     x = "Site",
-    y = "Urchin Density (m^2)"
+    y = "Urchin Density (m²)"
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  #rotate x-axis labels for readability
@@ -242,21 +248,51 @@ tukey_result
 transects_summary_new$site <- factor(transects_summary_new$site, 
                                  levels = c("Taylor", "Ed King", "Dixon", "Ellis N", "Ellis S", "Nanat"))
 #visualize via boxplot 
-ggplot(transects_summary_new, aes(x = site, y = urchin_density)) +
+plot <- ggplot(transects_summary_new, aes(x = site, y = urchin_density)) +
   geom_boxplot() +
   labs(
     title = "Urchin Density Across Sites",
     x = "Site",
-    y = "Urchin Density (m^2)"
+    y = "Urchin Density (m²)"
   ) +
   theme_minimal()
+
+plot 
+#save
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bw_box_densities_by_site.png", plot = plot, width = 10, height = 8, dpi = 300)
+
+plot <- ggplot(transects_summary_new, aes(x = site, y = urchin_density, fill = site)) + 
+  geom_boxplot() + 
+  scale_fill_manual(values = c(
+    "Nanat" = "#4da607", 
+    "Dixon" = "#f9cd44", 
+    "Ellis S" = "#4da607", 
+    "Ellis N" = "#f9cd44", 
+    "Ed King" = "#f9cd44", 
+    "Taylor" = "#cd3737"
+  )) + 
+  labs(
+    title = "Urchin Density Across Sites", 
+    x = "Site", 
+    y = "Urchin Density (m²)"
+  ) + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 15), 
+        axis.text.y = element_text(size = 15), 
+        axis.title.x = element_text(size = 16),  # Increase x-axis title size
+      axis.title.y = element_text(size = 16))  # Increase y-axis title size)  # Increase y-axis label size) +  # Rotate x-axis labels for readability
+  guides(fill = "none")  # Remove the legend
+
+plot 
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/col_box_densities_by_site.png", plot = plot, width = 10, height = 8, dpi = 300)
+
 
 ```
 
 #Do urchin densities change across months? 
 ```{r}
 
-shapiro.test(transects_summary$urchin_density)  # Normality
+shapiro.test(transects_summary$urchin_density)  # Normality4
 bartlett.test(urchin_density ~ month, data = transects_summary)  # Homogeneity
 
 #run one-way ANOVA
@@ -268,7 +304,6 @@ summary(anova_result) #p = 0.596, not significantly different
 #visualize 
 plot <- ggplot(transects_summary, aes(x = factor(month), y = urchin_density)) +
   geom_boxplot() +
-  geom_jitter(width = 0.2, alpha = 0.6) +
   theme_minimal() +
   labs(x = "Month", y = "Urchin Density")
 
@@ -319,7 +354,7 @@ plot <- ggplot(transects_summary, aes(x = month, y = urchin_density, color = sit
   labs(
     title = "Urchin Density by Month Across Sites",
     x = "Month",
-    y = "Urchin Density (m^2)"
+    y = "Urchin Density (m²)"
   ) +
   scale_x_discrete(labels = c("March", "April", "May", "June", "mean")) +  # Add "mean" to x-axis labels
   theme_minimal() +
@@ -328,6 +363,51 @@ plot <- ggplot(transects_summary, aes(x = month, y = urchin_density, color = sit
 plot 
 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/densities_month_site.png", plot = plot, width = 10, height = 8, dpi = 300)
+
+###
+#define a custom color palette
+site_colors <- c("Taylor" = "#cd3737", 
+                 "Ed King" = "#f9cd44", 
+                 "Dixon" = "#f9cd44", 
+                 "Ellis N" = "#f9cd44", 
+                 "Ellis S" = "#4da607", 
+                 "Nanat" = "#4da607")
+
+#create the plot
+plot <- ggplot(transects_summary, aes(x = month, y = urchin_density, color = site, group = site)) +
+  geom_line(size = 1) +   # Line plot for each site
+  geom_point(size = 3) +  # Add points for each month/site combination
+  # Plot site mean values as points
+  geom_point(data = mean_urchin_density,
+             aes(x = "mean", y = mean_density, color = site),
+             shape = 17, size = 4, show.legend = FALSE) +  # Hide legend for mean points
+  # Add labels for site mean values with better positioning
+  geom_text_repel(data = mean_urchin_density,
+                  aes(x = "mean", y = mean_density, label = round(mean_density, 2), color = site),
+                  vjust = -1, hjust = -0.2, size = 3, show.legend = FALSE,
+                  box.padding = 0.5, max.overlaps = 10) +  # Prevent text overlap
+  # Add the overall mean line and text
+  geom_hline(aes(yintercept = overall_mean_density), linetype = "dashed", color = "black") +  # Overall mean line
+  # Add overall mean text with better positioning
+  geom_text(aes(x = 1, y = overall_mean_density, label = paste("Overall Mean:", round(overall_mean_density, 2))),
+            color = "black", vjust = +2.5, hjust = -0.1, size = 4) +  # Adjust position for the text label
+  labs(
+    title = "Urchin Density by Month Across Sites",
+    x = "Month",
+    y = "Urchin Density (m²)"
+  ) +
+  scale_x_discrete(labels = c("March", "April", "May", "June", "mean")) +  # Add "mean" to x-axis labels
+  scale_color_manual(values = site_colors) +  # Apply custom colors to the sites
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+#display the plot
+print(plot)
+
+#save the plot as a PNG file
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/densities_month_site_col.png", 
+       plot = plot, width = 10, height = 8, dpi = 300)
+
 ```
 #Visualizing urchin counts over transects 
 ```{r}
@@ -378,7 +458,7 @@ for (m in unique(agg_data$month)) {
 #combine the plots vertically
 combined_plot <- wrap_plots(plot_list, ncol = 1)
 
-# Print the combined plot
+#print the combined plot
 print(combined_plot)
 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/summary_transect_counts.png", 
@@ -411,26 +491,60 @@ t_test_result
 p_value <- formatC(t_test_result$p.value, format = "e", digits = 2)
 
 #make box plot to visualize 
-ggplot(plots, aes(x = treatment, y = urchin_density, fill = treatment)) +
-  geom_boxplot() +
-  labs(
-    title = "Urchin Density by Treatment",
-    x = "Treatment",
-    y = "Urchin Density (m²)"
-  ) +
-  theme_minimal() +
-  scale_fill_manual(values = c("caged" = "lightblue", "open" = "lightgreen")) +
-  theme(legend.position = "none") +
-  annotate(
-    "text",
-    x = 1.5, y = max(plots$urchin_density) + 0.5, # Adjust y position if needed
-    label = paste("p =", p_value),
-    size = 5,
-    hjust = 0.5
+plot <- ggplot(plots, aes(x = treatment, y = urchin_density, fill = treatment)) +   
+  geom_boxplot() +   
+  labs(     
+    title = "Urchin Density by Treatment",     
+    x = "Treatment",     
+    y = "Urchin Density (m²)"   
+  ) +   
+  theme_minimal() +   
+  scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +   
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(size = 14),  # Increase x-axis labels size
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16)   # Increase y-axis title size
+  ) +   
+  annotate(     
+    "text",     
+    x = 1.5, y = max(plots$urchin_density) + 0.5, # Adjust y position if needed     
+    label = paste("p =", p_value),     
+    size = 5,     
+    hjust = 0.5   
   )
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/box_treatment.png", 
-       plot = combined_plot, 
-       width = 10, height = 20, dpi = 300)
+
+
+plot
+
+plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/box_treatment.png", 
+       plot = plot, 
+       width = 10, height = 10, dpi = 300)
+
+#calculate values for reporting 
+#calculate the mean and standard error for each treatment
+summary_stats <- plots %>%
+  group_by(treatment) %>%
+  summarise(
+    mean_density = mean(urchin_density, na.rm = TRUE),  # Mean of urchin density
+    sd_density = sd(urchin_density, na.rm = TRUE),      # Standard deviation of urchin density
+    n = n(),                                           # Sample size
+    sem = sd_density / sqrt(n)                         # Standard error of the mean
+  )
+
+#print summary statistics to check the results
+print(summary_stats)
+
+#get values for open and caged treatments
+open_stats <- summary_stats %>% filter(treatment == "open")
+caged_stats <- summary_stats %>% filter(treatment == "caged")
+
+#calculate and format the report output
+open_report <- paste(open_stats$mean_density, "±", round(open_stats$sem, 2), "ind/m²")
+caged_report <- paste(caged_stats$mean_density, "±", round(caged_stats$sem, 2), "ind/m²")
+
+
 ```
 

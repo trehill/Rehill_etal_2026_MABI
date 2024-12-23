@@ -2,7 +2,7 @@
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Monaco;}
 {\colortbl;\red255\green255\blue255;\red185\green188\blue186;\red29\green38\blue42;}
 {\*\expandedcolortbl;;\cssrgb\c77255\c78431\c77647;\cssrgb\c14902\c19608\c21961;}
-\margl1440\margr1440\vieww28300\viewh17140\viewkind0
+\margl1440\margr1440\vieww12680\viewh14380\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 1_Processing_Environmental_Data.Rmd\
@@ -68,10 +68,11 @@ Visualizes urchin counts over transects \
 \
 	Outputs\
 		- densities_by_sp.png (stacked bar chart of sp by site)\
+		- bw_box_densities_by_site.png\
+		- densities_month_site_col.png\
 		- box_densities_by_site.png (urchin densities across sites)\
 		- baseline_densities.png (urchin densities by site for April) \
 		- densities_by_month.png \
-		- densities_month_site.png \
 		- summary_transect_counts.png\
 		- box_treatment.png (box plot of open v caged treatment densities)\
 \
@@ -79,11 +80,8 @@ Visualizes urchin counts over transects \
 \
 	Perform GLMM on density data and predictors (Tweedie distribution) \
 		Random effect: plot_id, site \
-		Fixed effects (before stepwise selection): Shannon diversity, Simpson diversity, species richness, bottom salinity, bottom do, \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 									   bottom ph, mean temperature, mean light lux, mean depth, treatment, % algae, month, site\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 		Stepwise predictor selection (based on AIC) \
+		Fixed effects (before stepwise selection): bottom salinity, bottom do, bottom ph, mean temperature, mean light lux, mean depth, treatment, % algae, month, site\
+		Stepwise predictor selection (based on AIC) \
 		Final best model : urchin_density ~ shannon_div + bottom_do + bottom_ph + mean_light_lux + mean_depth + treatment + percent_occuring_algae \
 						+ (1 | site) \
 \
@@ -137,14 +135,14 @@ Determine if kelp growth and survivorship differ across months\
 		- growth_site_month.png\
 		- log_growth_site_month.png\
 		- surv_gravel_site_month.png\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 		- grwt_gravel_site_month.png\
+		- grwt_gravel_site_month.png\
 		- surv_open_v_caged.png\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 		- grwt_open_v_caged.png\
+		- grwt_open_v_caged.png\
 		- loggrwt_open_v_caged.png\
 		- survival_by_month_se.png (plotted with standard error bars) \
 		- growth_by_month_se.png\
+		- surv_smallvlarge.png\
+		- growth_smallvlarge.png\
 \
 \
 6.Kelp_Survival_Models.Rmd\
@@ -166,11 +164,9 @@ Determine if kelp growth and survivorship differ across months\
 		Response: kelp survival (as an integer) \
 		Random effect: site plot_id\
 		Testing predictors (before forward feature selection): mean_temp, mean_light, mean_depth, treatment, gravel_size\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 												     bottom_do, bottom_salinity, bottom_ph, simp_diversity, \
+												     bottom_do, bottom_salinity, bottom_ph, simp_diversity, \
 												     species_richness, site_density, urchin_density\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 		Forward feature selection \
+		Forward feature selection \
 		Final model: kelp survival ~ treatment + gravel_size + mean_light_lux + mean_temperature_c + site_density + urchin_density + bottom_do + simp_div + month + \
 				 (1 | site) + (1+plot_id)\
 \
@@ -195,22 +191,20 @@ Determine if kelp growth and survivorship differ across months\
 \pard\pardeftab720\partightenfactor0
 
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 \
+\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 7_Kelp_Growth.Rmd \
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 7_Kelp_Growth.Rmd \
 	Run GLMM forward feature selection (Tweedie distribution)\
-		Response: kelp_grwoth (summed per plot) \
+		Response: kelp_growth (summed per plot) \
 		Overdispersion: 661\
 		Zero-inflation: 48% of data is zeroes\
 		Testing predictors: mean_temp, mean_light, mean_depth, treatment, gravel_size\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 						bottom_do, bottom_salinity, bottom_ph, simp_diversity, shannon_diversity\
+						bottom_do, bottom_salinity, bottom_ph, simp_diversity, shannon_diversity\
 						species_richness, site_density, urchin_density, month \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 		Forward feature selection \
+		Forward feature selection \
 		Final model: kelp_growth ~ site_density + mean_temperature_c + bottom_ph + bottom_do + bottom_salinity + mean_depth + simp_div + month + \
-							 (1 | site) + (1+plot_id)\
+							 (1 | site) + (1+ plot_id)\
 		Note - month included as predictor \
 \
 \
@@ -225,8 +219,33 @@ Determine if kelp growth and survivorship differ across months\
 \
 \
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\tx19982\pardirnatural\partightenfactor0
+\cf0 8_PCA.Rmd \
+	Run PCA, group by different colors to see clustering, including treatment, site, density + plot_id\
 \
+	Inputs \
+		- cleaned_data.csv\
+		- site_coordinates.csv\
 \
+9_site_maps.Rmd \
 \
+	\
+	Inputs\
+		- site_coordinates.csv\
 \
+	Outputs\
+		- vancouver_island.png\
+		- canada.png\
+		- sites.png\
+\
+10_coefficients\
+	Creates combined plot of coefficients and confidence intervals for all models \
+\
+	Inputs\
+	- cleaned_data.csv\
+	\
+	Outputs\
+	- combined_dot_and_whisker_plot.png\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
 	}

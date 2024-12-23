@@ -85,7 +85,7 @@ sum(data$kelp_prop_adj == 0, na.rm = TRUE) / nrow(plots) #no zeros
 
 ```
 
-  #checking correlation of predictos 
+  #checking correlation of predictors 
 ```{r}
 
 
@@ -170,15 +170,14 @@ simulationOutput
 predictors <-  c( "percent_occuring_algae", "treatment", "site_density", "urchin_density",
                 "gravel_size",  "mean_temperature_c", "mean_light_lux", 
                 "bottom_do", "bottom_temp", "bottom_salinity", "mean_depth_m", 
-                  "simp_div", "species_richness", "bottom_ph")
+                "simp_div", "species_richness", "bottom_ph")
 
 #initialize the empty model formula (with no predictors)
-base_formula <- "kelp_prop_adj ~ 1 + (1 | site)  + (1 | plot_id)"  # Initial random effects
+base_formula <- "kelp_prop_adj ~ 1 + (1 | site)  + (1 | plot_id)  + (1 | month)"  # Initial random effects
 ```
 
   #beta regression GLM - forward feature selection
 ```{r}
-
 
 #set up a function to perform forward feature selection
 forward_feature_selection <- function(predictors, base_formula, data) {
@@ -247,48 +246,59 @@ summary(result$final_model)
 ```
  
 ```{r}
-lm_model <- lm(kelp_prop_adj ~ gravel_size + mean_temperature_c + simp_div + species_richness, data = data)
+lm_model <- lm(kelp_prop_adj ~ gravel_size + mean_temperature_c + simp_div + species_richness + percent_occuring_algae, data = data)
 
 vif(lm_model) #all under 5
  
  
- 
   #best model 
 beta_model <- glmmTMB(
-  kelp_prop_adj ~ gravel_size + mean_temperature_c + simp_div + species_richness + percent_occuring_algae +(1 | site) + (1 | plot_id)  , 
+  kelp_prop_adj ~ gravel_size + mean_temperature_c + simp_div + species_richness + percent_occuring_algae + (1 | site) + (1 | plot_id) + (1 | month), 
   data = data,
   family = beta_family(link = "logit")
 )
 
 AIC(beta_model)
-
+summary(beta_model)
 
 ```
 
   #coefficient plot 
 ```{r}
 
-#extract coefficients in tidy format
+#extract coefficients in tidy format, including confidence intervals
 coef_tidy <- broom.mixed::tidy(beta_model, conf.int = TRUE)
 
-#combine component and term for clarity
-coef_tidy <- coef_tidy %>%
-  mutate(term = paste(component, term, sep = "."))
+#combine 'term' with additional info (if necessary) and remove 'component'
+#here, we'll only use the 'term' column, assuming 'term' provides all the information you need
 
-#add the 'model' column
+# Add the 'model' column
 coef_tidy$model <- "Model 1"
 
-#create the dot-and-whisker plot
-dw <- dwplot(coef_tidy, conf.level = 0.95) + 
-  geom_vline(xintercept = 0, linetype = "dashed") +  # Add reference line at 0
-  theme_minimal() +
-  labs(title = "Model Coefficients with Confidence Intervals",
-       x = "Coefficient Estimate",
-       y = "Predictor",
-       color = "Component")
+# Filter out 'cond.sd__(Intercept)' from the data if applicable
+coef_tidy <- coef_tidy %>%
+  filter(term != "sd__(Intercept)")
 
-#print the plot
+# Create the dot-and-whisker plot
+dw <- dwplot(coef_tidy, conf.level = 0.95) +
+  geom_vline(xintercept = 0, linetype = "dashed") +  # Add reference line at 0
+  theme_minimal() +  # Apply a minimal theme
+  labs(
+    title = "Kelp Survival GLMM Coefficients and Confidence Intervals",
+    x = "Coefficient Estimate",
+    y = "Predictor"
+  ) +
+  theme(
+    legend.position = "none",  # Remove the legend
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels
+  ) +
+  scale_color_manual(values = "#076fa6")  # Set line color
+
 print(dw)
+
+#sve the dot-and-whisker plot as a PNG
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/survival_models/surv_dot_and_whisker_plot.png", plot = dw, width = 8, height = 6, dpi = 300)
+
 ```
 
 

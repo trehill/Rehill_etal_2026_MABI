@@ -48,18 +48,22 @@ plot <- ggplot(plots, aes(x = site, y = kelp_survival, fill = treatment)) +
     y = "Kelp Survival (%)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   scale_y_continuous(limits = c(0, 100)) +  # Set y-axis range
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid.major.x = element_blank()
+axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    panel.grid.major.x = element_blank(), 
+     strip.text = element_text(size = 18)  # Increase facet titles (month) size
   )
 
 plot
 
 #save
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_survival/survival_site_month.png", plot = plot, width = 10, height = 15, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_survival/survival_site_month.png", plot = plot,  width = 15, height = 10, dpi = 300)
 
 
 #GROWTH  ##########################################################################
@@ -71,11 +75,15 @@ plot <- ggplot(plots, aes(x = site, y = kelp_growth, fill = treatment)) +
     y = "Kelp Growth (mm)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid.major.x = element_blank()
+ axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    panel.grid.major.x = element_blank(), 
+     strip.text = element_text(size = 18)  # Increase facet titles (month) size
   )
 
 plot
@@ -91,14 +99,18 @@ plot <- ggplot(plots, aes(x = site, y = log_kelp_growth, fill = treatment)) +
   facet_wrap(~ month, scales = "free_y", ncol = 1) +        # Stack facets vertically with free y-scales
   labs(
     x = "Site",
-    y = "LOG Kelp Growth (mm)",
+    y = "Kelp Growth (mm) - log",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid.major.x = element_blank()
+  theme( 
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    panel.grid.major.x = element_blank(), 
+     strip.text = element_text(size = 18)  # Increase facet titles (month) size
   )
 
 plot
@@ -120,18 +132,22 @@ plot <- ggplot(plots, aes(x = site, y = kelp_survival, fill = gravel_size)) +
     y = "Kelp Survival (%)",
     fill = "Gravel Size"
   ) +
-  scale_fill_manual(values = c("large" = "#f3ac46", "small" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("small" = "#62a4ea", "large" = "#eacf62")) +  # Custom colors
   scale_y_continuous(limits = c(0, 100)) +  # Set y-axis range
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid.major.x = element_blank()
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    panel.grid.major.x = element_blank(), 
+     strip.text = element_text(size = 18)  # Increase facet titles (month) size
   )
 
 plot 
 
 #save
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/surv_gravel_site_month.png", plot = plot, width = 10, height = 15, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/surv_gravel_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
 
 #GROWTH  ##########################################################################
 plot <- ggplot(plots, aes(x = site, y = kelp_growth, fill = gravel_size)) +
@@ -142,16 +158,20 @@ plot <- ggplot(plots, aes(x = site, y = kelp_growth, fill = gravel_size)) +
     y = "Kelp Growth (mm)",
     fill = "Gravel Size"
   ) +
-  scale_fill_manual(values = c("large" = "#f3ac46", "small" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("small" = "#62a4ea", "large" = "#eacf62")) +  # Custom colors
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid.major.x = element_blank()
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    panel.grid.major.x = element_blank(), 
+     strip.text = element_text(size = 18)  # Increase facet titles (month) size
   )
 
 plot 
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/grwt_gravel_site_month.png", plot = plot, width = 10, height = 15, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/grwt_gravel_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
 ```
 
 #Boxplot of survival and growth, in open v cage, run t-test
@@ -181,10 +201,14 @@ plot <- ggplot(plots, aes(x = treatment, y = kelp_survival, fill = treatment)) +
     y = "Kelp Survival (%)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
+  axis.text.x = element_text(hjust = 1, size = 14),
+    legend.position = "none",
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
     panel.grid.major.x = element_blank()
   ) +
   annotate(
@@ -198,7 +222,7 @@ plot <- ggplot(plots, aes(x = treatment, y = kelp_survival, fill = treatment)) +
 
 plot
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_survival/surv_open_v_caged.png", plot = plot, width = 10, height = 8, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_survival/surv_open_v_caged.png", plot = plot, width = 10, height = 10, dpi = 300)
 
 #GROWTH ############################################################
 #run t-test
@@ -220,19 +244,23 @@ plot <- ggplot(plots, aes(x = treatment, y = kelp_growth, fill = treatment)) +
   geom_boxplot(position = position_dodge(width = 0.75)) +  # Side-by-side boxplots
   labs(
     x = "Treatment",
-    y = "Kelp Growht (mm)",
+    y = "Kelp Growth (mm)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
+  axis.text.x = element_text( hjust = 1, size = 14),
+    legend.position = "none",
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
     panel.grid.major.x = element_blank()
   ) +
   annotate(
     "text",
     x = 1.5,  # Midpoint between two treatment groups
-    y = max(plots$kelp_survival, na.rm = TRUE) + 5,  # Adjusted Y position
+    y = max(plots$kelp_growth, na.rm = TRUE) + 5,  # Adjusted Y position
     label = paste("p =", p_value),
     size = 5,
     hjust = 0.5
@@ -240,7 +268,7 @@ plot <- ggplot(plots, aes(x = treatment, y = kelp_growth, fill = treatment)) +
 
 plot 
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_growth/grwt_open_v_caged.png", plot = plot, width = 10, height = 8, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_growth/grwt_open_v_caged.png", plot = plot, width = 10, height = 10, dpi = 300)
 
 #LOG GROWTH ############################################################
 #let's log growth and perform the same t-test
@@ -254,28 +282,44 @@ leveneTest(log_kelp_growth ~ treatment, data = plots) #p = 0.7587 #normal
 t_test_result <- t.test(log_kelp_growth ~ treatment, data = plots, var.equal = TRUE)
 
 # Print the result
-t_test_result #no difference, slightly MORE growth in open... #p = 0.9639
+t_test_result #no difference, slightly MORE growth in open... #p = 0.8374
+p_value <- formatC(t_test_result$p.value, format = "e", digits = 2)
 
 #visualize 
-plot <- ggplot(plots, aes(x = treatment, y = log_kelp_growth, fill=treatment)) +
+plot <- ggplot(plots, aes(x = treatment, y = log_kelp_growth, fill = treatment)) +
   geom_boxplot(position = position_dodge(width = 0.75)) +  # Side-by-side boxplots
   labs(
-    x = "Site",
-    y = "Log - Kelp Growth (mm)",
+    x = "Treatment",
+    y = "log Kelp Growht (mm)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.x = element_text(hjust = 1, size =14),
+    legend.position = "none",
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
     panel.grid.major.x = element_blank()
+  ) +
+    
+  annotate(
+    "text",
+    x = 1.5,  # Midpoint between two treatment groups
+    y = max(plots$log_kelp_growth, na.rm = TRUE) + 0.5,  # Adjusted Y position
+    label = paste("p =", p_value),
+    size = 5,
+    hjust = 0.5
   )
 
 plot 
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_growth/loggrwt_open_v_caged.png", plot = plot, width = 10, height = 8, dpi = 300)
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_growth/loggrwt_open_v_caged.png", plot = plot, width = 10, height = 10, dpi = 300)
 
 ```
+
 #Difference in survivorship by site 
 ```{r}
 
@@ -301,7 +345,7 @@ plot <- ggplot(surv_summary, aes(x = site, y = mean_survival, fill = treatment))
     y = "Mean Kelp Survival (%)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -330,7 +374,7 @@ plot <- ggplot(kelp_summary, aes(x = site, y = mean_survival, fill = treatment))
     y = "Mean Kelp Survival (%)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -408,7 +452,7 @@ ggplot(grwt_summary, aes(x = site, y = mean_growth, fill = treatment)) +
     y = "Mean Growth (mm)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -435,7 +479,7 @@ plot <- ggplot(kelp_summary, aes(x = site, y = mean_growth, fill = treatment)) +
     y = "Mean Kelp Growth (cm)",
     fill = "Treatment"
   ) +
-  scale_fill_manual(values = c("open" = "#f3ac46", "caged" = "#aae9ad")) +  # Custom colors
+  scale_fill_manual(values = c("open" = "#076fa6", "caged" = "#FF5733")) +  # Custom colors
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -536,6 +580,102 @@ kw_growth #p = 0.02397
 dunn_growth <- dunn.test(plots$kelp_growth, plots$month, kw = TRUE, label = TRUE)
 dunn_growth
 
+
+```
+#Looking at GRAVEL SIZE between sites
+```{r}
+#SURVIVAL #####################################################################
+#run t-test
+#shapiro-Wilk test for normality, p less than 0.05, normally distributed
+shapiro.test(plots$kelp_survival[plots$gravel_size == "small"]) #normally distributed 
+shapiro.test(plots$kelp_survival[plots$gravel_size == "large"]) #normally distributed 
+
+#check variances, if the p-value from Levene’s test is greater than 0.05, you can assume that the variances are equal, and the assumption is met. 
+leveneTest(kelp_survival ~ gravel_size, data = plots) #unequal - perform Welche's t-test
+
+#t-test to compare kelp survivorship between treatments
+t_test_result  <- t.test(kelp_survival ~ gravel_size, data = plots, var.equal = FALSE) #p = 01.47e-11
+t_test_result
+  #mean in large= 25.1%, mean in small = 3.04%
+
+p_value <- formatC(t_test_result$p.value, format = "e", digits = 2)
+
+#visualize 
+plot <- ggplot(plots, aes(x = gravel_size, y = kelp_survival, fill = gravel_size)) +
+  geom_boxplot(position = position_dodge(width = 0.75)) +  # Side-by-side boxplots
+  labs(
+    x = "Treatment",
+    y = "Kelp Survival (%)",
+    fill = "Gravel Size"
+  ) +
+  scale_fill_manual(values = c("small" = "#62a4ea", "large" = "#eacf62")) +  # Custom colors
+  theme_minimal() +
+  theme(
+  axis.text.x = element_text(hjust = 1, size = 14),
+    legend.position = "none",
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    panel.grid.major.x = element_blank()
+  ) +
+  annotate(
+    "text",
+    x = 1.5,  # Midpoint between two treatment groups
+    y = max(plots$kelp_survival, na.rm = TRUE) + 5,  # Adjusted Y position
+    label = paste("p =", p_value),
+    size = 5,
+    hjust = 0.5
+  )
+
+plot
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/surv_smallvlarge.png", plot = plot, width = 10, height = 10, dpi = 300)
+
+#GROWTH ############################################################
+#run t-test
+#shapiro-Wilk test for normality, p less than 0.05, normally distributed
+shapiro.test(plots$kelp_growth[plots$gravel_size == "large"]) #normally distributed 
+shapiro.test(plots$kelp_growth[plots$gravel_size == "small"]) #normally distributed 
+
+#check variances, if the p-value from Levene’s test is greater than 0.05, you can assume that the variances are equal, and the assumption is met. 
+leveneTest(kelp_growth ~ gravel_size, data = plots) #p = 0.4006 #normal 
+
+#t-test to compare kelp growth between treatments
+t_test_result  <- t.test(kelp_growth ~ gravel_size, data = plots) #p = 0.4022
+t_test_result
+  #mean in large = 62.5 mm, mean in small = 46.73mm 
+
+p_value <- formatC(t_test_result$p.value, format = "e", digits = 2)
+#visualize 
+plot <- ggplot(plots, aes(x = treatment, y = kelp_growth, fill = gravel_size)) +
+  geom_boxplot(position = position_dodge(width = 0.75)) +  # Side-by-side boxplots
+  labs(
+    x = "Gravel Size",
+    y = "Kelp Growth (mm)",
+    fill = "Treatment"
+  ) +
+  scale_fill_manual(values = c("small" = "#62a4ea", "large" = "#eacf62")) +  # Custom colors
+  theme_minimal() +
+  theme(
+  axis.text.x = element_text( hjust = 1, size = 14),
+    legend.position = "none",
+    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
+    axis.title.x = element_text(size = 16),  # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    panel.grid.major.x = element_blank()
+  ) +
+  annotate(
+    "text",
+    x = 1.5,  # Midpoint between two treatment groups
+    y = max(plots$kelp_growth, na.rm = TRUE) + 5,  # Adjusted Y position
+    label = paste("p =", p_value),
+    size = 5,
+    hjust = 0.5
+  )
+
+plot 
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/growth_smallvlarge.png", plot = plot, width = 10, height = 10, dpi = 300)
 
 ```
 

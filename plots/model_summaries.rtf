@@ -1,0 +1,188 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2820
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;\red185\green188\blue186;
+}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgray\c0\c0;\cssrgb\c77255\c78431\c77647;
+}
+\margl1440\margr1440\vieww28600\viewh17440\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \cb3 \expnd0\expndtw0\kerning0
+MODEL RESULTS \
+\
+KELP SURVIVAL - BETA\
+Formula:          kelp_prop_adj ~ 1 + (1 | site) + (1 | plot_id) + mean_temperature_c +  \
+    gravel_size + simp_div + species_richness + percent_occuring_algae\
+Data: data\
+\
+     AIC      BIC   logLik deviance df.resid \
+  -665.5   -636.0    341.7   -683.5      186 \
+\
+Random effects:\
+\
+Conditional model:\
+ Groups  Name        Variance  Std.Dev. \
+ site    (Intercept) 6.659e-02 2.580e-01\
+ plot_id (Intercept) 1.203e-09 3.469e-05\
+Number of obs: 195, groups:  site, 6; plot_id, 12\
+\
+Dispersion parameter for beta family ():  2.9 \
+\
+Conditional model:\
+                       Estimate Std. Error z value Pr(>|z|)    \
+(Intercept)            -1.33791    0.15306  -8.741  < 2e-16 ***\
+mean_temperature_c     -0.43988    0.08749  -5.028 4.96e-07 ***\
+gravel_sizesmall       -1.04280    0.16169  -6.449 1.12e-10 ***\
+simp_div               -0.25058    0.10610  -2.362  0.01819 *  \
+species_richness       -0.33356    0.12923  -2.581  0.00985 ** \
+percent_occuring_algae -0.11866    0.08254  -1.438  0.15055    \
+---\
+Signif. codes:  0 \'91***\'92 0.001 \'91**\'92 0.01 \'91*\'92 0.05 \'91.\'92 0.1 \'91 \'92 1\
+\
+\
+KELP SURVIVAL - ZINB\
+ Family: nbinom2  ( log )\
+Formula:          kelp_survival ~ treatment + gravel_size + mean_light_lux + mean_temperature_c +  \
+    site_density + urchin_density + bottom_do + simp_div + month +      (1 | site) + (1 | plot_id)\
+Zero inflation:                 ~treatment + mean_temperature_c + site_density + gravel_size + \
+    mean_light_lux + urchin_density + bottom_do + simp_div +     month\
+Data: model_df\
+\
+     AIC      BIC   logLik deviance df.resid \
+   980.4   1062.0   -465.2    930.4      168 \
+\
+Random effects:\
+\
+Conditional model:\
+ Groups  Name        Variance  Std.Dev. \
+ site    (Intercept) 1.434e-01 3.787e-01\
+ plot_id (Intercept) 2.863e-09 5.351e-05\
+Number of obs: 193, groups:  site, 6; plot_id, 12\
+\
+Dispersion parameter for nbinom2 family (): 2.31 \
+\
+Conditional model:\
+                    Estimate Std. Error z value Pr(>|z|)    \
+(Intercept)         5.272812   0.658237   8.011 1.14e-15 ***\
+treatmentopen      -0.002029   0.177091  -0.011  0.99086    \
+gravel_sizesmall   -1.878485   0.196842  -9.543  < 2e-16 ***\
+mean_light_lux     -0.768037   0.320460  -2.397  0.01654 *  \
+mean_temperature_c  1.195239   0.501367   2.384  0.01713 *  \
+site_density        0.651987   0.298302   2.186  0.02884 *  \
+urchin_density     -0.134393   0.094943  -1.416  0.15692    \
+bottom_do          -0.192093   0.190023  -1.011  0.31207    \
+simp_div           -0.381816   0.118732  -3.216  0.00130 ** \
+monthJune          -3.580317   1.261335  -2.839  0.00453 ** \
+monthMay           -1.339770   0.500584  -2.676  0.00744 ** \
+---\
+Signif. codes:  0 \'91***\'92 0.001 \'91**\'92 0.01 \'91*\'92 0.05 \'91.\'92 0.1 \'91 \'92 1\
+\
+Zero-inflation model:\
+                   Estimate Std. Error z value Pr(>|z|)    \
+(Intercept)        -2.52790    1.08577  -2.328 0.019901 *  \
+treatmentopen      -0.02303    0.38222  -0.060 0.951960    \
+mean_temperature_c -0.09288    0.92407  -0.101 0.919941    \
+site_density        0.37264    0.49503   0.753 0.451596    \
+gravel_sizesmall    1.25242    0.37842   3.310 0.000934 ***\
+mean_light_lux      0.55376    0.51013   1.086 0.277690    \
+urchin_density     -0.12180    0.23056  -0.528 0.597290    \
+bottom_do          -0.63854    0.36270  -1.761 0.078322 .  \
+simp_div            0.34750    0.26275   1.323 0.185994    \
+monthJune           3.97044    2.00413   1.981 0.047577 *  \
+monthMay            1.14848    0.94075   1.221 0.222158    \
+---\
+Signif. codes:  0 \'91***\'92 0.001 \'91**\'92 0.01 \'91*\'92 0.05 \'91.\'92 0.1 \'91 \'92 1\
+\
+\
+KELP GROWTH \
+ Family: tweedie  ( log )\
+Formula:  kelp_growth ~ site_density + gravel_size + mean_temperature_c +  \
+    bottom_ph + bottom_do + bottom_salinity + mean_depth_m +      simp_div + month + (1 | site) + (1 | plot_id)\
+Data: data\
+\
+     AIC      BIC   logLik deviance df.resid \
+  1107.4   1154.3   -538.7   1077.4      154 \
+\
+Random effects:\
+\
+Conditional model:\
+ Groups  Name        Variance  Std.Dev. \
+ site    (Intercept) 1.650e-09 4.062e-05\
+ plot_id (Intercept) 3.393e-09 5.825e-05\
+Number of obs: 169, groups:  site, 6; plot_id, 12\
+\
+Dispersion parameter for tweedie family (): 14.3 \
+\
+Conditional model:\
+                   Estimate Std. Error z value Pr(>|z|)    \
+(Intercept)         -0.1515     1.4913  -0.102  0.91910    \
+site_density        -1.6927     0.2737  -6.185 6.23e-10 ***\
+gravel_sizesmall    -0.7159     0.2784  -2.572  0.01012 *  \
+mean_temperature_c   0.7039     0.6706   1.050  0.29387    \
+bottom_ph            0.7446     0.5569   1.337  0.18118    \
+bottom_do            1.4646     0.4695   3.119  0.00181 ** \
+bottom_salinity      4.0125     1.9909   2.015  0.04386 *  \
+mean_depth_m        -0.2107     0.2935  -0.718  0.47287    \
+simp_div            -0.2998     0.1974  -1.519  0.12871    \
+monthJune            6.7163     3.3597   1.999  0.04560 *  \
+monthMay             0.7083     0.8824   0.803  0.42213    \
+---\
+Signif. codes:  0 \'91***\'92 0.001 \'91**\'92 0.01 \'91*\'92 0.05 \'91.\'92 0.1 \'91 \'92 1\
+\
+PLOT DENSITY \
+Family: tweedie  ( log )\
+Formula:          urchin_density ~ shannon_div + bottom_do + bottom_ph + mean_light_lux +  \
+    mean_depth_m + treatment + percent_occuring_algae + site +      (1 | plot_id)\
+Data: data\
+\
+     AIC      BIC   logLik deviance df.resid \
+   427.0    464.6   -201.5    403.0      157 \
+\
+Random effects:\
+\
+Conditional model:\
+ Groups  Name        Variance  Std.Dev. \
+ plot_id (Intercept) 8.901e-10 2.983e-05\
+Number of obs: 169, groups:  plot_id, 12\
+\
+Dispersion parameter for tweedie family (): 1.09 \
+\
+Conditional model:\
+                       Estimate Std. Error z value Pr(>|z|)    \
+(Intercept)            -0.56782    0.11519  -4.929 8.25e-07 ***\
+shannon_div             0.98155    0.19053   5.152 2.58e-07 ***\
+bottom_do               0.21743    0.17259   1.260 0.207741    \
+bottom_ph               0.07120    0.10952   0.650 0.515585    \
+mean_light_lux          0.38619    0.11387   3.391 0.000695 ***\
+mean_depth_m            0.04536    0.19681   0.230 0.817735    \
+treatment               0.50636    0.09534   5.311 1.09e-07 ***\
+percent_occuring_algae  0.21063    0.10008   2.105 0.035313 *  \
+site                    0.37223    0.20314   1.832 0.066888 .  \
+---\
+Signif. codes:  0 \'91***\'92 0.001 \'91**\'92 0.01 \'91*\'92 0.05 \'91.\'92 0.1 \'91 \'92 1\
+\
+SITE DENISTY - GLM \
+glm(formula = site_density ~ bottom_do + mean_temperature_c + \
+    mean_light_lux + mean_depth_m + shannon_div, family = gaussian(), \
+    data = data)\
+\
+Coefficients:\
+                   Estimate Std. Error t value Pr(>|t|)    \
+(Intercept)          1.4631     0.1098  13.322 1.09e-07 ***\
+bottom_do            0.3174     0.1760   1.803  0.10153    \
+mean_temperature_c  -0.3891     0.1513  -2.572  0.02778 *  \
+mean_light_lux       0.3790     0.1485   2.552  0.02877 *  \
+mean_depth_m         0.3022     0.1404   2.151  0.05692 .  \
+shannon_div          0.5011     0.1516   3.305  0.00795 ** \
+---\
+Signif. codes:  0 \'91***\'92 0.001 \'91**\'92 0.01 \'91*\'92 0.05 \'91.\'92 0.1 \'91 \'92 1\
+\
+(Dispersion parameter for gaussian family taken to be 0.1929926)\
+\
+    Null deviance: 12.8811  on 15  degrees of freedom\
+Residual deviance:  1.9299  on 10  degrees of freedom\
+AIC: 25.564\
+\
+Number of Fisher Scoring iterations: 2\
+}

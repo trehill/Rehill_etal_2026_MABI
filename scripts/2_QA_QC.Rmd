@@ -33,10 +33,11 @@ kelp_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/green_
 
 env_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/YSI_measurement.csv")
 
-#hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
-hobo <- read_csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
 
 ```
+
+
 #Cleaning kelp data 
 ```{r}
 
@@ -151,6 +152,11 @@ View(unique_plot_counts) #duplicated data at TR and EK
 
 kelp_data$kelp_growth <- rowSums(kelp_data[, c("kelp_total1", "kelp_total2", "kelp_total3", "kelp_total4", "kelp_total5")])
 
+
+# Filter data for June and site "Nanat"
+filtered_data <- kelp_data %>%
+  filter(month == "August", site == "Nanat")
+
 #remove August month 
 kelp_data <- kelp_data %>%
   filter(!month %in% c("August"))
@@ -158,6 +164,15 @@ kelp_data <- kelp_data %>%
 
 #save the cleaned dataframe to a new CSV file
 write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv", row.names = FALSE)
+
+june_data <- kelp_data %>%
+  filter(month == "June")
+
+summary_data <- june_data %>%
+  group_by(site) %>%
+  summarize(
+    total_gravel_kelp = sum(n_kelp_gravel, na.rm = TRUE))
+    
 
 ```
 
@@ -369,16 +384,20 @@ div_data <- data %>%
   rowwise() %>%
   mutate(
     # Combine species counts into a vector
-    species_counts = list(c(total_n_ab, total_n_ru, total_n_gu, total_n_pu, 
+    species_counts = list(c(total_n_ab, total_n_ru, total_n_pu, total_n_gu,
                             total_n_sn, total_n_pyc, total_n_cuc)),
     # Calculate Species Richness
     species_richness = sum(species_counts > 0, na.rm = TRUE),
     # Shannon Diversity Index
     shannon_div = diversity(species_counts, index = "shannon"),
     # Simpson Diversity Index
-    simp_div = diversity(species_counts, index = "simpson")
+    simp_div = diversity(species_counts, index = "simpson"), 
+    
+    
   ) %>%
   ungroup()
+
+
 
 #rename urchin density to site density 
 div_data <- div_data %>%
@@ -422,11 +441,16 @@ data <- plots
 
 #select columns 
 data <- data %>%
-  select(site, plot_id, date, percent_occuring_algae, month, treatment, 
-         gravel_size, plot, kelp_survival, urchin_density, kelp_growth, 
-         mean_temperature_c, mean_light_lux, bottom_temp, bottom_do, 
-         bottom_salinity, bottom_ph, mean_depth_m, site_density, 
-         species_richness, shannon_div, simp_div)
+  dplyr::select(
+    site, plot_id, date, percent_occuring_algae, month, treatment,
+    gravel_size, plot, kelp_survival, urchin_density, kelp_growth,
+    mean_temperature_c, mean_light_lux, bottom_temp, bottom_do,
+    bottom_salinity, bottom_ph, mean_depth_m, site_density,
+    species_richness, shannon_div, simp_div
+  )
+
+
+data$plot_id <- substr(data$plot_id, 1, nchar(data$plot_id) - 1)
 
 write.csv(data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv", row.names = FALSE)
 

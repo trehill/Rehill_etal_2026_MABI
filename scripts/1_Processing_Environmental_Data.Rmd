@@ -16,6 +16,8 @@ library(readxl)
 library(dplyr)
 library(stringr)
 library(purrr)
+library(ggplot2)
+
 ```
 
 #HOBO LOGGER DATA 
@@ -68,12 +70,88 @@ nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/NANAT/com
 #Combine all site files and add to processed data folder 
 hobo_combined <- rbind(ek, dx, es, en, tr, nn)
 
+#remove temperatures during sampling (brought out of the water)
+#define the date ranges to exclude
+#excluded_dates <- list(
+# seq(as.Date("2024-04-02"), as.Date("2024-04-08"), by = "day"),
+# seq(as.Date("2024-05-13"), as.Date("2024-05-17"), by = "day"),
+#  seq(as.Date("2024-06-24"), as.Date("2024-06-28"), by = "day")
+#)
+
+# Combine all excluded dates into a single vector
+#excluded_dates <- do.call(c, excluded_dates)
+
+# Filter the dataframe to exclude the specified date ranges
+#hobo_sampling <- hobo_combined %>%
+#  filter(!date %in% excluded_dates) 
+#all sampling dates >20 temp
+
+hobo_combined <- hobo_combined %>%
+  filter(temperature_c <= 20)
+
+
 write.csv(hobo_combined, 
 "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv", 
           row.names = FALSE)
+```
+
+
+#Mean temperature over time 
+```{r}
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+
+hobo$date <- as.Date(hobo$date)
+
+# Filter the data to only include temperatures less than 20°C and between March and June
+hobo_filtered <- hobo %>%
+  filter(temperature_c < 20)
+#
+#Define a threshold for gaps (e.g., 7 days)
+gap_threshold <- 7
+
+# Arrange data by Site and date, and calculate time difference
+hobo <- hobo_filtered %>%
+  arrange(Site, date) %>%
+  group_by(Site) %>%
+  mutate(time_diff = c(NA, diff(date))) %>%
+  mutate(temperature_c = ifelse(time_diff > gap_threshold, NA, temperature_c))
+
+# Create the plot
+ggplot(hobo, aes(x = date, y = temperature_c, color = Site)) +
+  geom_line() +  # Line plot for temperature over time
+  labs(
+    title = "Temperature Over Time by Site (With Gaps Removed)",
+    x = "Date",
+    y = "Temperature (°C)",
+    color = "Site"
+  ) +
+  theme_minimal() +  # Apply a clean theme
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  )
+
+```
+#Light over time
+```{r}
+hobo_sampling$date <- as.Date(hobo_sampling$date)
+
+ggplot(hobo_sampling, aes(x = date, y = light_lux, color = Site)) +
+  geom_line() +  # Line plot for temperature over time
+  labs(
+    title = "Light Over Time by Site",
+    x = "Date",
+    y = "Temperature (°C)",
+    color = "Site"
+  ) +
+  theme_minimal() +  # Apply a clean theme
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  )
 
 
 ```
+
+
 #TILT CURRENT METERS 
 
 ```{r}
