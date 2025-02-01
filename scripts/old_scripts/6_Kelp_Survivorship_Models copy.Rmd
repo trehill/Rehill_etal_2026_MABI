@@ -85,10 +85,11 @@ sum(data$kelp_prop_adj == 0, na.rm = TRUE) / nrow(plots) #no zeros
 
 ```
 
-  #checking correlation of predictos 
+  #checking correlation of predictors 
 ```{r}
 
-cor_matrix <- cor(data[, c("mean_light_lux", "mean_temperature_c", "bottom_salinity", "mean_depth_m", "bottom_do", "bottom_ph", "urchin_density", "percent_occuring_algae", "site_density", "shannon_div", "simp_div", "species_richness")], use = "complete.obs")
+
+cor_matrix <- cor(data[, c("mean_light_lux", "mean_temperature_c", "bottom_salinity",  "bottom_do", "bottom_ph", "mean_depth_m","urchin_density", "percent_occuring_algae", "site_density", "shannon_div", "simp_div", "species_richness")], use = "complete.obs")
 
 corrplot(cor_matrix, method = "circle")
 
@@ -145,7 +146,7 @@ data$plot_id <- as.factor(data$plot_id)
   #simplest model 
 ```{r}
 simple_beta <- glmmTMB(
-  kelp_prop_adj ~ month + gravel_size + treatment + urchin_density + (1 | site)  + (1 | plot_id) , 
+  kelp_prop_adj ~ month + gravel_size + treatment + urchin_density + (1 | site)  + (1 | plot_id), 
   data = data,
   family = beta_family(link = "logit")
 )
@@ -168,25 +169,16 @@ simulationOutput
 #define predictors and initial formula
 predictors <-  c( "percent_occuring_algae", "treatment", "site_density", "urchin_density",
                 "gravel_size",  "mean_temperature_c", "mean_light_lux", 
-                "bottom_do", "bottom_temp", "bottom_salinity", "mean_depth_m", 
-                  "simp_div", "species_richness" )
+                   "bottom_ph", "simp_div", "species_richness")
 
 #initialize the empty model formula (with no predictors)
-base_formula <- "kelp_prop_adj ~ 1 + (1 | site)  + (1 | month)"  # Initial random effects
+base_formula <- "kelp_prop_adj ~ 1 + (1 | site)"  # Initial random effects
 ```
 
   #beta regression GLM - forward feature selection
 ```{r}
 
-#BETA structure
-#beta_model <- glmmTMB(
-#  kelp_prop_adj ~ predictor 1, predictor 2 + (1 | site), 
-#  data = data,
-#  family = beta_family(link = "logit")
-#)
-
-
-# Set up a function to perform forward feature selection
+#set up a function to perform forward feature selection
 forward_feature_selection <- function(predictors, base_formula, data) {
   
   #initialize the best model to the base model
@@ -239,64 +231,73 @@ forward_feature_selection <- function(predictors, base_formula, data) {
   return(list(final_model = final_model, selected_predictors = selected_predictors, best_aic = best_aic))
 }
 
-# Run forward feature selection
+#run forward feature selection
 result <- forward_feature_selection(predictors, base_formula, data)
 
-# View the selected predictors and the final model's AIC
+#view the selected predictors and the final model's AIC
 print(paste("Selected predictors:", paste(result$selected_predictors, collapse = ", ")))
 print(paste("Final model AIC:", result$best_aic))
 
-# View the summary of the final model
+#view the summary of the final model
 summary(result$final_model)
 
 
 ```
  
 ```{r}
-lm_model <- lm(kelp_prop_adj ~   mean_temperature_c +  species_richness + 
-                simp_div  + percent_occuring_algae, data = data)
+lm_model <- lm(kelp_prop_adj ~ gravel_size + mean_temperature_c + simp_div + species_richness + percent_occuring_algae, data = data)
 
 vif(lm_model) #all under 5
- 
- 
+
  
   #best model 
-```{r}
 beta_model <- glmmTMB(
-  kelp_prop_adj ~ gravel_size + mean_temperature_c + simp_div + species_richness + percent_occuring_algae +(1 | site)  + (1 | month)  , 
+  kelp_prop_adj ~ gravel_size + mean_temperature_c + simp_div + species_richness + percent_occuring_algae + (1 | site) + (1 | plot_id) + (1 | month), 
   data = data,
   family = beta_family(link = "logit")
 )
 
 AIC(beta_model)
-
+summary(beta_model)
 
 ```
 
   #coefficient plot 
 ```{r}
 
-#extract coefficients in tidy format
+#extract coefficients in tidy format, including confidence intervals
 coef_tidy <- broom.mixed::tidy(beta_model, conf.int = TRUE)
 
-#combine component and term for clarity
-coef_tidy <- coef_tidy %>%
-  mutate(term = paste(component, term, sep = "."))
+#combine 'term' with additional info (if necessary) and remove 'component'
+#here, we'll only use the 'term' column, assuming 'term' provides all the information you need
 
-#add the 'model' column
+# Add the 'model' column
 coef_tidy$model <- "Model 1"
 
-#create the dot-and-whisker plot
-dw <- dwplot(coef_tidy, conf.level = 0.95) + 
-  geom_vline(xintercept = 0, linetype = "dashed") +  # Add reference line at 0
-  theme_minimal() +
-  labs(title = "Model Coefficients with Confidence Intervals",
-       x = "Coefficient Estimate",
-       y = "Predictor",
-       color = "Component")
+# Filter out 'cond.sd__(Intercept)' from the data if applicable
+coef_tidy <- coef_tidy %>%
+  filter(term != "sd__(Intercept)")
 
-#print the plot
+# Create the dot-and-whisker plot
+dw <- dwplot(coef_tidy, conf.level = 0.95) +
+  geom_vline(xintercept = 0, linetype = "dashed") +  # Add reference line at 0
+  theme_minimal() +  # Apply a minimal theme
+  labs(
+    title = "Kelp Survival GLMM Coefficients and Confidence Intervals",
+    x = "Coefficient Estimate",
+    y = "Predictor"
+  ) +
+  theme(
+    legend.position = "none",  # Remove the legend
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels
+  ) +
+  scale_color_manual(values = "#076fa6")  # Set line color
+
 print(dw)
+
+#sve the dot-and-whisker plot as a PNG
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/survival_models/surv_dot_and_whisker_plot.png", plot = dw, width = 8, height = 6, dpi = 300)
+
 ```
 
 
@@ -348,6 +349,7 @@ model_df <- data
 #standardizing predictors
 model_df$mean_temperature_c <- scale(model_df$mean_temperature_c)
 model_df$bottom_do <- scale(model_df$bottom_do)
+model_df$bottom_ph <- scale(model_df$bottom_ph)
 model_df$mean_light_lux <- scale(model_df$mean_light_lux)
 model_df$mean_depth_m <- scale(model_df$mean_depth_m)
 model_df$urchin_density <- scale(model_df$urchin_density)
@@ -371,7 +373,7 @@ model_df$kelp_survival <- as.integer(model_df$kelp_survival)
 ```{r}
 
 #starting with a minimal model (only random effects)
-base_model <- glmmTMB(kelp_survival ~ 1 + (1 | site) + (1 | month), 
+base_model <- glmmTMB(kelp_survival ~ 1 + (1 | site) + (1 | plot_id), 
                       zi = ~ 1, # Zero-inflation model
                       family = nbinom2, 
                       data = model_df)
@@ -383,8 +385,8 @@ AIC(base_model)
 #forward stepwise selection by adding predictors one by one
 predictor_list <- c("percent_occuring_algae", "treatment", "site_density", "urchin_density",
                     "gravel_size", "mean_temperature_c", "mean_light_lux", 
-                    "bottom_do", "bottom_salinity", "mean_depth_m", 
-                    "simp_div", "species_richness")
+                    "bottom_do", "bottom_salinity", "bottom_ph", "mean_depth_m", 
+                    "simp_div", "species_richness", "month")
 
 #function to add predictors iteratively
 add_predictors <- function(base_model, predictor_list) {
@@ -395,7 +397,7 @@ add_predictors <- function(base_model, predictor_list) {
   for (predictor in predictor_list) {
     # Create new formula by adding one predictor at a time
     formula <- as.formula(paste("kelp_survival ~", paste(c("1", predictor), collapse = " + "), 
-                               "+ (1 | site) + (1 | month) "))
+                               "+ (1 | site) + (1 | plot_id)  "))
     
     # Define the zero-inflation portion of the model with relevant predictors
     zi_formula <- as.formula(paste("~", paste(predictor_list, collapse = " + ")))
@@ -429,7 +431,6 @@ AIC(final_model)
   #visualize model fit
 ```{r}
 
-
 #final model
 fittedModel <- final_model
 
@@ -453,10 +454,10 @@ AIC(model1) #939
 
 #after stepwise AIC --> see old scripts 
 #final model, lowest AIC, with predictors we are interested in 
-model <- glmmTMB(kelp_survival ~ treatment + gravel_size + mean_light_lux + mean_temperature_c + site_density + urchin_density + bottom_do  + simp_div + 
-                  (1 | site) + (1 | month),
+model <- glmmTMB(kelp_survival ~ treatment + gravel_size + mean_light_lux + mean_temperature_c + site_density + urchin_density + bottom_do  + simp_div + month + 
+                  (1 | site) + (1 | plot_id),
                   zi = ~ treatment + mean_temperature_c + site_density + gravel_size + 
-                        mean_light_lux + urchin_density + bottom_do  + simp_div,
+                        mean_light_lux + urchin_density + bottom_do  + simp_div + month,
                   family = nbinom2, 
                   data = model_df)
 
@@ -525,7 +526,7 @@ print(dw)
 #left of zero = negative effect 
 
 #sve the dot-and-whisker plot as a PNG
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_models/zinb_dot_and_whisker_plot.png", plot = dw, width = 8, height = 6, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/survival_models/zinb_dot_and_whisker_plot.png", plot = dw, width = 8, height = 6, dpi = 300)
 
 
 

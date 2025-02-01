@@ -18,22 +18,17 @@ library(vegan)
 library(readr)
 library(lubridate)
 library(stringr)
-
-
 ```
 
 #read data 
 ```{r}
 
-setwd("/Users/tessarehill/Dropbox/MSc/Exclosures")
-
 urchin_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/urchin_monitoring_transects.csv")
 
 kelp_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/green_gravel_monitoring.csv")
 
-env_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/YSI_measurement.csv")
-
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+#read in monitoring_periods, manually entered time periods to be assessed for each associated month 
+monitoring_periods<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/monitoring_periods.csv")
 
 ```
 
@@ -134,6 +129,21 @@ kelp_data <- kelp_data %>%
     )
   )
 
+#GRAZER DENSITY 
+#make a new column that describes grazer density per m^2 
+#grazers ONLY include urchins, turban snails and abalone 
+
+kelp_data <- kelp_data %>%
+  mutate(
+    total_grazers = rowSums(across(c(n_ru, n_gu, n_pu, n_ru_side, n_pu_side, n_gu_side, n_ab, n_ts)), na.rm = TRUE),
+    grazer_density = case_when(
+      treatment == "caged" ~ total_grazers / 4.5,
+      treatment == "open" ~ total_grazers / 1,
+      TRUE ~ NA_real_
+    )
+  )
+
+
 #remove leading/trailing spaces from the 'site' columns in both datasets
 kelp_data$site <- stringr::str_trim(kelp_data$site)
 
@@ -164,16 +174,7 @@ kelp_data <- kelp_data %>%
 
 #save the cleaned dataframe to a new CSV file
 write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv", row.names = FALSE)
-
-june_data <- kelp_data %>%
-  filter(month == "June")
-
-summary_data <- june_data %>%
-  group_by(site) %>%
-  summarize(
-    total_gravel_kelp = sum(n_kelp_gravel, na.rm = TRUE))
-    
-
+  
 ```
 
 #Cleaning urchin transect data
@@ -208,47 +209,48 @@ write.csv(urchin_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data
 
 ```
 
-#Environmental Data 
+#Environmental YSI Data 
 ```{r}
+ysi_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/YSI_measurement.csv")
 
 #SITE ############################
-unique(env_data$site)
+unique(ysi_data$site)
 
-env_data$site <- gsub("DX", "Dixon", env_data$site)
-env_data$site <- gsub("EN", "Ellis N", env_data$site)
-env_data$site <- gsub("ES", "Ellis S", env_data$site)
-env_data$site <- gsub("NN", "Nanat", env_data$site)
-env_data$site <- gsub("EK", "Ed King", env_data$site)
-env_data$site <- gsub("TR", "Taylor", env_data$site)
+ysi_data$site <- gsub("DX", "Dixon", ysi_data$site)
+ysi_data$site <- gsub("EN", "Ellis N", ysi_data$site)
+ysi_data$site <- gsub("ES", "Ellis S", ysi_data$site)
+ysi_data$site <- gsub("NN", "Nanat", ysi_data$site)
+ysi_data$site <- gsub("EK", "Ed King", ysi_data$site)
+ysi_data$site <- gsub("TR", "Taylor", ysi_data$site)
 
 #DATE ############################
 #create a new column called 'month' 
-env_data$date <- as.Date(env_data$date, format="%Y-%m-%d")
-env_data$month <- month(env_data$date, label = TRUE, abbr = FALSE)
+ysi_data$date <- as.Date(ysi_data$date, format="%Y-%m-%d")
+ysi_data$month <- month(ysi_data$date, label = TRUE, abbr = FALSE)
 
 #remove columns .X and .X1 
-env_data <- dplyr::select(env_data, -X, -X.1)
-
+ysi_data <- dplyr::select(ysi_data, -X, -X.1)
 
 #save the cleaned dataframe to a new CSV file
-write.csv(env_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv", row.names = FALSE)
-
+write.csv(ysi_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv", row.names = FALSE)
 
 ```
 
 #HOBO loggers 
 ```{r}
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+
 #SITE ############################
 unique(hobo$Site)
 colnames(hobo)[colnames(hobo) == "Site"] <- "site"
 
+#change site names 
 hobo$site <- gsub("DX", "Dixon", hobo$site)
 hobo$site <- gsub("EN", "Ellis N", hobo$site)
 hobo$site <- gsub("ES", "Ellis S", hobo$site)
 hobo$site <- gsub("NN", "Nanat", hobo$site)
 hobo$site <- gsub("EK", "Ed King", hobo$site)
 hobo$site <- gsub("TR", "Taylor", hobo$site)
-#change site names 
 
 #change dates 
 hobo$date <- as.Date(hobo$date)
@@ -268,23 +270,17 @@ summary_hobo <- hobo %>%
 #remove n column 
 hobo <- hobo[, !names(hobo) %in% "n"]
 
-write.csv(summary_hobo, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/hobo_dates.csv", row.names = FALSE)
-
-
-#create mean bottom dataset (taking the means between monitoring periods for each site)
-monitoring_dates <- kelp_data %>%
-  dplyr::select(site, month, date) %>%
-  distinct()
-
-write.csv(monitoring_dates, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/monitoring_dates.csv", row.names = FALSE)
-
-#read in monitoring_periods, manually entered time periods to be assessed for each associated month 
-monitoring_periods<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/monitoring_periods.csv")
 
 #summarize HOBO data by removing zeros, and taking means between dates with associated monitoring periods
 #merge hobo with monitoring_periods and filter rows within the date range
 
 hobo$month <- as.character(hobo$month)
+
+monitoring_periods <- monitoring_periods %>%
+  mutate(
+    start_date = as.Date(start_date),
+    end_date = as.Date(end_date)
+  )
 
 #add associated_month to hobo based on the date range in monitoring_periods
 hobo <- hobo %>%
@@ -292,7 +288,7 @@ hobo <- hobo %>%
   mutate(
     associated_month = monitoring_periods %>%
       filter(
-        site == cur_data()$site, 
+        site == pick(site), 
         date >= start_date, 
         date <= end_date
       ) %>%
@@ -306,7 +302,6 @@ summary_hobo <- hobo %>%
   filter(!is.na(associated_month)) %>%  # Exclude rows without an associated_month
   group_by(site, associated_month) %>%
   summarize(
-    mean_temperature_c = mean(temperature_c, na.rm = TRUE),
     mean_light_lux = mean(light_lux[light_lux != 0], na.rm = TRUE),  # Ignore zero values
     .groups = 'drop'  # Ungroup after summarization
   )
@@ -319,6 +314,129 @@ summary_hobo <- summary_hobo %>%
 write.csv(summary_hobo, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo.csv", row.names = FALSE)
 
 ```
+#Making relevant ENV logger variables 
+```{r}
+
+env_logger <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv")
+
+#SITE ############################
+unique(env_logger$Site)
+colnames(env_logger)[colnames(env_logger) == "Site"] <- "site"
+
+#change site names
+env_logger$site <- gsub("DX", "Dixon", env_logger$site)
+env_logger$site <- gsub("EN", "Ellis N", env_logger$site)
+env_logger$site <- gsub("ES", "Ellis S", env_logger$site)
+env_logger$site <- gsub("NN", "Nanat", env_logger$site)
+env_logger$site <- gsub("EK", "Ed King", env_logger$site)
+env_logger$site <- gsub("TR", "Taylor", env_logger$site)
+
+#DATES ########################
+#change dates 
+env_logger$date <- as.Date(env_logger$time)
+
+#add month column 
+env_logger$month <- month(env_logger$date, label = TRUE, abbr = FALSE)
+
+#summarize HOBO data by removing zeros, and taking means between dates with associated monitoring periods
+#merge hobo with monitoring_periods and filter rows within the date range
+
+env_logger$month <- as.character(env_logger$month)
+
+#add associated_month to env based on the date range in monitoring_periods
+env_logger <- env_logger %>%
+  rowwise() %>%
+  mutate(
+    associated_month = monitoring_periods %>%
+      filter(
+        site == pick(site), 
+        date >= start_date, 
+        date <= end_date
+      ) %>%
+      pull(associated_month) %>%
+      first()  # Ensures only one match is picked
+  ) %>%
+  ungroup()
+
+#summarize  mean temperature and max temperature per associated month
+summary_env <- env_logger %>%
+  filter(!is.na(associated_month)) %>%  # Exclude rows without an associated_month
+  group_by(site, associated_month) %>%
+  summarize(
+    mean_temperature_c = mean(temperature_c, na.rm = TRUE),
+    max_temperature_c = max(temperature_c, na.rm = TRUE),  # Add max temperature
+    .groups = 'drop'  # Ungroup after summarization
+  )
+
+#rename associated month to month 
+summary_env <- summary_env %>%
+  rename(month = associated_month)
+
+write.csv(summary_env, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_env.csv", row.names = FALSE)
+
+```
+
+#Making relevant tilt variables 
+```{r}
+tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/tilt_summary.csv")
+
+#SITE ############################
+unique(tilt$Site)
+colnames(tilt)[colnames(tilt) == "Site"] <- "site"
+
+#change site names
+tilt$site <- gsub("DX", "Dixon", tilt$site)
+tilt$site <- gsub("EN", "Ellis N", tilt$site)
+tilt$site <- gsub("ES", "Ellis S", tilt$site)
+tilt$site <- gsub("NN", "Nanat", tilt$site)
+tilt$site <- gsub("EK", "Ed King", tilt$site)
+tilt$site <- gsub("TR", "Taylor", tilt$site)
+
+#DATES ########################
+#change dates 
+tilt$date <- as.Date(tilt$date)
+
+#add month column 
+tilt$month <- month(tilt$date, label = TRUE, abbr = FALSE)
+
+#take mean and max current  between dates with associated monitoring periods
+#merge hobo with monitoring_periods and filter rows within the date range
+
+tilt$month <- as.character(tilt$month)
+
+#add associated_month to env based on the date range in monitoring_periods
+tilt <- tilt %>%
+  rowwise() %>%
+  mutate(
+    associated_month = monitoring_periods %>%
+      filter(
+        site == pick(site), 
+        date >= start_date, 
+        date <= end_date
+      ) %>%
+      pull(associated_month) %>%
+      first()  # Ensures only one match is picked
+  ) %>%
+  ungroup()
+
+#summarize mean and max current per associated month
+summary_tilt <- tilt %>%
+  filter(!is.na(associated_month)) %>%  # Exclude rows without an associated_month
+  group_by(site, associated_month) %>%
+  summarize(
+    mean_current = mean(speed_mpers, na.rm = TRUE),
+    max_current = max(speed_mpers, na.rm = TRUE),  # Add max temperature
+    .groups = 'drop'  # Ungroup after summarization
+  )
+
+#rename associated month to month 
+summary_tilt <- summary_tilt %>%
+  rename(month = associated_month)
+
+
+write.csv(summary_tilt, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_tilt.csv", row.names = FALSE)
+
+```
 
 
 #Creating a combined dataset 
@@ -329,11 +447,19 @@ transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/
 
 plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
 
-env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv")
+ysi <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv")
 
 hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo.csv")
-```
 
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_env.csv")
+
+tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_tilt.csv")
+
+```
+  #format env logger data 
+  
+  
+` #format tilt logger data 
   #make mean density per site and some other density metrics 
 ```{r}
 #create a summary dataset, of site, month, transect, mean depth, number quadrats, summed number of organisms 
@@ -350,6 +476,7 @@ transects_summary <- transects %>%
     mean_depth_m = mean(depth_m, na.rm = TRUE),
     row_count = n()
   )
+
 
 #determine baseline urchin densities across sites 
 
@@ -369,7 +496,15 @@ transects_summary <- transects_summary %>%
   mutate(total_urchins = total_n_ru + total_n_gu + total_n_pu)
 
 transects_summary <- transects_summary %>%
-  mutate(urchin_density = total_urchins/row_count)
+  mutate(urchin_site_density = total_urchins/row_count)
+
+#create grazer site density metric
+transects_summary <- transects_summary %>%
+  mutate(total_grazers = total_n_ru + total_n_gu + total_n_pu + total_n_ab + total_n_sn)
+
+transects_summary <- transects_summary %>%
+  mutate(grazers_site_density = total_grazers/row_count)
+
 
 #save data 
 #save this dataframe to a new CSV file
@@ -397,18 +532,12 @@ div_data <- data %>%
   ) %>%
   ungroup()
 
-
-
-#rename urchin density to site density 
-div_data <- div_data %>%
-  rename(site_density = urchin_density)
-
 ```
   
-  #format env data
+  #format ysi data
 ```{r}
 #create env summary, for bottom temperature, do, ph, salinity
-bottom_data <- env %>%
+bottom_data <- ysi %>%
  group_by(site, month) %>%
   summarize(
     bottom_temp = temp[which.max(depth_m)],
@@ -429,13 +558,22 @@ bottom_data <- bottom_data %>%
 plots <- plots %>%
   left_join(hobo, by = c("site", "month"))
 
-#merge bottom_data with plots
+#merge ysi data with plots
 plots <- plots %>%
   left_join(bottom_data, by = c("site", "month"))
 
 #merge div_data with plots
 plots <- plots %>%
   left_join(div_data, by = c("site", "month"))
+
+#merge env with plots 
+plots <- plots %>%
+  left_join(summary_env, by = c("site", "month"))
+
+
+#merge env with plots 
+plots <- plots %>%
+  left_join(summary_tilt, by = c("site", "month"))
 
 data <- plots
 
@@ -445,14 +583,16 @@ data <- data %>%
     site, plot_id, date, percent_occuring_algae, month, treatment,
     gravel_size, plot, kelp_survival, urchin_density, kelp_growth,
     mean_temperature_c, mean_light_lux, bottom_temp, bottom_do,
-    bottom_salinity, bottom_ph, mean_depth_m, site_density,
-    species_richness, shannon_div, simp_div
-  )
+    bottom_salinity, bottom_ph, mean_depth_m, urchin_site_density,
+    species_richness, shannon_div, simp_div, grazer_density, n_kelp_gravel, n_gravel, 
+    grazers_site_density, max_temperature_c, max_current, mean_current)
+    
 
 
 data$plot_id <- substr(data$plot_id, 1, nchar(data$plot_id) - 1)
 
 write.csv(data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv", row.names = FALSE)
+
 
 ```
 

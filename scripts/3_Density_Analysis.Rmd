@@ -109,25 +109,25 @@ unique(transects_summary$total_n_pu) #three occurences of purple urchin
 ```{r}
 #testing to see if urchin densities are statistically different from each other 
 #check normality of urchin densities per site, if greater than p>0.05 the data is normal 
-shapiro.test(transects_summary$urchin_density) #p = 0.1757, normal
+shapiro.test(transects_summary$urchin_site_density) #p = 0.1757, normal
 
 #homogeneity of variances, if less than 0.05 variances are significantly different than each other
-leveneTest(urchin_density ~ site, data = transects_summary) #p = 0.0513, marginal 
+leveneTest(urchin_site_density ~ site, data = transects_summary) #p = 0.0513, marginal 
 
 #conduct another test to test variances 
 #run the Brown-Forsythe test
-bf_test <- bf.test(urchin_density ~ site, data = transects_summary)
+bf_test <- bf.test(urchin_site_density ~ site, data = transects_summary)
 
 #display the results, 
 bf_test #variances are NOT equal across groups
 
 #unequal variances, so we'll use a kruschal test, if p<0.05 there is significance 
-kruskal.test(urchin_density ~ site, data = transects_summary) #p = 0.003271
+kruskal.test(urchin_site_density ~ site, data = transects_summary) #p = 0.003271
 
 #determine which sites are significantly different from each other, use Dunn's test 
 #Dunn's test for pairwise comparisons
 #this is how we can determine threshold for 'low', 'med', 'high' urchin densities 
-dunn.test(transects_summary$urchin_density, transects_summary$site, kw = TRUE, label = TRUE) 
+dunn.test(transects_summary$urchin_site_density, transects_summary$site, kw = TRUE, label = TRUE) 
 
 #significant differences; 
   #Ellis S v Nanat
@@ -144,7 +144,7 @@ dunn.test(transects_summary$urchin_density, transects_summary$site, kw = TRUE, l
 transects_summary$site <- factor(transects_summary$site, 
                                  levels = c("Taylor", "Ed King", "Dixon", "Ellis N", "Ellis S", "Nanat"))
 #visualize via boxplot 
-plot <- ggplot(transects_summary, aes(x = site, y = urchin_density)) +
+plot <- ggplot(transects_summary, aes(x = site, y = urchin_site_density)) +
   geom_boxplot() +
   labs(
     title = "Urchin Density Across Sites",
@@ -159,7 +159,7 @@ plot
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bw_box_densities_by_site.png", plot = plot, width = 10, height = 8, dpi = 300)
 
 #color based on urchin density 
-plot <- ggplot(transects_summary, aes(x = site, y = urchin_density, fill = site)) + 
+plot <- ggplot(transects_summary, aes(x = site, y = urchin_site_density, fill = site)) + 
   geom_boxplot() + 
   scale_fill_manual(values = c(
     "Nanat" = "green", 
@@ -191,6 +191,28 @@ transects_summary <- transects_summary %>%
     TRUE ~ "unknown"  # This line is for any site that doesn't match the above, if necessary
   ))
 
+plot <- ggplot(transects_summary, aes(x = site, y = urchin_site_density, fill = site)) + 
+  geom_boxplot() + 
+  scale_fill_manual(values = c(
+  "Ed King" = "#FF5733",
+  "Ellis N" = "#4da607",
+  "Ellis S" = "grey",
+  "Nanat" = "#62a4ea",
+  "Dixon" = "#eacf62",
+  "Taylor" = "#076fa6"
+  )) + 
+  labs(
+    title = "Urchin Density Across Sites", 
+    x = "Site", 
+    y = "Urchin Density (m²)"
+  ) + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
+  guides(fill = "none")  # Remove the legend
+
+plot 
+
+
 ```
 
 #Only baseline urchin densities (April)
@@ -202,16 +224,38 @@ april_data <- transects_summary %>%
 #set the desired order for the sites
 april_data$site <- factor(april_data$site, 
                                  levels = c("Taylor", "Dixon", "Ed King", "Ellis N", "Ellis S", "Nanat"))
-# Create the bar plot
-ggplot(april_data, aes(x = site, y = urchin_density)) +
+#define site colors
+site_colors <- c(
+  "Ed King" = "#FF5733",
+  "Ellis N" = "#4da607",
+  "Ellis S" = "grey",
+  "Nanat" = "#62a4ea",
+  "Dixon" = "#eacf62",
+  "Taylor" = "#076fa6"
+)
+
+#create the bar plot
+plot <- ggplot(april_data, aes(x = site, y = urchin_site_density, fill = site)) +
   geom_bar(stat = "identity") +
+  scale_fill_manual(values = site_colors) +  # Assign site-specific colors
   labs(
     title = "Baseline Urchin Densities (April)",
     x = "Site",
     y = "Urchin Density (m²)"
   ) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  #rotate x-axis labels for readability
+  theme(
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),  # Larger title, centered
+    axis.text.x = element_text(size = 14, angle = 45, hjust = 1),  # Larger x-axis labels
+    axis.text.y = element_text(size = 14),  # Larger y-axis labels
+    axis.title.x = element_text(size = 16, face = "bold"),  # Larger x-axis title
+    axis.title.y = element_text(size = 16, face = "bold"),  # Larger y-axis title
+    legend.title = element_text(size = 16, face = "bold"),  # Larger legend title
+    legend.text = element_text(size = 14)  # Larger legend labels
+  )
+
+plot
+
 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/baseline_densities.png", plot = plot, width = 10, height = 8, dpi = 300)
 ```
@@ -225,14 +269,14 @@ transects_summary_new <- transects_summary %>%
 
 #testing to see if urchin densities are statistically different from each other 
 #check normality of urchin densities per site, if greater than p>0.05 the data is normal 
-shapiro.test(transects_summary_new$urchin_density) #data is normal
+shapiro.test(transects_summary_new$urchin_site_density) #data is normal
 
 #homogeneity of variances, if less than 0.05 variances are significantly different than each other
-leveneTest(urchin_density ~ site, data = transects_summary_new) #NOT significantly different from each other
+leveneTest(urchin_site_density ~ site, data = transects_summary_new) #NOT significantly different from each other
 
 #since conditions for a one-way ANOVA are met 
 #run ANOVA to compare urchin densities across sites
-anova_result <- aov(urchin_density ~ site, data = transects_summary_new)
+anova_result <- aov(urchin_site_density ~ site, data = transects_summary_new)
 summary(anova_result) #significant differences in urchin densities across sites 
 
 #post-hoc pairwise comparisons
@@ -248,7 +292,7 @@ tukey_result
 transects_summary_new$site <- factor(transects_summary_new$site, 
                                  levels = c("Taylor", "Ed King", "Dixon", "Ellis N", "Ellis S", "Nanat"))
 #visualize via boxplot 
-plot <- ggplot(transects_summary_new, aes(x = site, y = urchin_density)) +
+plot <- ggplot(transects_summary_new, aes(x = site, y = urchin_site_density)) +
   geom_boxplot() +
   labs(
     title = "Urchin Density Across Sites",
@@ -261,7 +305,7 @@ plot
 #save
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bw_box_densities_by_site.png", plot = plot, width = 10, height = 8, dpi = 300)
 
-plot <- ggplot(transects_summary_new, aes(x = site, y = urchin_density, fill = site)) + 
+plot <- ggplot(transects_summary_new, aes(x = site, y = urchin_site_density, fill = site)) + 
   geom_boxplot() + 
   scale_fill_manual(values = c(
     "Nanat" = "#4da607", 
@@ -286,23 +330,43 @@ plot <- ggplot(transects_summary_new, aes(x = site, y = urchin_density, fill = s
 plot 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/col_box_densities_by_site.png", plot = plot, width = 10, height = 8, dpi = 300)
 
+#define categories
+low_density_sites <- c("Nanat", "Ellis S")
+medium_density_sites <- c("Ed King", "Dixon", "Ellis N")
+high_density_sites <- c("Taylor")
 
+#group data by category and calculate min/max urchin density
+urchin_density_summary <- transects_summary_new %>%
+  mutate(category = case_when(
+    site %in% low_density_sites ~ "Low",
+    site %in% medium_density_sites ~ "Medium",
+    site %in% high_density_sites ~ "High",
+    TRUE ~ "Other"
+  )) %>%
+  group_by(category) %>%
+  summarise(
+    min_density = min(urchin_site_density, na.rm = TRUE),
+    max_density = max(urchin_site_density, na.rm = TRUE)
+  )
+
+#print results
+print(urchin_density_summary)
 ```
 
 #Do urchin densities change across months? 
 ```{r}
 
-shapiro.test(transects_summary$urchin_density)  # Normality4
-bartlett.test(urchin_density ~ month, data = transects_summary)  # Homogeneity
+shapiro.test(transects_summary$urchin_site_density)  # Normality4
+bartlett.test(urchin_site_density ~ month, data = transects_summary)  # Homogeneity
 
 #run one-way ANOVA
-anova_result <- aov(urchin_density ~ month, data = transects_summary)
+anova_result <- aov(urchin_site_density ~ month, data = transects_summary)
 summary(anova_result) #p = 0.596, not significantly different 
 
 #no statistically significant differences in urchin densities between months
 
 #visualize 
-plot <- ggplot(transects_summary, aes(x = factor(month), y = urchin_density)) +
+plot <- ggplot(transects_summary, aes(x = factor(month), y = urchin_site_density)) +
   geom_boxplot() +
   theme_minimal() +
   labs(x = "Month", y = "Urchin Density")
@@ -316,7 +380,7 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/densiti
 mean_density_per_site <- transects_summary %>%
   group_by(site) %>%
   summarize(
-    mean_urchin_density = mean(urchin_density, na.rm = TRUE),
+    mean_urchin_density = mean(urchin_site_density, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -327,14 +391,14 @@ transects_summary$month <- factor(transects_summary$month, levels = c("March", "
 #calculate mean urchin density per site
 mean_urchin_density <- transects_summary %>% 
   group_by(site) %>% 
-  summarise(mean_density = mean(urchin_density, na.rm = TRUE))
+  summarise(mean_density = mean(urchin_site_density, na.rm = TRUE))
 
 #calculate overall mean urchin density across all sites and months
-overall_mean_density <- mean(transects_summary$urchin_density, na.rm = TRUE)
+overall_mean_density <- mean(transects_summary$urchin_site_density, na.rm = TRUE)
 overall_mean_density #1.42
 
 #create the plot
-plot <- ggplot(transects_summary, aes(x = month, y = urchin_density, color = site, group = site)) +
+plot <- ggplot(transects_summary, aes(x = month, y = urchin_site_density, color = site, group = site)) +
   geom_line(size = 1) +
   geom_point(size = 3) +
   # Plot site mean values as points, change x to "mean"
@@ -374,7 +438,7 @@ site_colors <- c("Taylor" = "#cd3737",
                  "Nanat" = "#4da607")
 
 #create the plot
-plot <- ggplot(transects_summary, aes(x = month, y = urchin_density, color = site, group = site)) +
+plot <- ggplot(transects_summary, aes(x = month, y = urchin_site_density, color = site, group = site)) +
   geom_line(size = 1) +   # Line plot for each site
   geom_point(size = 3) +  # Add points for each month/site combination
   # Plot site mean values as points
@@ -384,13 +448,13 @@ plot <- ggplot(transects_summary, aes(x = month, y = urchin_density, color = sit
   # Add labels for site mean values with better positioning
   geom_text_repel(data = mean_urchin_density,
                   aes(x = "mean", y = mean_density, label = round(mean_density, 2), color = site),
-                  vjust = -1, hjust = -0.2, size = 3, show.legend = FALSE,
+                  vjust = -1, hjust = -0.2, size = 5, show.legend = FALSE,  # Increased text size
                   box.padding = 0.5, max.overlaps = 10) +  # Prevent text overlap
   # Add the overall mean line and text
   geom_hline(aes(yintercept = overall_mean_density), linetype = "dashed", color = "black") +  # Overall mean line
   # Add overall mean text with better positioning
   geom_text(aes(x = 1, y = overall_mean_density, label = paste("Overall Mean:", round(overall_mean_density, 2))),
-            color = "black", vjust = +2.5, hjust = -0.1, size = 4) +  # Adjust position for the text label
+            color = "black", vjust = +2.5, hjust = -0.1, size = 5) +  # Increased text size
   labs(
     title = "Urchin Density by Month Across Sites",
     x = "Month",
@@ -399,7 +463,14 @@ plot <- ggplot(transects_summary, aes(x = month, y = urchin_density, color = sit
   scale_x_discrete(labels = c("March", "April", "May", "June", "mean")) +  # Add "mean" to x-axis labels
   scale_color_manual(values = site_colors) +  # Apply custom colors to the sites
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 18, face = "bold"),  # Increased title size
+    axis.title = element_text(size = 16, face = "bold"),  # Increased axis labels size
+    axis.text = element_text(size = 14),  # Increased axis text size
+    legend.text = element_text(size = 14)  # Increased legend text size
+  )
+
 
 #display the plot
 print(plot)
@@ -485,37 +556,43 @@ shapiro.test(plots$urchin_density[plots$treatment == "caged"]) #normally distrib
 shapiro.test(plots$urchin_density[plots$treatment == "open"]) #normally distributed 
 
 #t-test to compare urchin densities between treatments
-t_test_result  <- t.test(urchin_density ~ treatment, data = plots) #p = 0.0001039
+t_test_result  <- t.test(urchin_density ~ treatment, data = plots) 
 t_test_result
 
 p_value <- formatC(t_test_result$p.value, format = "e", digits = 2)
 
-#make box plot to visualize 
-plot <- ggplot(plots, aes(x = treatment, y = urchin_density, fill = treatment)) +   
-  geom_boxplot() +   
-  labs(     
-    title = "Urchin Density by Treatment",     
-    x = "Treatment",     
-    y = "Urchin Density (m²)"   
-  ) +   
-  theme_minimal() +   
-  scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +   
-  theme(
-    legend.position = "none",
-    axis.text.x = element_text(size = 14),  # Increase x-axis labels size
-    axis.text.y = element_text(size = 14),  # Increase y-axis labels size
-    axis.title.x = element_text(size = 16),  # Increase x-axis title size
-    axis.title.y = element_text(size = 16)   # Increase y-axis title size
-  ) +   
-  annotate(     
-    "text",     
-    x = 1.5, y = max(plots$urchin_density) + 0.5, # Adjust y position if needed     
-    label = paste("p =", p_value),     
-    size = 5,     
-    hjust = 0.5   
-  )
-
-
+#make box plot to visualize w/ mean 
+plot <- ggplot(plots, aes(x = treatment, y = urchin_density, fill = treatment)) +
+    geom_boxplot() +
+    stat_summary(
+        fun = mean,  # Compute the mean
+        geom = "crossbar",  
+        size = 0.5,  
+        color = "black",
+        width = 0.75,
+        linetype = "dashed" 
+    ) +
+    labs(
+        title = "Urchin Density by Treatment",
+        x = "Treatment",
+        y = "Urchin Density (m²)"
+    ) +
+    theme_minimal() +
+    scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +
+    theme(
+        legend.position = "none",
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16)
+    ) +
+    annotate(
+        "text",
+        x = 1.5, y = max(plots$urchin_density) + 0.5,
+        label = paste("p =", p_value),
+        size = 5,
+        hjust = 0.5
+    )
 
 plot
 
@@ -545,6 +622,250 @@ caged_stats <- summary_stats %>% filter(treatment == "caged")
 open_report <- paste(open_stats$mean_density, "±", round(open_stats$sem, 2), "ind/m²")
 caged_report <- paste(caged_stats$mean_density, "±", round(caged_stats$sem, 2), "ind/m²")
 
+#make a barchat instead - plots mean and standard deviation 
+# Calculate mean and standard deviation for each treatment
+summary_stats <- plots %>%
+    group_by(treatment) %>%
+    summarise(
+        mean_urchin_density = mean(urchin_density, na.rm = TRUE),
+        sd_urchin_density = sd(urchin_density, na.rm = TRUE),
+        n = n(),  # Sample size
+        se_urchin_density = sd_urchin_density / sqrt(n)  # Standard error
+    )
+
+# Create the bar chart with mean and standard error
+plot <- ggplot(summary_stats, aes(x = treatment, y = mean_urchin_density, fill = treatment)) +
+    geom_bar(stat = "identity", position = position_dodge(), width = 0.7) +
+    geom_errorbar(
+        aes(
+            ymin = pmax(mean_urchin_density - se_urchin_density, 0),  # Ensure lower bound is zero
+            ymax = mean_urchin_density + se_urchin_density
+        ),
+        width = 0.2,  # Width of the error bar
+        color = "black",
+        position = position_dodge(0.7)
+    ) +
+    labs(
+        title = "Urchin Density by Treatment",
+        x = "Treatment",
+        y = "Urchin Density (m²)"
+    ) +
+    theme_minimal() +
+    scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +
+    theme(
+        legend.position = "none",
+        plot.title = element_text(size = 18, face = "bold"),  # Increase title size
+        axis.text.x = element_text(size = 20),  # Increase x-axis text size
+        axis.text.y = element_text(size = 20),  # Increase y-axis text size
+        axis.title.x = element_text(size = 20, face = "bold"),  # Increase x-axis label size
+        axis.title.y = element_text(size = 20, face = "bold")  # Increase y-axis label size
+    )
+
+plot
+
+
+plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bar_treatment.png", 
+       plot = plot, 
+       width = 10, height = 10, dpi = 300)
+
 
 ```
+
+#Number of grazers per treatment 
+```{r}
+#Were cages effective at reducing grazers? 
+
+#check distribution of grazer density data - histogram
+ggplot(plots, aes(x = grazer_density)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black", alpha = 0.7) +
+  facet_wrap(~treatment) +
+  labs(title = "Distribution of grazer density by treatment", x = "Grazer Density", y = "Count")
+
+#shapiro-Wilk test for normality, p less than 0.05, normally distributed
+shapiro.test(plots$grazer_density[plots$treatment == "caged"]) #normally distributed 
+shapiro.test(plots$grazer_density[plots$treatment == "open"]) #normally distributed 
+
+#t-test to compare urchin densities between treatments
+t_test_result  <- t.test(grazer_density ~ treatment, data = plots) #p = 1.55e-07
+t_test_result
+
+#mean grazer density in caged plots - 1.037
+#mean grazer density in open plots - 3.75
+
+p_value <- formatC(t_test_result$p.value, format = "e", digits = 2)
+
+#make box plot to visualize w/ mean 
+plot <- ggplot(plots, aes(x = treatment, y = grazer_density, fill = treatment)) +
+    geom_boxplot() +
+    stat_summary(
+        fun = mean,  # Compute the mean
+        geom = "crossbar",  
+        size = 0.5,  
+        color = "black",
+        width = 0.75,
+        linetype = "dashed" 
+    ) +
+    labs(
+        title = "Grazer Density by Treatment",
+        x = "Treatment",
+        y = "Grazer Density (m²)"
+    ) +
+    theme_minimal() +
+    scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +
+    theme(
+        legend.position = "none",
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16)
+    ) +
+    annotate(
+        "text",
+        x = 1.5, y = max(plots$urchin_density) + 0.5,
+        label = paste("p =", p_value),
+        size = 5,
+        hjust = 0.5
+    )
+
+plot
+
+plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/grazer_densities/box_treatment.png", 
+       plot = plot, 
+       width = 10, height = 10, dpi = 300)
+
+#calculate values for reporting 
+#calculate the mean and standard error for each treatment
+summary_stats <- plots %>%
+  group_by(treatment) %>%
+  summarise(
+    mean_density = mean(grazer_density, na.rm = TRUE),  # Mean of urchin density
+    sd_density = sd(grazer_density, na.rm = TRUE),      # Standard deviation of urchin density
+    n = n(),                                           # Sample size
+    sem = sd_density / sqrt(n)                         # Standard error of the mean
+  )
+
+#print summary statistics to check the results
+print(summary_stats)
+
+#get values for open and caged treatments
+open_stats <- summary_stats %>% filter(treatment == "open")
+caged_stats <- summary_stats %>% filter(treatment == "caged")
+
+#calculate and format the report output
+open_report <- paste(open_stats$mean_density, "±", round(open_stats$sem, 2), "ind/m²")
+caged_report <- paste(caged_stats$mean_density, "±", round(caged_stats$sem, 2), "ind/m²")
+
+#make a barchat instead - plots mean and standard deviation 
+# Calculate mean and standard deviation for each treatment
+summary_stats <- plots %>%
+    group_by(treatment) %>%
+    summarise(
+        mean_g_density = mean(grazer_density, na.rm = TRUE),
+        sd_g_density = sd(grazer_density, na.rm = TRUE),
+        n = n(),  # Sample size
+        se_g_density = sd_g_density / sqrt(n)  # Standard error
+    )
+
+# Create the bar chart with mean and standard error
+plot <- ggplot(summary_stats, aes(x = treatment, y = mean_g_density, fill = treatment)) +
+    geom_bar(stat = "identity", position = position_dodge(), width = 0.7) +
+    geom_errorbar(
+        aes(
+            ymin = pmax(mean_g_density - se_g_density, 0),  # Ensure lower bound is zero
+            ymax = mean_g_density + se_g_density
+        ),
+        width = 0.2,  # Width of the error bar
+        color = "black",
+        position = position_dodge(0.7)
+    ) +
+    labs(
+        title = "Grazer Density by Treatment",
+        x = "Treatment",
+        y = "Grazer Density (m²)"
+    ) +
+    theme_minimal() +
+    scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +
+    theme(
+        legend.position = "none",
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16)
+    )
+
+
+plot
+
+plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/grazer_densities/bar_treatment.png", 
+       plot = plot, 
+       width = 10, height = 10, dpi = 300)
+
+```
+
+#Site grazer density 
+```{r}
+#Assuming 'transects_summary' is your dataframe
+#Create a plot of urchin site density by site
+ggplot(transects_summary, aes(x = site, y = urchin_site_density, fill = density_cat)) +
+  geom_col() +
+  theme_minimal() +
+  labs(
+    title = "Urchin Site Density by Site",
+    x = "Site",
+    y = "Urchin Site Density",
+    fill = "Density Category"
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Select relevant columns and reshape the data
+grazers_summary <- transects_summary %>%
+  select(site, total_n_ru, total_n_gu, total_n_pu, total_n_sn, total_n_pyc, total_n_ab) %>%
+  pivot_longer(cols = -site, names_to = "grazer", values_to = "count") %>%
+  group_by(site) %>%
+  mutate(count = count,  # Keep raw count
+         proportion = count / sum(count))  # Calculate proportions per site
+
+# Define custom colors
+grazer_colors <- c(
+  "total_n_pu" = "#8a54b3",  # Purple Urchin
+  "total_n_gu" = "#4da607",  # Green Urchin
+  "total_n_ru" = "#cd3737",  # Red Urchin
+  "total_n_pyc" = "#f9cd44", # Pycnopodia
+  "total_n_ab" = "#076fa6",  # Abalone
+  "total_n_sn" = "#62a4ea"   # Snail
+)
+
+# Create the proportional stacked bar chart
+ggplot(grazers_summary, aes(x = site, y = proportion, fill = grazer)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = grazer_colors, labels = c("Abalone", "Green Urchin", "Purple Urchin", "Pycnopodia",  "Red Urchin",  "Turban Snail")) +
+  labs(x = "Site", y = "Proportion of Grazers", fill = "Grazer Type") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Create the grazer counts stacked bar chart
+plot <- ggplot(grazers_summary, aes(x = site, y = count, fill = grazer)) +  
+  geom_bar(stat = "identity") +  
+  scale_fill_manual(values = grazer_colors, labels = c("Abalone", "Green Urchin", "Purple Urchin", "Pycnopodia", "Red Urchin", "Turban Snail")) +  
+  labs(x = "Site", y = "Counts of Grazers", fill = "Grazer Type") +  
+  theme_minimal() +  
+  theme(
+    axis.text.x = element_text(size = 14, angle = 45, hjust = 1),  # Larger x-axis labels
+    axis.text.y = element_text(size = 14),  # Larger y-axis labels
+    axis.title.x = element_text(size = 16, face = "bold"),  # Larger x-axis title
+    axis.title.y = element_text(size = 16, face = "bold"),  # Larger y-axis title
+    legend.title = element_text(size = 16, face = "bold"),  # Larger legend title
+    legend.text = element_text(size = 14)  # Larger legend labels
+  )
+
+plot
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/grazer_densities/grazer_counts.png", 
+       plot = plot, 
+       width = 15, height = 10, dpi = 300)
+```
+
+
+
+
+
 

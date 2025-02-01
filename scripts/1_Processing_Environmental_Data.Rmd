@@ -10,14 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 #Load libraries 
-
 ```{r}
 library(readxl)
 library(dplyr)
 library(stringr)
 library(purrr)
 library(ggplot2)
-
+library(readr)
+library(patchwork)
 ```
 
 #HOBO LOGGER DATA 
@@ -53,6 +53,7 @@ for (site_folder in site_folders) {
   cat(paste("Combined dataset saved in:", output_file, "\n"))
 }
 
+
 #Read each combined file and add another column called site 
 ek<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/ED_KING/combined_dataset.csv") 
   ek$Site <- "EK"
@@ -70,53 +71,36 @@ nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/NANAT/com
 #Combine all site files and add to processed data folder 
 hobo_combined <- rbind(ek, dx, es, en, tr, nn)
 
-#remove temperatures during sampling (brought out of the water)
-#define the date ranges to exclude
-#excluded_dates <- list(
-# seq(as.Date("2024-04-02"), as.Date("2024-04-08"), by = "day"),
-# seq(as.Date("2024-05-13"), as.Date("2024-05-17"), by = "day"),
-#  seq(as.Date("2024-06-24"), as.Date("2024-06-28"), by = "day")
-#)
-
-# Combine all excluded dates into a single vector
-#excluded_dates <- do.call(c, excluded_dates)
-
-# Filter the dataframe to exclude the specified date ranges
-#hobo_sampling <- hobo_combined %>%
-#  filter(!date %in% excluded_dates) 
-#all sampling dates >20 temp
-
 hobo_combined <- hobo_combined %>%
   filter(temperature_c <= 20)
-
 
 write.csv(hobo_combined, 
 "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv", 
           row.names = FALSE)
+
+#read file back in 
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
 ```
 
-
-#Mean temperature over time 
+##Mean temperature over time - hobo loggers
 ```{r}
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
-
 hobo$date <- as.Date(hobo$date)
 
-# Filter the data to only include temperatures less than 20°C and between March and June
-hobo_filtered <- hobo %>%
+#filter the data to only include temperatures less than 20°C and between March and June
+hobo <- hobo %>%
   filter(temperature_c < 20)
-#
+
 #Define a threshold for gaps (e.g., 7 days)
 gap_threshold <- 7
 
-# Arrange data by Site and date, and calculate time difference
-hobo <- hobo_filtered %>%
+#arrange data by Site and date, and calculate time difference
+hobo <- hobo%>%
   arrange(Site, date) %>%
   group_by(Site) %>%
   mutate(time_diff = c(NA, diff(date))) %>%
   mutate(temperature_c = ifelse(time_diff > gap_threshold, NA, temperature_c))
 
-# Create the plot
+#create the plot
 ggplot(hobo, aes(x = date, y = temperature_c, color = Site)) +
   geom_line() +  # Line plot for temperature over time
   labs(
@@ -130,15 +114,175 @@ ggplot(hobo, aes(x = date, y = temperature_c, color = Site)) +
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
   )
 
-```
-#Light over time
-```{r}
-hobo_sampling$date <- as.Date(hobo_sampling$date)
+#plotting each site 
+#create the plot with facets for each site
+ggplot(hobo, aes(x = date, y = temperature_c)) +
+  geom_line(color = "blue") +  # Line plot for temperature over time
+  labs(
+    title = "Temperature Over Time by Site (With Gaps Removed)",
+    x = "Date",
+    y = "Temperature (°C)"
+  ) +
+  theme_minimal() +  # Apply a clean theme
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  ) +
+  facet_wrap(~Site, scales = "free_y")  # Create separate panels for each site, allowing different y-axis scales
 
-ggplot(hobo_sampling, aes(x = date, y = light_lux, color = Site)) +
+```
+##Light lux over time
+```{r}
+#Read and preprocess the data
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+hobo$date <- as.Date(hobo$date)
+
+#Filter data for temperature below 20°C
+hobo <- hobo %>%
+  filter(format(date, "%m") %in% c("03", "04", "05", "06", "07"))  
+
+#Define a threshold for gaps (e.g., 7 days)
+gap_threshold <- 7
+
+#Calculate daily mean light lux by site and date
+hobo_daily_mean <- hobo %>%
+  group_by(Site, date) %>%
+  summarize(daily_mean_light_lux = mean(light_lux, na.rm = TRUE), .groups = "drop")
+
+#Identify gaps and set `temperature_c` to NA for gaps
+hobo_daily_mean <- hobo_daily_mean %>%
+  arrange(Site, date) %>%
+  group_by(Site) %>%
+  mutate(
+    time_diff = c(NA, diff(date)),
+    daily_mean_light_lux = ifelse(time_diff > gap_threshold, NA, daily_mean_light_lux)  # Break lines at gaps
+  ) %>%
+  ungroup()  # Make sure to ungroup after modifying data
+
+#Plot the daily mean of light availability over time by site
+plot_light <- ggplot(hobo_daily_mean, aes(x = date, y = daily_mean_light_lux, color = Site)) +
+  geom_line(aes(group = Site), na.rm = TRUE) +  # Avoid gaps and handle missing values
+  labs(
+    x = "Date",
+    y = "Daily Mean Light (lux)",
+    color = "Site"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels
+  ) +
+  scale_color_manual(
+    values = c(
+      "EK" = "#FF5733",
+      "EN" = "#4da607",
+      "ES" = "grey",
+      "NN" = "#62a4ea",
+      "DX" = "#eacf62",
+      "TR" = "#076fa6"
+    )
+  )
+
+plot_light 
+
+#save plot 
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meanlight.jpg", plot = plot_light, width = 9, height = 6, dpi = 300)
+
+```
+
+#ENV LOGGER DATA
+```{r}
+#Set the path to your main folder
+main_folder <- "/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV"
+
+#Get a list of site folders within the main folder
+site_folders <- list.dirs(main_folder, recursive = FALSE)
+
+#Loop through each site folder
+for (site_folder in site_folders) {
+  #Get a list of Excel files in the current site folder
+  excel_files <- list.files(site_folder, pattern = "\\.csv$", full.names = TRUE)
+  
+  #Read and process each Excel file
+  site_data <- map_dfr(excel_files, function(file) {
+    data <- read_csv(file)
+    
+    #Rename columns
+    colnames(data) <- c('time', 'temperature_c')
+    
+    #Return the data
+    return(data)
+  })
+  
+  #Create the output file path
+  output_file <- file.path(site_folder, "combined_dataset.csv")
+  
+  #Save the combined data for the site to the associated folder
+  write.csv(site_data, output_file, row.names = FALSE)
+  
+  cat(paste("Combined dataset saved in:", output_file, "\n"))
+}
+
+
+#Read each combined file and add another column called site 
+ek<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/ED_KING/combined_dataset.csv") 
+  ek$Site <- "EK"
+dx<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/DIXON/combined_dataset.csv") 
+  dx$Site <- "DX"
+es <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/ELLIS_S/combined_dataset.csv") 
+  es$Site <- "ES"
+en <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/ELLIS_N/combined_dataset.csv") 
+  en$Site <- "EN"
+tr <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/TAYLOR/combined_dataset.csv") 
+  tr$Site <- "TR"
+nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/NANAT/combined_dataset.csv") 
+  nn$Site <- "NN"
+
+#Combine all site files and add to processed data folder 
+env_combined <- rbind(ek, dx, es, en, tr, nn)
+
+
+env_combined <- env_combined %>%
+  filter(temperature_c <= 20)
+
+write.csv(env_combined, 
+"/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv", 
+          row.names = FALSE)
+
+
+```
+
+#plotting temperature data
+
+```{r}
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv")
+
+#Convert time to date format
+env$date <- as.Date(env$time)
+
+#Filter and process the data
+env_filtered <- env %>%
+  filter(temperature_c < 20) %>%          # Filter temperatures < 20°C
+  filter(format(date, "%m") %in% c("03", "04", "05", "06", "07"))  %>% 
+  arrange(Site, date) %>%                 # Sort by Site and date
+  group_by(Site) %>%                      # Group by site
+  mutate(
+    time_diff = c(NA, diff(date)),        # Calculate time differences between dates
+    temperature_c = ifelse(time_diff > 7, NA, temperature_c) # Set temperature to NA for gaps > 7 days
+  ) %>%
+  ungroup() %>%
+  filter(!(Site == "EK" & temperature_c > 12.5)) %>%  # Remove data > 12.5 for EK
+  filter(!(date >= "2024-06-24" & date <= "2024-06-28"))   # Remove dates between June 24 and June 28
+  
+#Smooth the data by calculating daily mean temperature for each site
+env_smoothed <- env_filtered %>%
+  group_by(Site, date) %>%
+  summarise(temperature_c = mean(temperature_c, na.rm = TRUE)) %>%
+  ungroup()
+
+#Plot the smoothed data
+plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) + 
   geom_line() +  # Line plot for temperature over time
   labs(
-    title = "Light Over Time by Site",
+    title = "Daily Mean Temperature Over Time by Site",
     x = "Date",
     y = "Temperature (°C)",
     color = "Site"
@@ -146,53 +290,265 @@ ggplot(hobo_sampling, aes(x = date, y = light_lux, color = Site)) +
   theme_minimal() +  # Apply a clean theme
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
-  )
+  ) +
+  scale_color_manual(
+    values = c(
+      "EK" = "#FF5733",
+      "EN" = "#4da607",
+      "ES" = "grey",
+      "NN" = "#62a4ea",
+      "DX" = "#eacf62",
+      "TR" = "#076fa6"
+    )
+  ) +
+  facet_wrap(~Site, scales = "free_y")  # Create separate panels for each site with individual y-scales
+
+plot 
+
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp_bysite.jpg", plot = plot, width = 9, height = 6, dpi = 300)
+
+
+# Plot temperature vs. time, colored by site (all on the same graph)
+plot_temp <- plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) + 
+  geom_line() +  # Line plot for temperature over time
+  labs(
+    x = "Date",
+    y = "Daily Mean Temperature (°C)",
+    color = "Site"
+  ) +
+  theme_minimal() +  # Apply a clean theme
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  ) +
+  scale_color_manual(
+    values = c(
+      "EK" = "#FF5733",
+      "EN" = "#4da607",
+      "ES" = "grey",
+      "NN" = "#62a4ea",
+      "DX" = "#eacf62",
+      "TR" = "#076fa6"
+    )
+  )  # Set custom colors for sites
+
+plot_temp 
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp.jpg", plot = plot_temp, width = 9, height = 6, dpi = 300)
+
 
 
 ```
 
 
 #TILT CURRENT METERS 
-
 ```{r}
 
+#Set the path to your main folder
+main_folder <- "/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters"
+
+#Get a list of site folders within the main folder
+site_folders <- list.dirs(main_folder, recursive = FALSE)
+
+#Loop through each site folder
+for (site_folder in site_folders) {
+  #Get a list of Excel files in the current site folder
+  excel_files <- list.files(site_folder, pattern = "\\.csv$", full.names = TRUE)
+  
+  #Read and process each Excel file
+  site_data <- map_dfr(excel_files, function(file) {
+    data <- read_csv(file)
+    
+    #Rename columns
+    colnames(data) <- c('date', 'speed_mpers', 'heading', 'speed_upper', 'speed_lowe', 'tilt_rad','direction','batt_volts', 'temp_c')
+    
+    #Return the data
+    return(data)
+  })
+  
+  #Create the output file path
+  output_file <- file.path(site_folder, "combined_dataset.csv")
+  
+  #Save the combined data for the site to the associated folder
+  write.csv(site_data, output_file, row.names = FALSE)
+  
+  cat(paste("Combined dataset saved in:", output_file, "\n"))
+}
+
+column_names <- colnames(read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/EK/combined_dataset.csv", nrows = 1))
+
+ek <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/EK/combined_dataset.csv", 
+               skip = 136792, col.names = column_names)
+ek$Site <- "EK"
+
+dx <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/DX/combined_dataset.csv", 
+               skip = 136792, col.names = column_names)
+dx$Site <- "DX"
+
+es <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/ES/combined_dataset.csv", 
+               skip = 136792, col.names = column_names)
+es$Site <- "ES"
+
+en <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/EN/combined_dataset.csv", 
+               skip = 136792, col.names = column_names)
+en$Site <- "EN"
+
+tr <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/TR/combined_dataset.csv", 
+               skip = 136792, col.names = column_names)
+tr$Site <- "TR"
+
+nn <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/NN/combined_dataset.csv", 
+               skip = 136792, col.names = column_names)
+nn$Site <- "NN"
+
+
+#Combine all site files and add to processed data folder 
+tilt_combined <- rbind(ek, dx, es, en, tr, nn)
+
+
+write.csv(tilt_combined, 
+"/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_tilt.csv", 
+          row.names = FALSE)
 ```
 
-#ENV LOGGER 
-
+#Plotting 
 ```{r}
-for (site_folder in site_folders) {
-  tryCatch({
-    # Get a list of Excel files in the current site folder
-    excel_files <- list.files(site_folder, pattern = "\\.xlsx$", full.names = TRUE)
-    
-    if (length(excel_files) == 0) {
-      cat("No Excel files found in:", site_folder, "\n")
-      next
-    }
-    
-    # Read and process each Excel file
-    site_data <- map_dfr(excel_files, function(file) {
-      data <- read_excel(file)
-      
-      # Rename columns
-      colnames(data) <- c('n', 'date', 'temperature_c', 'light_lux')
-      
-      return(data)
-    })
-    
-    # Create the output file path
-    output_file <- file.path(site_folder, "combined_dataset.csv")
-    
-    # Save the combined data for the site to the associated folder
-    write.csv(site_data, output_file, row.names = FALSE)
-    
-    cat(paste("Combined dataset saved in:", output_file, "\n"))
-  }, error = function(e) {
-    cat("Error in site folder:", site_folder, "\n")
-    cat("Error message:", e$message, "\n")
-  })
-}
+tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_tilt.csv")
+
+#convert time to date format
+tilt$date <- as.Date(tilt$date)
+
+#filter and process the data
+tilt_filtered <- tilt %>%
+  filter(temp_c < 20) %>%   # Filter temperatures < 20°C
+  filter(speed_mpers < 0.35) %>%
+  filter(format(date, "%m") %in% c("03", "04", "05", "06", "07"))  %>% 
+  filter(!(date >= "2024-06-24" & date <= "2024-06-28"))   # Remove dates between June 24 and June 28
+  
+#smooth the data by calculating daily mean and max variables for each site
+tilt_summary <- tilt_filtered %>%
+  group_by(Site, date, speed_mpers) %>%
+  summarise(mean_speed_mpers = mean(speed_mpers), 
+            max_speed_mpers = max(speed_mpers), 
+            mean_max_speed = mean(speed_upper), 
+            max_max_speed = max(speed_upper))
+                                    
+
+write.csv(tilt_summary, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/tilt_summary.csv", row.names = FALSE)
+
+# Plot the smoothed data
+plot <- ggplot(tilt_summary, aes(x = date, y = mean_speed_mpers, color = Site)) + 
+  geom_line() +  # Line plot for temperature over time
+  labs(
+    title = "Daily Mean Speed Over Time by Site",
+    x = "Date",
+    y = "Mean Daily Speed (m/s)",
+    color = "Site"
+  ) +
+  theme_minimal() +  # Apply a clean theme
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  ) +
+  scale_color_manual(
+    values = c(
+      "EK" = "#FF5733",
+      "EN" = "#4da607",
+      "ES" = "grey",
+      "NN" = "#62a4ea",
+      "DX" = "#eacf62",
+      "TR" = "#076fa6"
+    )
+  ) +
+  facet_wrap(~Site, scales = "free_y")  # Create separate panels for each site with individual y-scales
+plot
+
+
+# Smooth the data by calculating daily mean temperature for each site
+tilt_plot <- tilt_summary %>%
+  group_by(Site, date) %>%
+  summarise(mean_speed_mpers = mean(mean_speed_mpers, na.rm = TRUE)) %>%
+  ungroup()
+
+
+# Plot the daily mean of light availability over time by site
+plot_current <- ggplot(tilt_plot, aes(x = date, y = mean_speed_mpers, color = Site)) +
+  geom_line(aes(group = Site), na.rm = TRUE) +  # Avoid gaps and handle missing values
+  labs(
+    x = "Date",
+    y = "Daily Mean Current Speed (m/s)",
+    color = "Site"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels
+  ) +
+  scale_color_manual(
+    values = c(
+      "EK" = "#FF5733",
+      "EN" = "#4da607",
+      "ES" = "grey",
+      "NN" = "#62a4ea",
+      "DX" = "#eacf62",
+      "TR" = "#076fa6"
+    )
+  )
+
+plot_current 
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/current.jpg", plot = plot_current, width = 9, height = 6, dpi = 300)
+
+```
+```{r}
+# Combine the two plots vertically
+combined_plot <- plot_temp / plot_light / plot_current
+
+# Display the combined plot
+print(combined_plot)
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/combined_env.jpg", plot = combined_plot, width = 9, height = 15, dpi = 300)
+
+```
+#Create bar plot of environmental variables across plots (cumulative)
+```{r}
+# Define color palette for sites
+site_colors <- c(
+  "EK" = "#FF5733",
+  "EN" = "#4da607",
+  "ES" = "grey",
+  "NN" = "#62a4ea",
+  "DX" = "#eacf62",
+  "TR" = "#076fa6"
+)
+
+# Temperature Boxplot (env)
+plot_temp <- ggplot(env_filtered, aes(x = Site, y = temperature_c, fill = Site)) +
+  geom_boxplot() +
+  scale_fill_manual(values = site_colors) +
+  labs(y = "Temperature (°C)", x = NULL, title = "Temperature by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(), legend.position = "none")  # Remove x-axis labels & legend
+
+# Light Boxplot (hobo)
+plot_light <- ggplot(hobo, aes(x = Site, y = light_lux, fill = Site)) +
+  geom_boxplot() +
+  scale_fill_manual(values = site_colors) +
+  labs(y = "Light (Lux)", x = NULL, title = "Light by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(), legend.position = "none")
+
+# Current Speed Boxplot (tilt)
+plot_current <- ggplot(tilt_filtered, aes(x = Site, y = speed_mpers, fill = Site)) +
+  geom_boxplot() +
+  scale_fill_manual(values = site_colors) +
+  labs(y = "Current Speed (m/s)", x = "Site", title = "Current Speed by Site") +
+  theme_minimal() +
+  theme(legend.position = "none")  # Hide legend since all plots share colors
+
+# Stack the plots vertically
+combined_plot <- plot_temp / plot_light / plot_current
+
+# Display the combined plot
+print(combined_plot)
 
 ```
 
