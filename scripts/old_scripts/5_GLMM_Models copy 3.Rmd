@@ -25,6 +25,9 @@ library(broom.mixed)
 library(dotwhisker)
 library(ggplot2)
 library(broom)
+library(lme4)
+library(lmerTest)
+
 
 ```
 
@@ -135,8 +138,8 @@ data$mean_light_lux <- scale(data$mean_light_lux)
 data$bottom_ph <- scale(data$bottom_ph)
 data$bottom_do <- scale(data$bottom_do)
 data$bottom_salinity <- scale(data$bottom_salinity)
-data$simp_div <- scale(data$simp_div)
-data$species_richness <- scale(data$species_richness)
+
+
 data$percent_occuring_algae <- scale(data$percent_occuring_algae)
 data$max_temperature_c <- scale(data$max_temperature_c)
 data$mean_current <- scale(data$mean_current)
@@ -162,12 +165,14 @@ data$plot_id <- as.factor(data$plot_id)
   #base model + predictors 
 ```{r}
 #starting with a minimal model (only random effects)
-base_model <- glmmTMB(urchin_density ~ 1  +(1 | site), 
+base_model <- glmmTMB(urchin_density ~ 1  + (1 | site), 
                       family = tweedie(link = "log"), 
                       data = data)
 
 #predictors 
-predictor_list <- c( "treatment","gravel_size", "mean_temperature_c", "max_temperature_c", "mean_current",  "bottom_do", "bottom_salinity")
+predictor_list <- c( "treatment","gravel_size", "mean_temperature_c", "max_temperature_c", "mean_current", "bottom_do", "bottom_salinity")
+
+
 
 #ph removed because highly correlated 
 #mean light and gravel removed because ecologically irrelevant 
@@ -314,8 +319,6 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/urchin_plot_dot_a
 ```{r}
 urchin_plot <- current_model
 ```
-
-
 
 
 #KELP SURVIVORSHIP GLMM
@@ -556,7 +559,7 @@ summary(current_model)
 ```
 #check collinearity
 ```{r}
-lm_model <- lm(kelp_growth ~  gravel_size + max_temperature_c + 
+lm_model <- lm(kelp_growth ~  max_temperature_c + 
                   mean_current + urchin_site_density + percent_occuring_algae + grazer_density, data = data)
 
 vif(lm_model) #all below 5
@@ -696,6 +699,46 @@ plot
 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/combined_dot_and_whisker_plot.png", 
        plot = plot, width = 15, height = 10, dpi = 300)
+
+```
+
+#
+```{r}
+data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
+density_categories  <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/density_categories.csv")
+
+merged_data <- merge(data, density_categories, by = "site")
+
+# Convert 'treatment' and 'urchin_density' to factors
+merged_data$treatment <- as.factor(merged_data$treatment)
+merged_data$urchin_density <- as.factor(merged_data$Dens_Cat)
+
+
+# Mixed-effects model for kelp survival
+growth_model <- lm(kelp_growth ~ Dens_Cat, data = merged_data)
+
+# Check the model summary
+summary(growth_model)
+
+
+# Survival 
+survival_model <- lm(kelp_survival ~ Dens_Cat, data = merged_data)
+
+# Check the model summary
+summary(survival_model)
+
+# Mixed-effects model for kelp survival
+growth_model <- lm(kelp_growth ~ gravel_size * mean_current, data = merged_data)
+
+# Check the model summary
+summary(growth_model)
+
+
+# Survival 
+survival_model <- lm(kelp_survival ~ gravel_size * mean_current, data = merged_data)
+
+# Check the model summary
+summary(survival_model)
 
 ```
 

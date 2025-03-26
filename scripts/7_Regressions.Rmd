@@ -17,17 +17,58 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(gridExtra)
-
+library(GGally)
 ```
 
 
 #Read in data 
-
 ```{r}
 data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
 
 ```
 
+#Supplemental Pairwise Correlation Plot (ENV variables)
+```{r}
+
+#variables of interest (ONLY env variables) - mean_temperature_c, mean_light_lux, bottom_do, bottom_salinity, bottom_ph, mean_depth_m, max_temperature_c, max_current, mean_current
+
+#select only the environmental variables
+env_data <- data %>%
+  dplyr::select(mean_temperature_c, mean_light_lux, bottom_do, bottom_salinity, 
+         bottom_ph, mean_depth_m, max_temperature_c, max_current, mean_current) %>%
+  rename(
+    `temp (mean)` = mean_temperature_c,
+    `temp (max)` = max_temperature_c,
+    `light (lux)` = mean_light_lux,
+    `bottom DO` = bottom_do,
+    `bottom pH` = bottom_ph,
+    `bottom salinity` = bottom_salinity,
+    `depth (mean)` = mean_depth_m,
+    `current (max)` = max_current,
+    `current (mean)` = mean_current
+  )
+
+
+#define a custom function for the lower panel with red trend lines
+custom_smooth <- function(data, mapping, ...) {
+  ggplot(data, mapping) +
+    geom_point(alpha = 0.6) +  # Keeps points semi-transparent
+    geom_smooth(method = "lm", color = "red", size = 0.5, se = FALSE)  # Red, thin regression line
+}
+
+#create the scatterplot matrix
+p <- ggpairs(env_data, 
+             lower = list(continuous = custom_smooth)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels
+        axis.text.y = element_text(angle = 45, hjust = 1))  # Rotate y-axis labels
+p
+
+# Save the plot as a PNG file
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/environmental_scatterplot_matrix.png", plot = p, width = 10, height = 10, dpi = 300)
+
+
+```
 
 #Regressions - Growth
 ```{r}
@@ -153,6 +194,8 @@ ggplot(long_data, aes(x = value, y = kelp_growth)) +
 
 #Kelp survival 
 ```{r}
+data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
+
 #reshape the data to a long format
 long_data <- data %>%
   pivot_longer(

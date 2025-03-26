@@ -1,266 +1,266 @@
-﻿site,plot_id,date,observer,n_kelp_gravel,n_gravel,n_migrated_holdfasts,kelp_total1,kelp_total2,kelp_total3,kelp_total4,kelp_total5,percent_occuring_algae,n_ru,n_gu,n_pu,other_spp,notes,n_ru_side,n_pu_side,n_gu_side,ka_length1,ka_length2,ka_length3,kb_length1,kb_length2,kc_length1,kc_length2
-Dixon,cs1,2024-04-02,Clay,8,60,0,1,1,2,9,6,5,0,0,0,,,,,,,,,,,,
-Dixon,ul1,2024-04-02,Clay,8,12,0,7,7,12,9,5,0,3,0,0,,,,,,,,,,,,
-Dixon,cl2,2024-04-02,Clay,10,15,0,3,7,5,6,6,5,3,0,0,,,,,,,,,,,,
-Dixon,us2,2024-04-02,Clay,13,70,0,3,2,4,3,6,5,4,0,0,,,,,,,,,,,,
-Dixon,cs3,2024-04-02,Clay,2,45,0,2,2,NA,NA,NA,10,1,0,0,,,1,,,,,,,,,
-Dixon,ul3,2024-04-02,Clay,7,13,0,4,11,13,6,3,0,9,0,0,,,,,,,,,,,,
-Dixon,cl1,2024-04-02,Lauren,12,16,0,5,6,8,8,1,80,0,0,0,"1 PYC, 3 CUC, 2 TS",co-occuring coralin algae,,,,,,,,,,
-Dixon,us1,2024-04-02,Lauren,10,16,0,4,5,4,5,1,30,1,0,0,5 TS,,,,,,,,,,,
-Dixon,ul2,2024-04-02,Lauren,10,16,0,4,6,3,3,6,90,0,0,2,1TS,,,,,,,,,,,
-Dixon,cl3,2024-04-02,Lauren,14,16,0,6,6,7,7,7,70,0,0,1,"1 TS, 3 CUC",,,,,,,,,,,
-Dixon,us3,2024-04-02,Lauren,12,100,0,2,6,NA,NA,NA,80,3,0,0,2 TS,,,,,,,,,,,
-Dixon,cs2,2024-04-02,Lauren,15,100,0,4,3,7,4,1,85,1,0,0,"6 CUC, 1 TS, 1 KC",,,,,,,,,,,
-Ellis_N,cl1,2024-04-03,Carolyn,6,11,0,5,3,7,4,2,50,3,0,0,"1 LH, 9 SN",,,,,,,,,,,
-Ellis_N,us1,2024-04-03,Carolyn,0,45,0,NA,NA,NA,NA,NA,4,0,0,0,,,,,,,,,,,,
-Ellis_N,cs2,2024-04-03,Carolyn,11,100,0,3,2,3,7,4,81,5,0,0,"2 SN, 2 CC",,,,,,,,,,,
-Ellis_N,ul2,2024-04-03,Carolyn,9,13,0,7,2,4,6,2,70,1,0,0,20 SN,,,,,,,,,,,
-Ellis_N,cl3,2024-04-03,Carolyn,11,15,0,6,7,6,8,6,40,0,0,0,1 SN,,,,,,,,,,,
-Ellis_N,us3,2024-04-03,Carolyn,0,100,0,NA,NA,NA,NA,NA,80,0,0,0,18 SN,,,,,,,,,,,
-Ellis_S,cl1,2024-04-02,Clay,8,12,0,7,7,9,6,6,10,0,0,0,9 TS,can't read other spp notes,,,,,,,,,,
-Ellis_S,us1,2024-04-02,Clay,0,50,0,NA,NA,NA,NA,NA,5,1,0,0,,,,,,,,,,,,
-Ellis_S,cs2,2024-04-02,Clay,3,50,0,2,1,2,NA,NA,15,0,0,0,5 TS,,,,,,,,,,,
-Ellis_S,ul2,2024-04-02,Clay,7,16,0,4,3,5,9,8,0,0,0,0,,,,,,,,,,,,
-Ellis_S,cl3,2024-04-02,Clay,1,15,0,4,NA,NA,NA,NA,5,0,0,0,1 TS,,,,,,,,,,,
-Ellis_S,us3,2024-04-02,Clay,1,55,0,2,NA,NA,NA,NA,5,1,0,0,,,,,,,,,,,,
-Ellis_N,cs1,2024-04-03,Lauren ,13,100,0,4,1,1,1,1,90,1,0,0,"7 TS, 1 CUC, 1UK",,,,,,,,,,,
-Ellis_N,ul1,2024-04-03,Lauren ,7,14,0,6,1,3,5,1,90,1,0,0,"21 TS, 1 PYC",,,,,,,,,,,
-Ellis_N,cl2,2024-04-03,Lauren ,13,15,0,7,8,6,5,6,50,0,0,0,"4 TS, 3 CUC",,,,,,,,,,,
-Ellis_N,us2,2024-04-03,Lauren ,30,100,0,4,6,7,6,6,80,1,0,0,11 TS,,,,,,,,,,,
-Ellis_N,cs3,2024-04-03,Lauren ,4,100,0,1,1,4,2,NA,80,1,0,0,"4TS, 2 CUC",,,,,,,,,,,
-Ellis_N,ul3,2024-04-03,Lauren ,8,14,0,7,5,2,5,4,40,1,0,0,"1 CUC, 5 TS",,,,,,,,,,,
-Nanat ,cl1,2024-04-03,Carolyn,1,11,0,6,NA,NA,NA,NA,25,0,0,0,LH,,,,,,,,,,,
-Nanat ,us1,2024-04-03,Lauren,0,100,0,NA,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,
-Nanat ,cs2,2024-04-03,Lauren,0,100,0,NA,NA,NA,NA,NA,30,0,0,0,,,,,,,,,,,,
-Nanat ,ul2,2024-04-03,Lauren,6,13,0,5,4,4,3,2,5,0,0,0,,,,,,,,,,,,
-Nanat ,cl3,2024-04-03,Lauren,11,15,0,5,6,4,8,7,10,0,0,0,,,,,,,,,,,,
-Nanat ,us3,2024-04-03,Lauren,0,100,0,NA,NA,NA,NA,NA,15,0,0,0,baby PYC,,,,,,,,,,,
-Ellis_S,ul1,2024-04-02,Lauren,5,10,0,10,2,6,6,1,75,0,0,0,3 TS,"Many suspended filter feeders at this site, lots of particulate in water ",,,,,,,,,,
-Ellis_S,cs1,2024-04-02,Lauren,0,100,0,NA,NA,NA,NA,NA,65,0,0,0,4TS,,,,,,,,,,,
-Ellis_S,cl2,2024-04-02,Lauren,2,14,0,5,1,NA,NA,NA,70,0,0,0,8TS,,,,,,,,,,,
-Ellis_S,us2,2024-04-02,Lauren,0,100,0,NA,NA,NA,NA,NA,70,0,0,0,10 TS,,,,,,,,,,,
-Ellis_S,ul3,2024-04-02,Lauren,3,14,0,8,9,5,NA,NA,70,1,0,0,6 TS,,,,,,,,,,,
-Ellis_S,cs3,2024-04-02,Lauren,0,100,0,NA,NA,NA,NA,NA,80,0,0,0,9 TS,,,,,,,,,,,
-Nanat ,cs1,2024-04-03,Carolyn,1,100,0,2,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,
-Nanat ,ul1,2024-04-03,Carolyn,4,11,0,3,3,3,2,NA,21,0,0,0,,,,,,,,,,,,
-Nanat ,cl2,2024-04-03,Carolyn,3,12,0,1,3,3,NA,NA,6,0,0,0,SN,,,,,,,,,,,
-Nanat ,us2,2024-04-03,Carolyn,1,100,0,4,NA,NA,NA,NA,25,0,0,0,,,,,,,,,,,,
-Nanat ,cs3,2024-04-03,Carolyn,0,100,NA,NA,NA,NA,NA,NA,20,0,0,0,,,,,,,,,,,,
-Nanat ,ul3,2024-04-03,Carolyn,9,12,0,5,7,9,4,5,6,0,0,0,,,,,,,,,,,,
-Taylor,cs2,2024-05-13,Carolyn,0,22,NA,NA,NA,NA,NA,NA,0,21,0,0,"50+ LH, 4 TS, 1 PYC",cage moved,,,,,,,,,,
-Taylor,cl1,2024-05-13,Carolyn,2,7,NA,26,22,15,7,9,0,0,0,0,2 SN,cage broke,,,,22,25,7,26,9,,
-Taylor,cs1,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,16,0,0,"KC 1, 1 PYC,  1 TS",cage moved ~30 cm,,,,,,,,,,
-Taylor,ul3,2024-05-13,Carolyn,2,13,NA,12,4,5,3,,0,4,0,0,4 TS,,,,,4,5,3,12,,,
-Taylor,cl3,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,11,0,0,1 TS,caged moved,,,,,,,,,,
-Taylor,ul2,2024-05-13,Carolyn,0,14,NA,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,
-Dixon,cl1,2024-05-13,Clay,3,13,0,35,30,32,NA,NA,0,2,0,0,,urchins on side of cage not on bottom,2,,,,,,,,,
-Dixon,cs1,2024-05-13,Clay,0,45,0,NA,NA,NA,NA,NA,10,5,0,0,,"only one urchin on bottom, rest on sides of cage",4,,,,,,,,,
-Dixon,us2,2024-05-13,Clay,1,45,0,16,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,
-Dixon,us3,2024-05-13,Clay,0,55,0,NA,NA,NA,NA,NA,0,1,0,0,,,,,,,,,,,,
-Dixon,ul2,2024-05-13,Clay,1,14,0,30,NA,NA,NA,NA,5,0,0,0,,,,,,,,,,,,
-Dixon,cs3,2024-05-13,Clay,0,30,0,NA,NA,NA,NA,NA,5,1,0,0,,,,,,,,,,,,
-Ed King,cl1,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,leafy hornmouth ,"encursting coralline co-occurring algae, cages moved unknown",,,,,,,,,,
-Ed King,cs1,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,"2 LH, 1 AB",cages moved unknown,,,,,,,,,,
-Ed King,cl2,2024-05-13,Carolyn,0,NA,NA,25,NA,NA,NA,NA,0,4,0,0,2 LH,cages moved unknown,,,,,,,,,,
-Ed King,cs2,2024-05-13,Carolyn,2,15,0,20,5,NA,NA,NA,0,1,0,0,1 AB,,,,,,,,,,,
-Ed King,cl3,2024-05-13,Carolyn,2,4,10,12,20,NA,NA,NA,0,3,0,0,,,,,,10,12,,20,,,
-Ed King,cs3,2024-05-13,Carolyn,0,9,NA,NA,NA,NA,NA,NA,0,9,0,0,"1 KC, 2 TS",,,,,,,,,,,
-Ed King,ul1,2024-05-13,Clay,4,11,0,17,6,20,8,NA,0,4,0,0,,,1,,,,,,,,,
-Ed King,ul2,2024-05-13,Clay,5,10,0,10,23,12,18,17,0,3,0,0,,,,,,,,,,,,
-Ed King,us2,2024-05-13,Clay,2,50,0,6,4,NA,NA,NA,0,3,0,0,,,,,,,,,,,,
-Ed King,ul3,2024-05-13,Clay,3,11,0,12,9,7,NA,NA,0,2,0,0,,,,,,,,,,,,
-Ed King,us3,2024-05-13,Clay,0,25,0,NA,NA,NA,NA,NA,0,4,0,0,,,,,,,,,,,,
-Ed King,us1,2024-05-13,Clay,1,35,0,6,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,
-Taylor,us2,2024-05-13,Clay,0,55,0,NA,NA,NA,NA,NA,0,3,0,0,,,,,,,,,,,,
-Taylor,us1,2024-05-13,Clay,0,45,0,NA,NA,NA,NA,NA,0,0,0,0,1 PYC,,,,,,,,,,,
-Taylor,cl2,2024-05-13,Clay,3,11,1,6,10,5,NA,NA,0,17,0,0,,many urchins on sides,16,,,,,,,,,
-Taylor,ul1,2024-05-13,Clay,1,14,0,3,NA,NA,NA,NA,0,4,0,0,,,,,,,,,,,,
-Taylor,us3,2024-05-13,Clay,0,60,1,0,NA,NA,NA,NA,0,4,0,0,,,,,,,,,,,,
-Taylor,cs3,2024-05-13,Clay,1,40,1,3,NA,NA,NA,NA,0,10,0,0,,many urchins on sides,9,,,,,,,,,
-Ellis_N,cs1,2024-05-14,Carolyn,0,4,NA,NA,NA,NA,NA,NA,40,6,0,0,"sea pen, 17 TS","cs2 cage may have moved, co-occuring algae = coralline algae",,,,,,,,,,
-Ellis_N,us1,2024-05-14,Carolyn,0,35,0,NA,NA,NA,NA,NA,90,0,0,0,"diamon black nudi, 3 TS, 1 CUC",,,,,,,,,,,
-Ellis_N,cl2,2024-05-14,Carolyn,5,14,0,10,31,24,11,22,60,1,0,0,"1 CUC, 10 TS, ",,,,,,,,,,,
-Ellis_N,ul2,2024-05-14,Carolyn,1,13,0,16,NA,NA,NA,NA,80,3,0,0,10 TS,,,,,,,,,,,
-Ellis_N,cs3,2024-05-14,Carolyn,0,25,1,29,NA,NA,NA,NA,85,0,0,0,"10 TS, decorator crab",,,,,,,,,,,
-Ellis_N,us3,2024-05-14,Carolyn,0,50,0,NA,NA,NA,NA,NA,86,1,0,0,"11 TS, 1 CUC",desmerestia co-occuring,,,,,,,,,,
-Nanat ,cs1,2024-05-14,Hannah ,0,15,0,NA,NA,NA,NA,NA,70,0,0,0,,,,,,,,,,,,
-Nanat ,ul1,2024-05-14,Hannah ,3,7,0,50,30,90,110,5,80,0,0,0,,,,,,50,30,,90,110,,5
-Nanat ,cl2,2024-05-14,Hannah ,3,6,0,90,60,40,20,5,80,0,0,0,,,,,,90,60,,40,20,,5
-Nanat ,ul2,2024-05-14,Hannah ,2,5,0,5,7,NA,NA,NA,85,0,0,0,,,,,,,,,,,,
-Nanat ,cs3,2024-05-14,Hannah ,0,35,0,NA,NA,NA,NA,NA,80,0,0,0,,,,,,,,,,,,
-Nanat ,us3,2024-05-14,Hannah ,2,25,0,5,3,NA,NA,NA,50,0,0,0,,,,,,5,,,3,,,
-Ellis_N,cl1,2024-05-14,Clay ,10,10,1,25,42,30,87,46,5,3,0,0,,,1,,,,,,,,,
-Ellis_N,ul1,2024-05-14,Clay ,1,14,0,27,NA,NA,NA,NA,10,2,0,0,,,,,,,,,,,,
-Ellis_N,cs2,2024-05-14,Clay ,8,55,0,16,7,6,11,14,0,1,0,0,,,,,,,,,,,,
-Ellis_N,us2,2024-05-14,Clay ,8,65,2,11,7,16,26,22,0,1,0,0,,,,,,,,,,,,
-Ellis_N,cl3,2024-05-14,Clay ,6,13,0,31,52,6,19,21,5,6,0,0,,,,,,,,,,,,
-Ellis_N,ul3,2024-05-14,Clay ,2,12,0,6,4,NA,NA,NA,0,0,0,0,,,,,,,,,,,,
-Ellis_S,cs1,2024-05-15,Unknown,3,40,0,82,12,42,NA,NA,25,1,0,0,5 TS,,,,,,,,,,,
-Ellis_S,us1,2024-05-15,Unknown,0,40,0,NA,NA,NA,NA,NA,5,2,0,0,,,,,,,,,,,,
-Ellis_S,cl2,2024-05-15,Unknown,0,4,0,NA,NA,NA,NA,NA,5,0,0,0,,,,,,,,,,,,
-Ellis_S,ul2,2024-05-15,Unknown,0,12,0,NA,NA,NA,NA,NA,0,0,0,0,,"cages completely shifted, sandbags torn, bottom shorn loose in some places, shifting with surge",,,,,,,,,,
-Ellis_S,cs3,2024-05-15,Unknown,0,NA,NA,NA,NA,NA,NA,NA,5,2,0,0,,"lost sandbags, zip ties, completely shifted ",,,,,,,,,,
-Ellis_S,us3,2024-05-15,Unknown,0,50,NA,NA,NA,NA,NA,NA,0,1,0,0,,,,,,,,,,,,
-Nanat ,cl1,2024-05-14,Clay,1,12,0,11,NA,NA,NA,NA,10,0,0,0,,,,,,,,,,,,
-Nanat ,ul1,2024-05-14,Clay,3,11,0,36,110,16,NA,NA,15,0,0,0,,many diatoms,,,,,,,,,,
-Nanat ,cs2,2024-05-14,Clay,0,NA,NA,NA,NA,NA,NA,NA,30,0,0,0,,too fouled to determine number of gracel ,,,,,,,,,,
-Nanat ,us2,2024-05-14,Clay,0,NA,NA,NA,NA,NA,NA,NA,30,0,0,0,,many diatoms,,,,,,,,,,
-Nanat ,cl3,2024-05-14,Clay,4,15,0,112,80,78,115,,15,0,0,0,,many diatoms,,,,,,,,,,
-Nanat ,ul3,2024-05-14,Clay,5,15,0,23,46,67,54,30,15,0,0,0,,many diatoms,,,,,,,,,,
-Nanat ,us1,2024-05-14,Clay,0,40,NA,NA,NA,NA,NA,NA,90,0,0,0,,many diatoms,,,,,,,,,,
-Ellis_S,cl1,2024-05-15,Carolyn,4,12,0,14,15,8,2,NA,80,1,0,0,8 TS,,,,,,,,,,,
-Ellis_S,ul1,2024-05-15,Carolyn,0,15,NA,NA,NA,NA,NA,NA,90,1,0,0,14 TS,"cages moved, very diatom fouled",,,,,,,,,,
-Ellis_S,cs2,2024-05-15,Carolyn,0,3,NA,NA,NA,NA,NA,NA,80,13,0,0,"male greenling, 2 CUC",,,,,,,,,,,
-Ellis_S,us2,2024-05-15,Carolyn,0,30,NA,NA,NA,NA,NA,NA,60,1,0,0,5 TS,,,,,,,,,,,
-Ellis_S,cl3,2024-05-15,Carolyn,0,5,NA,NA,NA,NA,NA,NA,50,0,0,0,1 AB,,,,,,,,,,,
-Ellis_S,ul3,2024-05-15,Carolyn,0,10,0,34,NA,NA,NA,NA,95,2,0,0,3 TS,,,,,,,,,,,
-Dixon,ul1,2024-05-13,Carolyn,1,15,NA,5,NA,NA,NA,NA,70,1,0,0,"2 TS, 1 AB, 1 CUC",,,,,,,,,,,
-Dixon,us1,2024-05-13,Carolyn,0,30,NA,NA,NA,NA,NA,NA,90,1,0,0,"1 CUC, 4 TS",,,,,,,,,,,
-Dixon,cl2,2024-05-13,Carolyn,0,14,NA,NA,NA,NA,NA,NA,0,1,0,0,"1 CUC, 5 TS, moonsnail",,,,,,,,,,,
-Dixon,cs2,2024-05-13,Carolyn,0,30,NA,NA,NA,NA,NA,NA,75,4,0,0,3 TS,,,,,,,,,,,
-Dixon,ul3,2024-05-13,Carolyn,0,9,NA,NA,NA,NA,NA,NA,70,1,0,0,"1 TS, 1 CUC, male greenling",,,,,,,,,,,
-Dixon,cl3,2024-05-13,Carolyn,3,11,0,11,47,32,28,24,60,1,0,0,"1 TS, saddle back gunnel ",,,,,32,28,24,47,,,
-Ed King,cs1,2024-06-24,Clay,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,"cage removed, completely collapsed ",,,,,,,,,,
-Ed King,us1,2024-06-24,Clay,0,40,NA,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,
-Ed King,ul2,2024-06-24,Clay,0,12,NA,NA,NA,NA,NA,NA,0,2,0,0,,cl2 shifted onto this plot,,,,,,,,,,
-Ed King,cl2,2024-06-24,Clay,0,0,NA,NA,NA,NA,NA,NA,0,5,0,0,,"shifted 2m inshore, shifted over 1/3 of ul2",,,,,,,,,,
-Ed King,ul3,2024-06-24,Clay,2,11,2,104,4,NA,NA,NA,0,0,0,0,,,,,,,,,,,,
-Ed King,us3,2024-06-24,Clay,0,40,NA,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,
-Ed King,cs3,2024-06-24,Clay,0,15,NA,NA,NA,NA,NA,NA,0,15,0,0,,,,,,,,,,,,
-Ed King,ul1,2024-06-24,Lauren,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,3,,,,,,,,,,,,
-Ed King,cs2,2024-06-24,Lauren,0,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,,,,,,,,,,,
-Ed King,us2,2024-06-24,Lauren,1,70,10,NA,NA,NA,NA,NA,90,1,0,0,2 TS,,,,,,,,,,,
-Ed King,cl3,2024-06-24,Lauren,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,,,,,,,,,,,
-Ed King,cl1,2024-06-24,Lauren,0,7,NA,NA,NA,NA,NA,NA,90,0,0,0,4 TS,,,,,,,,,,,
-Taylor,us1,2024-06-24,Clay,0,45,NA,NA,NA,NA,NA,NA,0,5,0,0,,,,,,,,,,,,
-Taylor,cs1,2024-06-24,Clay,0,5,NA,NA,NA,NA,NA,NA,0,1,0,0,,,5,,,,,,,,,
-Taylor,ul2,2024-06-24,Clay,0,13,0,NA,NA,NA,NA,NA,0,1,0,0,,,,,,,,,,,,
-Taylor,cl2,2024-06-24,Clay,1,10,0,4,NA,NA,NA,NA,4,4,0,0,,,3,,,,,,,,,
-Taylor,us3,2024-06-24,Clay,0,40,0,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,
-Taylor,cs3,2024-06-24,Clay,1,50,0,14,NA,NA,NA,NA,0,1,0,0,,,4,,,,,,,,,
-Taylor,cl1,2024-06-24,Lauren,0,7,0,NA,NA,NA,NA,NA,30,4,0,0,"1 TS, 3 AB, 1 PYC",,1,,,,,,,,,
-Taylor,ul1,2024-06-24,Lauren,0,10,0,NA,NA,NA,NA,NA,30,1,0,0,"1 AB, 6 TS",,,,,,,,,,,
-Taylor,cs2,2024-06-24,Lauren,0,50,0,NA,NA,NA,NA,NA,50,2,0,0,"3 TS, 1 AB",,3,,,,,,,,,
-Taylor,us2,2024-06-24,Lauren,0,70,0,NA,NA,NA,NA,NA,60,7,0,0,"1 TS, 1 AB",,,,,,,,,,,
-Taylor,cl3,2024-06-24,Lauren,0,5,0,NA,NA,NA,NA,NA,40,0,0,0,2 PYC,,3,,,,,,,,,
-Taylor,ul3,2024-06-24,Lauren,0,5,0,NA,NA,NA,NA,NA,50,4,0,0,2 TS,,,,,,,,,,,
-Nanat ,cs1,2024-06-25,Lauren,0,50,0,0,0,0,0,0,35,0,0,0,1 CUC,,,,,,,,,,,
-Nanat ,us1,2024-06-25,Lauren,3,40,0,630,550,540,NA,NA,70,0,0,0,,,,,,,,,,,,
-Nanat ,cl2,2024-06-25,Lauren,0,4,0,0,0,0,0,0,20,0,0,0,,"all 1-2cm, small brown algae cant determine if our kelp ",,,,,,,,,,
-Nanat ,ul2,2024-06-25,Lauren,3,5,0,320,310,340,180,270,0,0,0,0,,,,,,,,,,,,
-Nanat ,cs3,2024-06-25,Lauren,1,50,1,700,NA,NA,NA,NA,50,0,0,0,,,,,,,,,,,,
-Nanat ,us3,2024-06-25,Lauren,2,50,2,530,460,NA,NA,NA,50,0,0,0,,,,,,,,,,,,
-Ellis N,ul3,2024-06-25,Lauren,0,10,0,NA,NA,NA,NA,NA,50,0,0,0,"6 TS, some limpets ",has some small green algae ,,,,,,,,,,
-Ellis N,cl1,2024-06-25,Lauren,3,5,0,45,7,35,NA,NA,50,0,0,0,"6 TS, 5 TS outside cages ",,,,,,,,,,,
-Ellis N,cs2,2024-06-25,Lauren,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,removed cage,,,,,,,,,,
-Ellis N,us2,2024-06-25,Lauren,1,100,0,11,NA,NA,NA,NA,95,3,0,0,6 TS,unclear whether this is macro ,,,,,,,,,,
-Ellis N,cl3,2024-06-25,Lauren,0,7,0,NA,NA,NA,NA,NA,0,0,0,0,"1 AB, 5 TS",removed cage,,,,,,,,,,
-Ellis N,ul1 ,2024-06-25,Lauren,1,11,0,15,NA,NA,NA,NA,95,0,0,0,13 TS,,,,,,,,,,,
-Ellis N,us1,2024-06-25,Clay ,0,40,0,NA,NA,NA,NA,NA,10,2,0,0,,,,,,,,,,,,
-Ellis N,cs1,2024-06-25,Clay ,0,50,0,,NA,NA,NA,NA,15,2,0,0,,,,,,,,,,,,
-Ellis N,cs3,2024-06-25,Clay ,0,25,1,100,NA,NA,NA,NA,5,0,0,0,,unclear whether this is our kelp ,2,,,,,,,,,
-Ellis N,cl2,2024-06-25,Clay ,0,10,0,NA,NA,NA,NA,NA,10,0,0,0,,,1,,,,,,,,,
-Ellis N,us3,2024-06-25,Clay ,0,40,3,20,3,NA,NA,NA,20,0,0,0,,unclear whether this is our kelp ,,,,,,,,,,
-Ellis N,ul2,2024-06-25,Clay ,0,12,2,20,15,NA,NA,NA,5,2,0,0,,unclear whether this is our kelp ,,,,,,,,,,
-Nanat ,cl1,2024-06-25,Lauren,4,10,5,25,90,60,140,40,10,0,0,0,,,,,,,,,,,,
-Nanat ,ul1,2024-06-25,Lauren,3,6,3,65,115,60,135,40,15,0,0,0,,,,,,,,,,,,
-Nanat ,us2,2024-06-25,Lauren,0,0,16,NA,NA,NA,NA,NA,25,0,0,0,,,,,,,,,,,,
-Nanat ,cs2,2024-06-25,Lauren,1,40,15,115,NA,NA,NA,NA,25,0,0,0,,,,,,,,,,,,
-Nanat ,ul3,2024-06-25,Lauren,3,5,0,60,40,30,NA,NA,20,0,0,0,,,,,,,,,,,,
-Nanat ,cl3,2024-06-25,Lauren,4,5,3,100,35,35,180,50,15,0,0,0,,,1,,,,,,,,,
-Dixon,cl1,2024-06-24,Carolyn,0,9,0,NA,NA, NA,NA,NA,90,1,0,0,,,,,,,,,,,,
-Dixon,ul1,2024-06-24,Carolyn,0,12,0,NA,NA, NA,NA,NA,95,2,0,0,,,,,,,,,,,,
-Dixon,us2,2024-06-24,Carolyn,1,25,0,16,NA, NA,NA,NA,80,6,0,0,,,,,,,,,,,,
-Dixon,cs2,2024-06-24,Carolyn,0,39,0,NA,NA, NA,NA,NA,80,0,0,0,,,3,,,,,,,,,
-Dixon,ul3,2024-06-24,Carolyn,0,11,0,NA,NA, NA,NA,NA,95,2,0,0,,,,,,,,,,,,
-Dixon,cl3,2024-06-24,Carolyn,0,8,1,52,NA, NA,NA,NA,70,1,0,0,,,2,,,,,,,,,
-Dixon,us1,2024-06-24,Carolyn,0,32,2,27,18, NA,NA,NA,70,1,0,0,,,,,,,,,,,,
-Dixon,cs1,2024-06-24,Lauren,1,81,0,55,35, NA,NA,NA,100,0,0,1,1 TS,,,1,,,,,,,,
-Dixon,ul2,2024-06-24,Lauren,0,8,0,NA,NA, NA,NA,NA,100,3,0,0,4 TS,,,,,,,,,,,
-Dixon,cl2,2024-06-24,Lauren,0,10,0,NA,NA, NA,NA,NA,70,0,0,1,1 TS,,,,,,,,,,,
-Dixon,us3,2024-06-24,Lauren,0,80,0,NA,NA, NA,NA,NA,85,0,0,2,3 TS,,,,,,,,,,,
-Dixon,cs3,2024-06-24,Lauren,0,100,0,NA,NA, NA,NA,NA,70,0,0,2,5 CUC,,,6,,,,,,,,
-Ellis S,ul3,2024-06-25,Carolyn ,0,10,0,NA,NA,NA,NA,NA,90,3,0,0,,,,,,,,,,,,
-Ellis S,cl1,2024-06-25,Carolyn ,NA,NA,NA,NA,NA,NA,NA,NA,0,2,0,0,,,1,,,,,,,,,
-Ellis S,cs2,2024-06-25,Carolyn ,0,12,1,14,NA,NA,NA,NA,0,1,0,0,,,4,,,,,,,,,
-Ellis S,us2,2024-06-25,Carolyn ,0,18,0,NA,NA,NA,NA,NA,85,0,0,0,3 TS,,,,,,,,,,,
-Ellis S,cl3,2024-06-25,Carolyn ,0,5,0,NA,NA,NA,NA,NA,60,1,0,0,,cage removed,1,,,,,,,,,
-Ellis S,ul1,2024-06-25,Carolyn ,0,10,0,NA,NA,NA,NA,NA,75,2,0,0,"4 TS, 1 CUC",,,,,,,,,,,
-Nanat ,cl3,2024-08-06,Jasmin,0,4,0,NA,NA,NA,NA,NA,10,0,0,0,,,,,,,,,,,,
-Nanat ,us1,2024-08-06,Jasmin,0,0,0,NA,NA,NA,NA,NA,10,0,0,0,,,,,,,,,,,,
-Nanat ,us2,2024-08-06,Jasmin,1,4,1,136,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,
-Nanat ,us3,2024-08-06,Jasmin,0,0,0,NA,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,
-Nanat ,cl1,2024-08-06,Clay,0,10,3,NA,NA,NA,NA,NA,15,1,0,0,,,,,,,,,,,,
-Nanat ,cl2,2024-08-06,Clay,4,4,2,171,11,165,NA,NA,15,0,0,0,,,,,,145,135,,,,,
-Nanat ,ul1,2024-08-06,Clay,2,3,NA,140,NA,NA,NA,NA,30,0,0,0,,,,,,231,171,,,,,
-Nanat ,ul2,2024-08-06,Clay,4,5,NA,1124,1006,560,620,NA,60,0,0,0,,,,,,,,,,,,
-Nanat ,ul3,2024-08-06,Clay,0,5,NA,NA,NA,NA,NA,NA,90,0,0,0,,,,,,,,,,,,
-Ellis S,cs1,2024-06-25,Carolyn ,2,40,NA,90,25,NA,NA,NA,25,0,0,0,,,,,,,,,,,,
-Ellis S,cl2,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,80,8,0,0,,,,,,,,,,,,
-Ellis S,cs3,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,60,0,0,0,,,,,,,,,,,,
-Ellis S,us1,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,50,1,0,0,,,,,,,,,,,,
-Ellis S,ul2,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,95,9,0,0,,,,,,,,,,,,
-Ellis S,us3,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,70,0,0,0,,,,,,,,,,,,
-Dixon,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Dixon,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis S,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ellis N,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Taylor ,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Ed King,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Nanat ,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Nanat ,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
-Nanat ,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,
+﻿site,plot_id,date,observer,n_kelp_gravel,n_gravel,n_migrated_holdfasts,kelp_total1,kelp_total2,kelp_total3,kelp_total4,kelp_total5,percent_occuring_algae,n_ru,n_gu,n_pu,other_spp,notes,n_ru_side,n_pu_side,n_gu_side,ka_length1,ka_length2,ka_length3,kb_length1,kb_length2,kc_length1,kc_length2,n_pyc,n_ts,n_ab,n_cuc
+Dixon,cs1,2024-04-02,Clay,8,60,0,1,1,2,9,6,5,0,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,ul1,2024-04-02,Clay,8,12,0,7,7,12,9,5,0,3,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cl2,2024-04-02,Clay,10,15,0,3,7,5,6,6,5,3,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,us2,2024-04-02,Clay,13,70,0,3,2,4,3,6,5,4,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cs3,2024-04-02,Clay,2,45,0,2,2,NA,NA,NA,10,1,0,0,,,1,,,,,,,,,,0,0,0,0
+Dixon,ul3,2024-04-02,Clay,7,13,0,4,11,13,6,3,0,9,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cl1,2024-04-02,Lauren,12,16,0,5,6,8,8,1,80,0,0,0,"1 PYC, 3 CUC, 2 TS",co-occuring coralin algae,,,,,,,,,,,1,2,0,3
+Dixon,us1,2024-04-02,Lauren,10,16,0,4,5,4,5,1,30,1,0,0,5 TS,,,,,,,,,,,,0,5,0,0
+Dixon,ul2,2024-04-02,Lauren,10,16,0,4,6,3,3,6,90,0,0,2,1TS,,,,,,,,,,,,0,1,0,0
+Dixon,cl3,2024-04-02,Lauren,14,16,0,6,6,7,7,7,70,0,0,1,"1 TS, 3 CUC",,,,,,,,,,,,0,1,0,3
+Dixon,us3,2024-04-02,Lauren,12,100,0,2,6,NA,NA,NA,80,3,0,0,2 TS,,,,,,,,,,,,0,1,0,0
+Dixon,cs2,2024-04-02,Lauren,15,100,0,4,3,7,4,1,85,1,0,0,"6 CUC, 1 TS, 1 KC",,,,,,,,,,,,0,1,0,6
+Ellis_N,cl1,2024-04-03,Carolyn,6,11,0,5,3,7,4,2,50,3,0,0,"1 LH, 9 SN",,,,,,,,,,,,0,9,0,0
+Ellis_N,us1,2024-04-03,Carolyn,0,45,0,NA,NA,NA,NA,NA,4,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_N,cs2,2024-04-03,Carolyn,11,100,0,3,2,3,7,4,81,5,0,0,"2 SN, 2 CC",,,,,,,,,,,,0,2,0,2
+Ellis_N,ul2,2024-04-03,Carolyn,9,13,0,7,2,4,6,2,70,1,0,0,20 SN,,,,,,,,,,,,0,20,0,0
+Ellis_N,cl3,2024-04-03,Carolyn,11,15,0,6,7,6,8,6,40,0,0,0,1 SN,,,,,,,,,,,,0,1,0,0
+Ellis_N,us3,2024-04-03,Carolyn,0,100,0,NA,NA,NA,NA,NA,80,0,0,0,18 SN,,,,,,,,,,,,0,18,0,0
+Ellis_S,cl1,2024-04-02,Clay,8,12,0,7,7,9,6,6,10,0,0,0,9 TS,can't read other spp notes,,,,,,,,,,,0,9,0,0
+Ellis_S,us1,2024-04-02,Clay,0,50,0,NA,NA,NA,NA,NA,5,1,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_S,cs2,2024-04-02,Clay,3,50,0,2,1,2,NA,NA,15,0,0,0,5 TS,,,,,,,,,,,,0,5,0,0
+Ellis_S,ul2,2024-04-02,Clay,7,16,0,4,3,5,9,8,0,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_S,cl3,2024-04-02,Clay,1,15,0,4,NA,NA,NA,NA,5,0,0,0,1 TS,,,,,,,,,,,,0,1,0,0
+Ellis_S,us3,2024-04-02,Clay,1,55,0,2,NA,NA,NA,NA,5,1,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_N,cs1,2024-04-03,Lauren ,13,100,0,4,1,1,1,1,90,1,0,0,"7 TS, 1 CUC, 1UK",,,,,,,,,,,,0,7,0,1
+Ellis_N,ul1,2024-04-03,Lauren ,7,14,0,6,1,3,5,1,90,1,0,0,"21 TS, 1 PYC",,,,,,,,,,,,1,21,0,0
+Ellis_N,cl2,2024-04-03,Lauren ,13,15,0,7,8,6,5,6,50,0,0,0,"4 TS, 3 CUC",,,,,,,,,,,,0,4,0,3
+Ellis_N,us2,2024-04-03,Lauren ,30,100,0,4,6,7,6,6,80,1,0,0,11 TS,,,,,,,,,,,,0,11,0,0
+Ellis_N,cs3,2024-04-03,Lauren ,4,100,0,1,1,4,2,NA,80,1,0,0,"4TS, 2 CUC",,,,,,,,,,,,0,4,0,2
+Ellis_N,ul3,2024-04-03,Lauren ,8,14,0,7,5,2,5,4,40,1,0,0,"1 CUC, 5 TS",,,,,,,,,,,,0,5,0,1
+Nanat ,cl1,2024-04-03,Carolyn,1,11,0,6,NA,NA,NA,NA,25,0,0,0,LH,,,,,,,,,,,,0,0,0,0
+Nanat ,us1,2024-04-03,Lauren,0,100,0,NA,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs2,2024-04-03,Lauren,0,100,0,NA,NA,NA,NA,NA,30,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul2,2024-04-03,Lauren,6,13,0,5,4,4,3,2,5,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cl3,2024-04-03,Lauren,11,15,0,5,6,4,8,7,10,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,us3,2024-04-03,Lauren,0,100,0,NA,NA,NA,NA,NA,15,0,0,0,baby PYC,,,,,,,,,,,,1,0,0,0
+Ellis_S,ul1,2024-04-02,Lauren,5,10,0,10,2,6,6,1,75,0,0,0,3 TS,"Many suspended filter feeders at this site, lots of particulate in water ",,,,,,,,,,,0,3,0,0
+Ellis_S,cs1,2024-04-02,Lauren,0,100,0,NA,NA,NA,NA,NA,65,0,0,0,4TS,,,,,,,,,,,,0,4,0,0
+Ellis_S,cl2,2024-04-02,Lauren,2,14,0,5,1,NA,NA,NA,70,0,0,0,8TS,,,,,,,,,,,,0,8,0,0
+Ellis_S,us2,2024-04-02,Lauren,0,100,0,NA,NA,NA,NA,NA,70,0,0,0,10 TS,,,,,,,,,,,,0,10,0,0
+Ellis_S,ul3,2024-04-02,Lauren,3,14,0,8,9,5,NA,NA,70,1,0,0,6 TS,,,,,,,,,,,,0,6,0,0
+Ellis_S,cs3,2024-04-02,Lauren,0,100,0,NA,NA,NA,NA,NA,80,0,0,0,9 TS,,,,,,,,,,,,0,9,0,0
+Nanat ,cs1,2024-04-03,Carolyn,1,100,0,2,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul1,2024-04-03,Carolyn,4,11,0,3,3,3,2,NA,21,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cl2,2024-04-03,Carolyn,3,12,0,1,3,3,NA,NA,6,0,0,0,SN,,,,,,,,,,,,0,1,0,0
+Nanat ,us2,2024-04-03,Carolyn,1,100,0,4,NA,NA,NA,NA,25,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs3,2024-04-03,Carolyn,0,100,NA,NA,NA,NA,NA,NA,20,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul3,2024-04-03,Carolyn,9,12,0,5,7,9,4,5,6,0,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,cs2,2024-05-13,Carolyn,0,22,NA,NA,NA,NA,NA,NA,0,21,0,0,"50+ LH, 4 TS, 1 PYC",cage moved,,,,,,,,,,,1,4,0,0
+Taylor,cl1,2024-05-13,Carolyn,2,7,NA,26,22,15,7,9,0,0,0,0,2 SN,cage broke,,,,22,25,7,26,9,,,0,2,0,0
+Taylor,cs1,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,16,0,0,"KC 1, 1 PYC,  1 TS",cage moved ~30 cm,,,,,,,,,,,1,1,0,0
+Taylor,ul3,2024-05-13,Carolyn,2,13,NA,12,4,5,3,,0,4,0,0,4 TS,,,,,4,5,3,12,,,,0,4,0,0
+Taylor,cl3,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,11,0,0,1 TS,caged moved,,,,,,,,,,,0,1,0,0
+Taylor,ul2,2024-05-13,Carolyn,0,14,NA,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cl1,2024-05-13,Clay,3,13,0,35,30,32,NA,NA,0,2,0,0,,urchins on side of cage not on bottom,2,,,,,,,,,,0,0,0,0
+Dixon,cs1,2024-05-13,Clay,0,45,0,NA,NA,NA,NA,NA,10,5,0,0,,"only one urchin on bottom, rest on sides of cage",4,,,,,,,,,,0,0,0,0
+Dixon,us2,2024-05-13,Clay,1,45,0,16,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,us3,2024-05-13,Clay,0,55,0,NA,NA,NA,NA,NA,0,1,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,ul2,2024-05-13,Clay,1,14,0,30,NA,NA,NA,NA,5,0,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cs3,2024-05-13,Clay,0,30,0,NA,NA,NA,NA,NA,5,1,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,cl1,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,leafy hornmouth ,"encursting coralline co-occurring algae, cages moved unknown",,,,,,,,,,,0,0,0,0
+Ed King,cs1,2024-05-13,Carolyn,0,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,"2 LH, 1 AB",cages moved unknown,,,,,,,,,,,0,0,1,0
+Ed King,cl2,2024-05-13,Carolyn,0,NA,NA,25,NA,NA,NA,NA,0,4,0,0,2 LH,cages moved unknown,,,,,,,,,,,0,0,0,0
+Ed King,cs2,2024-05-13,Carolyn,2,15,0,20,5,NA,NA,NA,0,1,0,0,1 AB,,,,,,,,,,,,0,0,1,0
+Ed King,cl3,2024-05-13,Carolyn,2,4,10,12,20,NA,NA,NA,0,3,0,0,,,,,,10,12,,20,,,,0,0,0,0
+Ed King,cs3,2024-05-13,Carolyn,0,9,NA,NA,NA,NA,NA,NA,0,9,0,0,"1 KC, 2 TS",,,,,,,,,,,,0,2,0,0
+Ed King,ul1,2024-05-13,Clay,4,11,0,17,6,20,8,NA,0,4,0,0,,,1,,,,,,,,,,0,0,0,0
+Ed King,ul2,2024-05-13,Clay,5,10,0,10,23,12,18,17,0,3,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,us2,2024-05-13,Clay,2,50,0,6,4,NA,NA,NA,0,3,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,ul3,2024-05-13,Clay,3,11,0,12,9,7,NA,NA,0,2,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,us3,2024-05-13,Clay,0,25,0,NA,NA,NA,NA,NA,0,4,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,us1,2024-05-13,Clay,1,35,0,6,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,us2,2024-05-13,Clay,0,55,0,NA,NA,NA,NA,NA,0,3,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,us1,2024-05-13,Clay,0,45,0,NA,NA,NA,NA,NA,0,0,0,0,1 PYC,,,,,,,,,,,,1,0,0,0
+Taylor,cl2,2024-05-13,Clay,3,11,1,6,10,5,NA,NA,0,17,0,0,,many urchins on sides,16,,,,,,,,,,0,0,0,0
+Taylor,ul1,2024-05-13,Clay,1,14,0,3,NA,NA,NA,NA,0,4,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,us3,2024-05-13,Clay,0,60,1,0,NA,NA,NA,NA,0,4,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,cs3,2024-05-13,Clay,1,40,1,3,NA,NA,NA,NA,0,10,0,0,,many urchins on sides,9,,,,,,,,,,0,0,0,0
+Ellis_N,cs1,2024-05-14,Carolyn,0,4,NA,NA,NA,NA,NA,NA,40,6,0,0,"sea pen, 17 TS","cs2 cage may have moved, co-occuring algae = coralline algae",,,,,,,,,,,0,17,0,0
+Ellis_N,us1,2024-05-14,Carolyn,0,35,0,NA,NA,NA,NA,NA,90,0,0,0,"diamon black nudi, 3 TS, 1 CUC",,,,,,,,,,,,0,3,0,1
+Ellis_N,cl2,2024-05-14,Carolyn,5,14,0,10,31,24,11,22,60,1,0,0,"1 CUC, 10 TS, ",,,,,,,,,,,,0,10,0,1
+Ellis_N,ul2,2024-05-14,Carolyn,1,13,0,16,NA,NA,NA,NA,80,3,0,0,10 TS,,,,,,,,,,,,0,10,0,0
+Ellis_N,cs3,2024-05-14,Carolyn,0,25,1,29,NA,NA,NA,NA,85,0,0,0,"10 TS, decorator crab",,,,,,,,,,,,0,10,0,0
+Ellis_N,us3,2024-05-14,Carolyn,0,50,0,NA,NA,NA,NA,NA,86,1,0,0,"11 TS, 1 CUC",desmerestia co-occuring,,,,,,,,,,,0,11,0,1
+Nanat ,cs1,2024-05-14,Hannah ,0,15,0,NA,NA,NA,NA,NA,70,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul1,2024-05-14,Hannah ,3,7,0,50,30,90,110,5,80,0,0,0,,,,,,50,30,,90,110,,5,0,0,0,0
+Nanat ,cl2,2024-05-14,Hannah ,3,6,0,90,60,40,20,5,80,0,0,0,,,,,,90,60,,40,20,,5,0,0,0,0
+Nanat ,ul2,2024-05-14,Hannah ,2,5,0,5,7,NA,NA,NA,85,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs3,2024-05-14,Hannah ,0,35,0,NA,NA,NA,NA,NA,80,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,us3,2024-05-14,Hannah ,2,25,0,5,3,NA,NA,NA,50,0,0,0,,,,,,5,,,3,,,,0,0,0,0
+Ellis_N,cl1,2024-05-14,Clay ,10,10,1,25,42,30,87,46,5,3,0,0,,,1,,,,,,,,,,0,0,0,0
+Ellis_N,ul1,2024-05-14,Clay ,1,14,0,27,NA,NA,NA,NA,10,2,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_N,cs2,2024-05-14,Clay ,8,55,0,16,7,6,11,14,0,1,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_N,us2,2024-05-14,Clay ,8,65,2,11,7,16,26,22,0,1,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_N,cl3,2024-05-14,Clay ,6,13,0,31,52,6,19,21,5,6,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_N,ul3,2024-05-14,Clay ,2,12,0,6,4,NA,NA,NA,0,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_S,cs1,2024-05-15,Unknown,3,40,0,82,12,42,NA,NA,25,1,0,0,5 TS,,,,,,,,,,,,0,5,0,0
+Ellis_S,us1,2024-05-15,Unknown,0,40,0,NA,NA,NA,NA,NA,5,2,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_S,cl2,2024-05-15,Unknown,0,4,0,NA,NA,NA,NA,NA,5,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis_S,ul2,2024-05-15,Unknown,0,12,0,NA,NA,NA,NA,NA,0,0,0,0,,"cages completely shifted, sandbags torn, bottom shorn loose in some places, shifting with surge",,,,,,,,,,,0,0,0,0
+Ellis_S,cs3,2024-05-15,Unknown,0,NA,NA,NA,NA,NA,NA,NA,5,2,0,0,,"lost sandbags, zip ties, completely shifted ",,,,,,,,,,,0,0,0,0
+Ellis_S,us3,2024-05-15,Unknown,0,50,NA,NA,NA,NA,NA,NA,0,1,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cl1,2024-05-14,Clay,1,12,0,11,NA,NA,NA,NA,10,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul1,2024-05-14,Clay,3,11,0,36,110,16,NA,NA,15,0,0,0,,many diatoms,,,,,,,,,,,0,0,0,0
+Nanat ,cs2,2024-05-14,Clay,0,NA,NA,NA,NA,NA,NA,NA,30,0,0,0,,too fouled to determine number of gracel ,,,,,,,,,,,0,0,0,0
+Nanat ,us2,2024-05-14,Clay,0,NA,NA,NA,NA,NA,NA,NA,30,0,0,0,,many diatoms,,,,,,,,,,,0,0,0,0
+Nanat ,cl3,2024-05-14,Clay,4,15,0,112,80,78,115,,15,0,0,0,,many diatoms,,,,,,,,,,,0,0,0,0
+Nanat ,ul3,2024-05-14,Clay,5,15,0,23,46,67,54,30,15,0,0,0,,many diatoms,,,,,,,,,,,0,0,0,0
+Nanat ,us1,2024-05-14,Clay,0,40,NA,NA,NA,NA,NA,NA,90,0,0,0,,many diatoms,,,,,,,,,,,0,0,0,0
+Ellis_S,cl1,2024-05-15,Carolyn,4,12,0,14,15,8,2,NA,80,1,0,0,8 TS,,,,,,,,,,,,0,8,0,0
+Ellis_S,ul1,2024-05-15,Carolyn,0,15,NA,NA,NA,NA,NA,NA,90,1,0,0,14 TS,"cages moved, very diatom fouled",,,,,,,,,,,0,14,0,0
+Ellis_S,cs2,2024-05-15,Carolyn,0,3,NA,NA,NA,NA,NA,NA,80,13,0,0,"male greenling, 2 CUC",,,,,,,,,,,,0,0,0,2
+Ellis_S,us2,2024-05-15,Carolyn,0,30,NA,NA,NA,NA,NA,NA,60,1,0,0,5 TS,,,,,,,,,,,,0,5,0,0
+Ellis_S,cl3,2024-05-15,Carolyn,0,5,NA,NA,NA,NA,NA,NA,50,0,0,0,1 AB,,,,,,,,,,,,0,0,1,0
+Ellis_S,ul3,2024-05-15,Carolyn,0,10,0,34,NA,NA,NA,NA,95,2,0,0,3 TS,,,,,,,,,,,,0,3,0,0
+Dixon,ul1,2024-05-13,Carolyn,1,15,NA,5,NA,NA,NA,NA,70,1,0,0,"2 TS, 1 AB, 1 CUC",,,,,,,,,,,,0,2,1,1
+Dixon,us1,2024-05-13,Carolyn,0,30,NA,NA,NA,NA,NA,NA,90,1,0,0,"1 CUC, 4 TS",,,,,,,,,,,,0,4,0,1
+Dixon,cl2,2024-05-13,Carolyn,0,14,NA,NA,NA,NA,NA,NA,0,1,0,0,"1 CUC, 5 TS, moonsnail",,,,,,,,,,,,0,5,0,1
+Dixon,cs2,2024-05-13,Carolyn,0,30,NA,NA,NA,NA,NA,NA,75,4,0,0,3 TS,,,,,,,,,,,,0,3,0,0
+Dixon,ul3,2024-05-13,Carolyn,0,9,NA,NA,NA,NA,NA,NA,70,1,0,0,"1 TS, 1 CUC, male greenling",,,,,,,,,,,,0,1,0,1
+Dixon,cl3,2024-05-13,Carolyn,3,11,0,11,47,32,28,24,60,1,0,0,"1 TS, saddle back gunnel ",,,,,32,28,24,47,,,,0,1,0,0
+Ed King,cs1,2024-06-24,Clay,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,"cage removed, completely collapsed ",,,,,,,,,,,0,0,0,0
+Ed King,us1,2024-06-24,Clay,0,40,NA,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,ul2,2024-06-24,Clay,0,12,NA,NA,NA,NA,NA,NA,0,2,0,0,,cl2 shifted onto this plot,,,,,,,,,,,0,0,0,0
+Ed King,cl2,2024-06-24,Clay,0,0,NA,NA,NA,NA,NA,NA,0,5,0,0,,"shifted 2m inshore, shifted over 1/3 of ul2",,,,,,,,,,,0,0,0,0
+Ed King,ul3,2024-06-24,Clay,2,11,2,104,4,NA,NA,NA,0,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,us3,2024-06-24,Clay,0,40,NA,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,cs3,2024-06-24,Clay,0,15,NA,NA,NA,NA,NA,NA,0,15,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,ul1,2024-06-24,Lauren,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,3,,,,,,,,,,,,,0,0,0,0
+Ed King,cs2,2024-06-24,Lauren,0,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,us2,2024-06-24,Lauren,1,70,10,NA,NA,NA,NA,NA,90,1,0,0,2 TS,,,,,,,,,,,,0,2,0,0
+Ed King,cl3,2024-06-24,Lauren,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ed King,cl1,2024-06-24,Lauren,0,7,NA,NA,NA,NA,NA,NA,90,0,0,0,4 TS,,,,,,,,,,,,0,4,0,0
+Taylor,us1,2024-06-24,Clay,0,45,NA,NA,NA,NA,NA,NA,0,5,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,cs1,2024-06-24,Clay,0,5,NA,NA,NA,NA,NA,NA,0,1,0,0,,,5,,,,,,,,,,0,0,0,0
+Taylor,ul2,2024-06-24,Clay,0,13,0,NA,NA,NA,NA,NA,0,1,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,cl2,2024-06-24,Clay,1,10,0,4,NA,NA,NA,NA,4,4,0,0,,,3,,,,,,,,,,0,0,0,0
+Taylor,us3,2024-06-24,Clay,0,40,0,NA,NA,NA,NA,NA,0,2,0,0,,,,,,,,,,,,,0,0,0,0
+Taylor,cs3,2024-06-24,Clay,1,50,0,14,NA,NA,NA,NA,0,1,0,0,,,4,,,,,,,,,,0,0,0,0
+Taylor,cl1,2024-06-24,Lauren,0,7,0,NA,NA,NA,NA,NA,30,4,0,0,"1 TS, 3 AB, 1 PYC",,1,,,,,,,,,,1,1,3,0
+Taylor,ul1,2024-06-24,Lauren,0,10,0,NA,NA,NA,NA,NA,30,1,0,0,"1 AB, 6 TS",,,,,,,,,,,,0,6,1,0
+Taylor,cs2,2024-06-24,Lauren,0,50,0,NA,NA,NA,NA,NA,50,2,0,0,"3 TS, 1 AB",,3,,,,,,,,,,0,3,1,0
+Taylor,us2,2024-06-24,Lauren,0,70,0,NA,NA,NA,NA,NA,60,7,0,0,"1 TS, 1 AB",,,,,,,,,,,,0,1,1,0
+Taylor,cl3,2024-06-24,Lauren,0,5,0,NA,NA,NA,NA,NA,40,0,0,0,2 PYC,,3,,,,,,,,,,2,0,0,0
+Taylor,ul3,2024-06-24,Lauren,0,5,0,NA,NA,NA,NA,NA,50,4,0,0,2 TS,,,,,,,,,,,,0,2,0,0
+Nanat ,cs1,2024-06-25,Lauren,0,50,0,0,0,0,0,0,35,0,0,0,1 CUC,,,,,,,,,,,,0,0,0,1
+Nanat ,us1,2024-06-25,Lauren,3,40,0,630,550,540,NA,NA,70,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cl2,2024-06-25,Lauren,0,4,0,0,0,0,0,0,20,0,0,0,,"all 1-2cm, small brown algae cant determine if our kelp ",,,,,,,,,,,0,0,0,0
+Nanat ,ul2,2024-06-25,Lauren,3,5,0,320,310,340,180,270,0,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs3,2024-06-25,Lauren,1,50,1,700,NA,NA,NA,NA,50,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,us3,2024-06-25,Lauren,2,50,2,530,460,NA,NA,NA,50,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis N,ul3,2024-06-25,Lauren,0,10,0,NA,NA,NA,NA,NA,50,0,0,0,"6 TS, some limpets ",has some small green algae ,,,,,,,,,,,0,6,0,0
+Ellis N,cl1,2024-06-25,Lauren,3,5,0,45,7,35,NA,NA,50,0,0,0,"6 TS, 5 TS outside cages ",,,,,,,,,,,,0,6,0,0
+Ellis N,cs2,2024-06-25,Lauren,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,,removed cage,,,,,,,,,,,0,0,0,0
+Ellis N,us2,2024-06-25,Lauren,1,100,0,11,NA,NA,NA,NA,95,3,0,0,6 TS,unclear whether this is macro ,,,,,,,,,,,0,6,0,0
+Ellis N,cl3,2024-06-25,Lauren,0,7,0,NA,NA,NA,NA,NA,0,0,0,0,"1 AB, 5 TS",removed cage,,,,,,,,,,,0,5,1,0
+Ellis N,ul1 ,2024-06-25,Lauren,1,11,0,15,NA,NA,NA,NA,95,0,0,0,13 TS,,,,,,,,,,,,0,13,0,0
+Ellis N,us1,2024-06-25,Clay ,0,40,0,NA,NA,NA,NA,NA,10,2,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis N,cs1,2024-06-25,Clay ,0,50,0,,NA,NA,NA,NA,15,2,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis N,cs3,2024-06-25,Clay ,0,25,1,100,NA,NA,NA,NA,5,0,0,0,,unclear whether this is our kelp ,2,,,,,,,,,,0,0,0,0
+Ellis N,cl2,2024-06-25,Clay ,0,10,0,NA,NA,NA,NA,NA,10,0,0,0,,,1,,,,,,,,,,0,0,0,0
+Ellis N,us3,2024-06-25,Clay ,0,40,3,20,3,NA,NA,NA,20,0,0,0,,unclear whether this is our kelp ,,,,,,,,,,,0,0,0,0
+Ellis N,ul2,2024-06-25,Clay ,0,12,2,20,15,NA,NA,NA,5,2,0,0,,unclear whether this is our kelp ,,,,,,,,,,,0,0,0,0
+Nanat ,cl1,2024-06-25,Lauren,4,10,5,25,90,60,140,40,10,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul1,2024-06-25,Lauren,3,6,3,65,115,60,135,40,15,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,us2,2024-06-25,Lauren,0,0,16,NA,NA,NA,NA,NA,25,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs2,2024-06-25,Lauren,1,40,15,115,NA,NA,NA,NA,25,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul3,2024-06-25,Lauren,3,5,0,60,40,30,NA,NA,20,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cl3,2024-06-25,Lauren,4,5,3,100,35,35,180,50,15,0,0,0,,,1,,,,,,,,,,0,0,0,0
+Dixon,cl1,2024-06-24,Carolyn,0,9,0,NA,NA, NA,NA,NA,90,1,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,ul1,2024-06-24,Carolyn,0,12,0,NA,NA, NA,NA,NA,95,2,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,us2,2024-06-24,Carolyn,1,25,0,16,NA, NA,NA,NA,80,6,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cs2,2024-06-24,Carolyn,0,39,0,NA,NA, NA,NA,NA,80,0,0,0,,,3,,,,,,,,,,0,0,0,0
+Dixon,ul3,2024-06-24,Carolyn,0,11,0,NA,NA, NA,NA,NA,95,2,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cl3,2024-06-24,Carolyn,0,8,1,52,NA, NA,NA,NA,70,1,0,0,,,2,,,,,,,,,,0,0,0,0
+Dixon,us1,2024-06-24,Carolyn,0,32,2,27,18, NA,NA,NA,70,1,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cs1,2024-06-24,Lauren,1,81,0,55,35, NA,NA,NA,100,0,0,1,1 TS,,,1,,,,,,,,,0,1,0,0
+Dixon,ul2,2024-06-24,Lauren,0,8,0,NA,NA, NA,NA,NA,100,3,0,0,4 TS,,,,,,,,,,,,0,4,0,0
+Dixon,cl2,2024-06-24,Lauren,0,10,0,NA,NA, NA,NA,NA,70,0,0,1,1 TS,,,,,,,,,,,,0,1,0,0
+Dixon,us3,2024-06-24,Lauren,0,80,0,NA,NA, NA,NA,NA,85,0,0,2,3 TS,,,,,,,,,,,,0,3,0,0
+Dixon,cs3,2024-06-24,Lauren,0,100,0,NA,NA, NA,NA,NA,70,0,0,2,5 CUC,,,6,,,,,,,,,0,0,0,5
+Ellis S,ul3,2024-06-25,Carolyn ,0,10,0,NA,NA,NA,NA,NA,90,3,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis S,cl1,2024-06-25,Carolyn ,NA,NA,NA,NA,NA,NA,NA,NA,0,2,0,0,,,1,,,,,,,,,,0,0,0,0
+Ellis S,cs2,2024-06-25,Carolyn ,0,12,1,14,NA,NA,NA,NA,0,1,0,0,,,4,,,,,,,,,,0,0,0,0
+Ellis S,us2,2024-06-25,Carolyn ,0,18,0,NA,NA,NA,NA,NA,85,0,0,0,3 TS,,,,,,,,,,,,0,3,0,0
+Ellis S,cl3,2024-06-25,Carolyn ,0,5,0,NA,NA,NA,NA,NA,60,1,0,0,,cage removed,1,,,,,,,,,,0,0,0,0
+Ellis S,ul1,2024-06-25,Carolyn ,0,10,0,NA,NA,NA,NA,NA,75,2,0,0,"4 TS, 1 CUC",,,,,,,,,,,,0,4,0,1
+Nanat ,cl3,2024-08-06,Jasmin,0,4,0,NA,NA,NA,NA,NA,10,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,us1,2024-08-06,Jasmin,0,0,0,NA,NA,NA,NA,NA,10,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,us2,2024-08-06,Jasmin,1,4,1,136,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,us3,2024-08-06,Jasmin,0,0,0,NA,NA,NA,NA,NA,15,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cl1,2024-08-06,Clay,0,10,3,NA,NA,NA,NA,NA,15,1,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,cl2,2024-08-06,Clay,4,4,2,171,11,165,NA,NA,15,0,0,0,,,,,,145,135,,,,,,0,0,0,0
+Nanat ,ul1,2024-08-06,Clay,2,3,NA,140,NA,NA,NA,NA,30,0,0,0,,,,,,231,171,,,,,,0,0,0,0
+Nanat ,ul2,2024-08-06,Clay,4,5,NA,1124,1006,560,620,NA,60,0,0,0,,,,,,,,,,,,,0,0,0,0
+Nanat ,ul3,2024-08-06,Clay,0,5,NA,NA,NA,NA,NA,NA,90,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis S,cs1,2024-06-25,Carolyn ,2,40,NA,90,25,NA,NA,NA,25,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis S,cl2,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,80,8,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis S,cs3,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,60,0,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis S,us1,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,50,1,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis S,ul2,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,95,9,0,0,,,,,,,,,,,,,0,0,0,0
+Ellis S,us3,2024-06-25,Carolyn ,0,0,NA,NA,NA,NA,NA,NA,70,0,0,0,,,,,,,,,,,,,0,0,0,0
+Dixon,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Dixon,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis S,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ellis N,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Taylor ,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,ul1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,cl2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,us2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,ul3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,cl1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,us1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,ul2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,cl3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,us3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Ed King,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs1,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs3,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0
+Nanat ,cs2,2024-08-06,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,,,,,,,,,,,,,0,0,0,0

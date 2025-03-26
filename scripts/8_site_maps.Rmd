@@ -170,4 +170,57 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/maps/sites.png",
        width = 7, height = 6, units = "in")
 
 ```
+#Adding symbology and north arrow 
+```{r}
+library(ggplot2)
+library(ggmap)
+library(ggspatial)
+
+# Define colors and shapes for density levels
+density_colors <- c('low' = '#4da607', 'medium' = '#f9cd44', 'high' = '#cd3737')
+density_shapes <- c('low' = 15, 'medium' = 16, 'high' = 17)  # Square, Circle, Triangle
+
+# Ensure 'density' is a factor with correct level order
+sites$density <- factor(sites$density, levels = c("high", "medium", "low"))
+
+# Modify ggmap plot
+map.for.samples <- ggmap(map_transparent) + 
+  theme(panel.grid = element_blank(), 
+        panel.background = element_rect(fill = 'white')) +
+  
+  # Plot points with different colors and shapes
+  geom_point(data = sites, 
+             aes(x = lon_decimal, y = lat_decimal, color = density, shape = density), 
+             size = 3) +  
+  
+  # Apply color and shape mapping
+  scale_color_manual(values = density_colors) +
+  scale_shape_manual(values = density_shapes) +
+  
+  # Add site labels
+  geom_text(data = sites,
+            aes(x = lon_decimal, y = lat_decimal, label = site),
+            size = 3, fontface = "bold", color = "black",
+            hjust = -0.06, vjust = -0.03) +
+  
+  # Add north arrow
+  annotation_north_arrow(location = "topleft", 
+                         which_north = "true", 
+                         style = north_arrow_fancy_orienteering) +
+  
+  # Axis labels and formatting
+  ylab("Latitude") + xlab("Longitude") + 
+  theme(panel.grid = element_blank(),
+        panel.background = element_rect(fill = 'white'),
+        axis.text = element_text(size = 10))  
+
+# Display the map
+map.for.samples
+
+# Save the plot
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/maps/sites.png",
+       plot = map.for.samples, width = 7, height = 6, units = "in")
+
+
+```
 

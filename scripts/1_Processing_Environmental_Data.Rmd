@@ -82,73 +82,26 @@ write.csv(hobo_combined,
 hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
 ```
 
-##Mean temperature over time - hobo loggers
-```{r}
-hobo$date <- as.Date(hobo$date)
-
-#filter the data to only include temperatures less than 20°C and between March and June
-hobo <- hobo %>%
-  filter(temperature_c < 20)
-
-#Define a threshold for gaps (e.g., 7 days)
-gap_threshold <- 7
-
-#arrange data by Site and date, and calculate time difference
-hobo <- hobo%>%
-  arrange(Site, date) %>%
-  group_by(Site) %>%
-  mutate(time_diff = c(NA, diff(date))) %>%
-  mutate(temperature_c = ifelse(time_diff > gap_threshold, NA, temperature_c))
-
-#create the plot
-ggplot(hobo, aes(x = date, y = temperature_c, color = Site)) +
-  geom_line() +  # Line plot for temperature over time
-  labs(
-    title = "Temperature Over Time by Site (With Gaps Removed)",
-    x = "Date",
-    y = "Temperature (°C)",
-    color = "Site"
-  ) +
-  theme_minimal() +  # Apply a clean theme
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
-  )
-
-#plotting each site 
-#create the plot with facets for each site
-ggplot(hobo, aes(x = date, y = temperature_c)) +
-  geom_line(color = "blue") +  # Line plot for temperature over time
-  labs(
-    title = "Temperature Over Time by Site (With Gaps Removed)",
-    x = "Date",
-    y = "Temperature (°C)"
-  ) +
-  theme_minimal() +  # Apply a clean theme
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
-  ) +
-  facet_wrap(~Site, scales = "free_y")  # Create separate panels for each site, allowing different y-axis scales
-
-```
 ##Light lux over time
 ```{r}
 #Read and preprocess the data
 hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+
 hobo$date <- as.Date(hobo$date)
 
-#Filter data for temperature below 20°C
-hobo <- hobo %>%
+hobo_filtered <- hobo %>% #only choose months of study period
   filter(format(date, "%m") %in% c("03", "04", "05", "06", "07"))  
+  
+
+#Calculate daily mean light lux by site and date
+hobo_daily_mean <- hobo_filtered %>%
+  group_by(Site, date) %>%
+  summarize(daily_mean_light_lux = mean(light_lux, na.rm = TRUE), .groups = "drop")
 
 #Define a threshold for gaps (e.g., 7 days)
 gap_threshold <- 7
 
-#Calculate daily mean light lux by site and date
-hobo_daily_mean <- hobo %>%
-  group_by(Site, date) %>%
-  summarize(daily_mean_light_lux = mean(light_lux, na.rm = TRUE), .groups = "drop")
-
-#Identify gaps and set `temperature_c` to NA for gaps
+#Identify gaps and set light to NA for gaps
 hobo_daily_mean <- hobo_daily_mean %>%
   arrange(Site, date) %>%
   group_by(Site) %>%
@@ -157,6 +110,7 @@ hobo_daily_mean <- hobo_daily_mean %>%
     daily_mean_light_lux = ifelse(time_diff > gap_threshold, NA, daily_mean_light_lux)  # Break lines at gaps
   ) %>%
   ungroup()  # Make sure to ungroup after modifying data
+
 
 #Plot the daily mean of light availability over time by site
 plot_light <- ggplot(hobo_daily_mean, aes(x = date, y = daily_mean_light_lux, color = Site)) +
@@ -186,6 +140,14 @@ plot_light
 #save plot 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meanlight.jpg", plot = plot_light, width = 9, height = 6, dpi = 300)
 
+#save 
+
+start_date <- as.Date("2024-03-01")
+end_date <- as.Date("2024-08-01")
+
+light <- plot_light + scale_x_date(limits = c(start_date, end_date)) + theme(axis.title.x = element_blank(), legend.position = "none", axis.text.x = element_blank())
+
+light
 ```
 
 #ENV LOGGER DATA
@@ -249,97 +211,6 @@ write.csv(env_combined,
 
 
 ```
-
-#plotting temperature data
-
-```{r}
-env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv")
-
-#Convert time to date format
-env$date <- as.Date(env$time)
-
-#Filter and process the data
-env_filtered <- env %>%
-  filter(temperature_c < 20) %>%          # Filter temperatures < 20°C
-  filter(format(date, "%m") %in% c("03", "04", "05", "06", "07"))  %>% 
-  arrange(Site, date) %>%                 # Sort by Site and date
-  group_by(Site) %>%                      # Group by site
-  mutate(
-    time_diff = c(NA, diff(date)),        # Calculate time differences between dates
-    temperature_c = ifelse(time_diff > 7, NA, temperature_c) # Set temperature to NA for gaps > 7 days
-  ) %>%
-  ungroup() %>%
-  filter(!(Site == "EK" & temperature_c > 12.5)) %>%  # Remove data > 12.5 for EK
-  filter(!(date >= "2024-06-24" & date <= "2024-06-28"))   # Remove dates between June 24 and June 28
-  
-#Smooth the data by calculating daily mean temperature for each site
-env_smoothed <- env_filtered %>%
-  group_by(Site, date) %>%
-  summarise(temperature_c = mean(temperature_c, na.rm = TRUE)) %>%
-  ungroup()
-
-#Plot the smoothed data
-plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) + 
-  geom_line() +  # Line plot for temperature over time
-  labs(
-    title = "Daily Mean Temperature Over Time by Site",
-    x = "Date",
-    y = "Temperature (°C)",
-    color = "Site"
-  ) +
-  theme_minimal() +  # Apply a clean theme
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
-  ) +
-  scale_color_manual(
-    values = c(
-      "EK" = "#FF5733",
-      "EN" = "#4da607",
-      "ES" = "grey",
-      "NN" = "#62a4ea",
-      "DX" = "#eacf62",
-      "TR" = "#076fa6"
-    )
-  ) +
-  facet_wrap(~Site, scales = "free_y")  # Create separate panels for each site with individual y-scales
-
-plot 
-
-
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp_bysite.jpg", plot = plot, width = 9, height = 6, dpi = 300)
-
-
-# Plot temperature vs. time, colored by site (all on the same graph)
-plot_temp <- plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) + 
-  geom_line() +  # Line plot for temperature over time
-  labs(
-    x = "Date",
-    y = "Daily Mean Temperature (°C)",
-    color = "Site"
-  ) +
-  theme_minimal() +  # Apply a clean theme
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
-  ) +
-  scale_color_manual(
-    values = c(
-      "EK" = "#FF5733",
-      "EN" = "#4da607",
-      "ES" = "grey",
-      "NN" = "#62a4ea",
-      "DX" = "#eacf62",
-      "TR" = "#076fa6"
-    )
-  )  # Set custom colors for sites
-
-plot_temp 
-
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp.jpg", plot = plot_temp, width = 9, height = 6, dpi = 300)
-
-
-
-```
-
 
 #TILT CURRENT METERS 
 ```{r}
@@ -411,7 +282,7 @@ write.csv(tilt_combined,
           row.names = FALSE)
 ```
 
-#Plotting 
+##Plotting tilt data 
 ```{r}
 tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_tilt.csv")
 
@@ -420,10 +291,12 @@ tilt$date <- as.Date(tilt$date)
 
 #filter and process the data
 tilt_filtered <- tilt %>%
-  filter(temp_c < 20) %>%   # Filter temperatures < 20°C
   filter(speed_mpers < 0.35) %>%
-  filter(format(date, "%m") %in% c("03", "04", "05", "06", "07"))  %>% 
-  filter(!(date >= "2024-06-24" & date <= "2024-06-28"))   # Remove dates between June 24 and June 28
+  filter(format(date, "%m") %in% c("03", "04", "05", "06"))  %>% 
+  filter(!(date >= "2024-06-24" & date <= "2024-06-28"))  %>% 
+  filter(!(date >= "2024-05-15" & date <= "2024-05-17")) %>% 
+  filter(!(date >= "2024-07-01" & date <= "2024-12-01"))
+
   
 #smooth the data by calculating daily mean and max variables for each site
 tilt_summary <- tilt_filtered %>%
@@ -497,58 +370,133 @@ plot_current
 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/current.jpg", plot = plot_current, width = 9, height = 6, dpi = 300)
 
+
+start_date <- as.Date("2024-03-01")
+end_date <- as.Date("2024-08-01")
+
+current <- plot_current + scale_x_date(limits = c(start_date, end_date)) + theme(axis.title.x = element_blank(), legend.position = "none")
+
+current
 ```
+
+#Plotting temperature (using both ENV and HOBO)
+##read in data and combine + summarize across both dataset 
 ```{r}
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv")
+
+hobo <- hobo %>%
+  select(-n, -light_lux) %>%
+  rename(time = date)
+
+combined_data <- rbind(hobo, env)
+
+#summarize
+#Convert time to date format
+combined_data$date <- as.Date(combined_data$time)
+
+#Filter and process the data
+env_filtered <- combined_data %>%
+  filter(format(date, "%m") %in% c("03", "04", "05", "06", "07"))  %>% 
+  arrange(Site, date) %>%                 # Sort by Site and date
+  group_by(Site) %>%                      # Group by site
+  mutate(
+    time_diff = c(NA, diff(date)),        # Calculate time differences between dates
+    temperature_c = ifelse(time_diff > 7, NA, temperature_c) # Set temperature to NA for gaps > 7 days
+  ) %>%
+  ungroup() %>% #removing dates within monitoring periods 
+  filter(!(date >= "2024-06-24" & date <= "2024-06-28")) %>% # Remove dates between June 24 and June 28
+  filter(!(date >= "2024-03-31" & date <= "2024-04-06")) %>% # Remove dates between March 31 and April 6
+  filter(!(date >= "2024-05-12" & date <= "2024-05-18")) %>% # Remove dates between March 31 and April 6
+  filter(!(date >= "2024-08-04" & date <= "2024-08-10"))
+  
+#Smooth the data by calculating daily mean temperature for each site
+env_smoothed <- env_filtered %>%
+  group_by(Site, date) %>%
+  summarise(temperature_c = mean(temperature_c, na.rm = TRUE)) %>%
+  ungroup()
+
+#Plot the smoothed data
+plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) + 
+  geom_line() +  # Line plot for temperature over time
+  labs(
+    title = "Daily Mean Temperature Over Time by Site",
+    x = "Date",
+    y = "Temperature (°C)",
+    color = "Site"
+  ) +
+  theme_minimal() +  # Apply a clean theme
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  ) +
+  scale_color_manual(
+    values = c(
+      "EK" = "#FF5733",
+      "EN" = "#4da607",
+      "ES" = "grey",
+      "NN" = "#62a4ea",
+      "DX" = "#eacf62",
+      "TR" = "#076fa6"
+    )
+  ) +
+  facet_wrap(~Site, scales = "free_y")  # Create separate panels for each site with individual y-scales
+
+plot 
+
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp_bysite.jpg", plot = plot, width = 9, height = 6, dpi = 300)
+
+
+# Plot temperature vs. time, colored by site (all on the same graph)
+plot_temp <- plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) + 
+  geom_line() +  # Line plot for temperature over time
+  labs(
+    x = "Date",
+    y = "Daily Mean Temperature (°C)",
+    color = "Site"
+  ) +
+  theme_minimal() +  # Apply a clean theme
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  ) +
+  scale_color_manual(
+    values = c(
+      "EK" = "#FF5733",
+      "EN" = "#4da607",
+      "ES" = "grey",
+      "NN" = "#62a4ea",
+      "DX" = "#eacf62",
+      "TR" = "#076fa6"
+    )
+  )  # Set custom colors for sites
+
+plot_temp 
+
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp.jpg", plot = plot_temp, width = 9, height = 6, dpi = 300)
+
+
+start_date <- as.Date("2024-03-01")
+end_date <- as.Date("2024-08-01")
+
+temp <- plot_temp + 
+  scale_x_date(limits = c(start_date, end_date)) + 
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
+temp
+
+```
+
+
+#Combining plots 
+```{r}
+
+library(patchwork)
 # Combine the two plots vertically
-combined_plot <- plot_temp / plot_light / plot_current
+combined_plot <- temp / light / current
 
 # Display the combined plot
 print(combined_plot)
 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/combined_env.jpg", plot = combined_plot, width = 9, height = 15, dpi = 300)
-
-```
-#Create bar plot of environmental variables across plots (cumulative)
-```{r}
-# Define color palette for sites
-site_colors <- c(
-  "EK" = "#FF5733",
-  "EN" = "#4da607",
-  "ES" = "grey",
-  "NN" = "#62a4ea",
-  "DX" = "#eacf62",
-  "TR" = "#076fa6"
-)
-
-# Temperature Boxplot (env)
-plot_temp <- ggplot(env_filtered, aes(x = Site, y = temperature_c, fill = Site)) +
-  geom_boxplot() +
-  scale_fill_manual(values = site_colors) +
-  labs(y = "Temperature (°C)", x = NULL, title = "Temperature by Site") +
-  theme_minimal() +
-  theme(axis.text.x = element_blank(), legend.position = "none")  # Remove x-axis labels & legend
-
-# Light Boxplot (hobo)
-plot_light <- ggplot(hobo, aes(x = Site, y = light_lux, fill = Site)) +
-  geom_boxplot() +
-  scale_fill_manual(values = site_colors) +
-  labs(y = "Light (Lux)", x = NULL, title = "Light by Site") +
-  theme_minimal() +
-  theme(axis.text.x = element_blank(), legend.position = "none")
-
-# Current Speed Boxplot (tilt)
-plot_current <- ggplot(tilt_filtered, aes(x = Site, y = speed_mpers, fill = Site)) +
-  geom_boxplot() +
-  scale_fill_manual(values = site_colors) +
-  labs(y = "Current Speed (m/s)", x = "Site", title = "Current Speed by Site") +
-  theme_minimal() +
-  theme(legend.position = "none")  # Hide legend since all plots share colors
-
-# Stack the plots vertically
-combined_plot <- plot_temp / plot_light / plot_current
-
-# Display the combined plot
-print(combined_plot)
 
 ```
 
