@@ -19,6 +19,7 @@ library(maps)
 library(dplyr)
 library(ggmap)
 library(maps)
+library(ggspatial)
 
 ```
 
@@ -169,6 +170,8 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/maps/sites.png",
        plot = p3,
        width = 7, height = 6, units = "in")
 
+
+
 ```
 #Adding symbology and north arrow 
 ```{r}
@@ -207,7 +210,7 @@ map.for.samples <- ggmap(map_transparent) +
   annotation_north_arrow(location = "topleft", 
                          which_north = "true", 
                          style = north_arrow_fancy_orienteering) +
-  
+
   # Axis labels and formatting
   ylab("Latitude") + xlab("Longitude") + 
   theme(panel.grid = element_blank(),
@@ -221,6 +224,57 @@ map.for.samples
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/maps/sites.png",
        plot = map.for.samples, width = 7, height = 6, units = "in")
 
+map.for.samples + 
+
+```
+#troubleshooting
+```{r}
+
+
+# Ensure your map data has a CRS
+map_transparent <- st_as_sf(map_transparent, coords = c("lon", "lat"), crs = 4326)
+
+# Modify ggmap plot
+map.for.samples <- ggmap(map_transparent) + 
+  theme(panel.grid = element_blank(), 
+        panel.background = element_rect(fill = 'white')) +
+  
+  # Plot points with different colors and shapes
+  geom_point(data = sites, 
+             aes(x = lon_decimal, y = lat_decimal, color = density, shape = density), 
+             size = 3) +  
+  
+  # Apply color and shape mapping
+  scale_color_manual(values = density_colors) +
+  scale_shape_manual(values = density_shapes) +
+  
+  # Add site labels
+  geom_text(data = sites,
+            aes(x = lon_decimal, y = lat_decimal, label = site),
+            size = 3, fontface = "bold", color = "black",
+            hjust = -0.06, vjust = -0.03) +
+  
+  # Add north arrow (ensure CRS is defined)
+  annotation_north_arrow(location = "topleft", 
+                         which_north = "true", 
+                         style = north_arrow_fancy_orienteering) +
+
+  # Convert to coord_sf() for ggspatial to work
+  coord_sf(crs = 4326) +  # Ensure CRS is explicitly set for proper projection
+  
+  # Add scale bar
+  annotation_scale(location = "bottomright",  # Adjust position as needed
+                   bar_cols = c("black", "white"),
+                   line_width = 1) +
+  
+  # Axis labels and formatting
+  ylab("Latitude") + xlab("Longitude") + 
+  theme(panel.grid = element_blank(),
+        panel.background = element_rect(fill = 'white'),
+        axis.text = element_text(size = 10))   
+
+# Display the map
+map.for.samples
 
 ```
 

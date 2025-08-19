@@ -106,45 +106,56 @@ ggdraw(legend)
 #sumamrize urchin density by site and month and treatment
 survival_summary <- plots %>%
   group_by(treatment, site, month) %>%
-  summarise(total_survival = mean(kelp_survival, na.rm = TRUE), .groups = "drop")
+  summarise(
+    mean_survival = mean(kelp_survival, na.rm = TRUE),
+    sd_survival = sd(kelp_survival, na.rm = TRUE),
+    n = n(),
+    se_survival = sd_survival / sqrt(n),
+    .groups = "drop"
+  )
 
-#Ensure 'site' is ordered correctly
 survival_summary$site <- factor(survival_summary$site, levels = c("Nanat", "Ellis S", "Ellis N", "Dixon", "Ed King", "Taylor"))
 survival_summary$month <- factor(survival_summary$month, levels = c("April", "May", "June", "August"))
 
-# Create the bar chart with pattern instead of color
-plot <- ggplot(survival_summary, aes(x = site, y = total_survival, pattern = treatment)) +
+plot <- ggplot(survival_summary, aes(x = site, y = mean_survival, pattern = treatment)) +
   geom_bar_pattern(
-    aes(pattern = treatment), 
-    stat = "identity", 
-    position = position_dodge(width = 0.7),  # Ensure bars are side-by-side, not stacked
+    stat = "identity",
+    position = position_dodge(width = 0.7),
     width = 0.7,
-    fill = "white",  # No solid fill color
-    color = "black",  # Black outline for all bars
-    pattern_density = 0.05,       
-    pattern_spacing = 0.05,       
-    pattern_fill = "black",       
-    pattern_color = "black",      
-    pattern_angle = 45,           
-    pattern_alpha = 1  # Ensures uniform patterns
+    fill = "white",
+    color = "black",
+    pattern_density = 0.05,
+    pattern_spacing = 0.05,
+    pattern_fill = "black",
+    pattern_color = "black",
+    pattern_angle = 45,
+    pattern_alpha = 1
   ) +
-  facet_wrap(~ month, scales = "fixed", ncol = 1) +  # Stack facets vertically
+  geom_errorbar(
+    aes(ymin = mean_survival - se_survival,
+        ymax = mean_survival + se_survival),
+    position = position_dodge(width = 0.7),
+    width = 0.2,
+    color = "black"
+  ) +
+  facet_wrap(~ month, scales = "fixed", ncol = 1) +
   labs(
     x = "Site",
     y = "Kelp Survival (%)",
     fill = "Treatment"
   ) +
-  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  # Apply pattern to "caged"
-  scale_y_continuous(limits = c(0, 100)) +  # Set y-axis range
+  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +
+  scale_y_continuous(limits = c(0, 100)) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 25),  
-    axis.title.x = element_text(size = 25, face = 'bold'),  
-    axis.title.y = element_text(size = 25, face = 'bold'),  
-    panel.grid.major.x = element_blank(), 
-    strip.text = element_text(size = 25)  
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
+    axis.text.y = element_text(size = 40),
+    axis.title.x = element_text(size = 40, face = 'bold'),
+    axis.title.y = element_text(size = 40, face = 'bold'),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(size = 40)
   )
+
 
 # Display the plot
 print(plot)
@@ -155,43 +166,53 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/kelp_survival/bwsurvival
 #KELP GROWTH ####
 growth_summary <- growth_plots %>%
   group_by(treatment, site, month) %>%
-  summarise(total_growth = mean(kelp_growth, na.rm = TRUE), .groups = "drop")
+  summarise(
+    mean_growth = mean(kelp_growth, na.rm = TRUE),
+    sd_growth = sd(kelp_growth, na.rm = TRUE),
+    n = n(),
+    se_growth = sd_growth / sqrt(n),
+    .groups = "drop"
+  )
 
-#Ensure 'site' is ordered correctly
 growth_summary$site <- factor(growth_summary$site, levels = c("Nanat", "Ellis S", "Ellis N", "Dixon", "Ed King", "Taylor"))
 growth_summary$month <- factor(growth_summary$month, levels = c("April", "May", "June", "August"))
 
-# Create the bar chart with pattern instead of color
-plot <- ggplot(growth_summary, aes(x = site, y = total_growth, pattern = treatment)) +
+plot <- ggplot(growth_summary, aes(x = site, y = mean_growth, pattern = treatment)) +
   geom_bar_pattern(
-    aes(pattern = treatment), 
-    stat = "identity", 
-    position = position_dodge(width = 0.7),  # Ensure bars are side-by-side, not stacked
+    stat = "identity",
+    position = position_dodge(width = 0.7),
     width = 0.7,
-    fill = "white",  # No solid fill color
-    color = "black",  # Black outline for all bars
-    pattern_density = 0.05,       
-    pattern_spacing = 0.05,       
-    pattern_fill = "black",       
-    pattern_color = "black",      
-    pattern_angle = 45,           
-    pattern_alpha = 1  # Ensures uniform patterns
+    fill = "white",
+    color = "black",
+    pattern_density = 0.05,
+    pattern_spacing = 0.05,
+    pattern_fill = "black",
+    pattern_color = "black",
+    pattern_angle = 45,
+    pattern_alpha = 1
   ) +
-  facet_wrap(~ month, scales = "free_y", ncol = 1) +        # Stack facets vertically with free y-scales
+  geom_errorbar(
+    aes(ymin = mean_growth - se_growth,
+        ymax = mean_growth + se_growth),
+    position = position_dodge(width = 0.7),
+    width = 0.2,
+    color = "black"
+  ) +
+  facet_wrap(~ month, scales = "free_y", ncol = 1) +
   labs(
     x = "Site",
-    y = "Kelp Growth (cm)",
+    y = "Kelp Length (cm)",
     fill = "Treatment"
   ) +
-  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  # Apply pattern to "caged"
+  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 25),  
-    axis.title.x = element_text(size = 25, face = 'bold'),  
-    axis.title.y = element_text(size = 25, face = 'bold'),  
-    panel.grid.major.x = element_blank(), 
-    strip.text = element_text(size = 25)  
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
+    axis.text.y = element_text(size = 40),
+    axis.title.x = element_text(size = 40, face = 'bold'),
+    axis.title.y = element_text(size = 40, face = 'bold'),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(size = 40)
   )
 
 # Display the plot
@@ -239,46 +260,57 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/surv_gravel_
 #sumamrize urchin density by site and month and treatment
 survival_summary <- plots %>%
   group_by(gravel_size, site, month) %>%
-  summarise(total_survival = mean(kelp_survival, na.rm = TRUE), .groups = "drop")
+  summarise(
+    mean_survival = mean(kelp_survival, na.rm = TRUE),
+    sd_survival = sd(kelp_survival, na.rm = TRUE),
+    n = n(),
+    se_survival = sd_survival / sqrt(n),
+    .groups = "drop"
+  )
 
 #Ensure 'site' is ordered correctly
 survival_summary$site <- factor(survival_summary$site, levels = c("Nanat", "Ellis S", "Ellis N", "Dixon", "Ed King", "Taylor"))
 survival_summary$month <- factor(survival_summary$month, levels = c("April", "May", "June", "August"))
 
 # Create the bar chart with pattern instead of color
-plot <- ggplot(survival_summary, aes(x = site, y = total_survival, pattern = gravel_size)) +
+plot <- ggplot(survival_summary, aes(x = site, y = mean_survival, pattern = gravel_size)) +
   geom_bar_pattern(
-    aes(pattern = gravel_size), 
-    stat = "identity", 
-    position = position_dodge(width = 0.7),  # Ensure bars are side-by-side, not stacked
+    stat = "identity",
+    position = position_dodge(width = 0.7),
     width = 0.7,
-    fill = "white",  # No solid fill color
-    color = "black",  # Black outline for all bars
-    pattern_density = 0.05,       
-    pattern_spacing = 0.05,       
-    pattern_fill = "black",       
-    pattern_color = "black",      
-    pattern_angle = 45,           
-    pattern_alpha = 1  # Ensures uniform patterns
+    fill = "white",
+    color = "black",
+    pattern_density = 0.05,
+    pattern_spacing = 0.05,
+    pattern_fill = "black",
+    pattern_color = "black",
+    pattern_angle = 45,
+    pattern_alpha = 1
   ) +
-  facet_wrap(~ month, scales = "fixed", ncol = 1) +  # Stack facets vertically
+  geom_errorbar(
+    aes(ymin = mean_survival - se_survival,
+        ymax = mean_survival + se_survival),
+    position = position_dodge(width = 0.7),
+    width = 0.2,
+    color = "black"
+  ) +
+  facet_wrap(~ month, scales = "fixed", ncol = 1) +
   labs(
     x = "Site",
     y = "Kelp Survival (%)",
     fill = "Gravel Size"
   ) +
-  scale_pattern_manual(values = c("large" = "stripe", "small" = "none")) +  # Apply pattern to "caged"
-  scale_y_continuous(limits = c(0, 100)) +  # Set y-axis range
+  scale_pattern_manual(values = c("large" = "stripe", "small" = "none")) +
+  scale_y_continuous(limits = c(0, 100)) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 25),  
-    axis.title.x = element_text(size = 25, face = 'bold'),  
-    axis.title.y = element_text(size = 25, face = 'bold'),  
-    panel.grid.major.x = element_blank(), 
-    strip.text = element_text(size = 25)  
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
+    axis.text.y = element_text(size = 40),
+    axis.title.x = element_text(size = 40, face = 'bold'),
+    axis.title.y = element_text(size = 40, face = 'bold'),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(size = 40)
   )
-
 # Display the plot
 print(plot)
 
@@ -318,43 +350,55 @@ ggdraw(legend)
 #B+W
 growth_summary <- growth_plots %>%
   group_by(gravel_size, site, month) %>%
-  summarise(total_growth = mean(kelp_growth, na.rm = TRUE), .groups = "drop")
+  summarise(
+    mean_growth = mean(kelp_growth, na.rm = TRUE),
+    sd_growth = sd(kelp_growth, na.rm = TRUE),
+    n = n(),
+    se_growth = sd_growth / sqrt(n),
+    .groups = "drop"
+  )
 
 #Ensure 'site' is ordered correctly
 growth_summary$site <- factor(growth_summary$site, levels = c("Nanat", "Ellis S", "Ellis N", "Dixon", "Ed King", "Taylor"))
 growth_summary$month <- factor(growth_summary$month, levels = c("April", "May", "June", "August"))
 
-# Create the bar chart with pattern instead of color
-plot <- ggplot(growth_summary, aes(x = site, y = total_growth, pattern = gravel_size)) +
+
+plot <- ggplot(growth_summary, aes(x = site, y = mean_growth, pattern = gravel_size)) +
   geom_bar_pattern(
-    aes(pattern = gravel_size), 
-    stat = "identity", 
-    position = position_dodge(width = 0.7),  # Ensure bars are side-by-side, not stacked
+    stat = "identity",
+    position = position_dodge(width = 0.7),
     width = 0.7,
-    fill = "white",  # No solid fill color
-    color = "black",  # Black outline for all bars
-    pattern_density = 0.05,       
-    pattern_spacing = 0.05,       
-    pattern_fill = "black",       
-    pattern_color = "black",      
-    pattern_angle = 45,           
-    pattern_alpha = 1  # Ensures uniform patterns
+    fill = "white",
+    color = "black",
+    pattern_density = 0.05,
+    pattern_spacing = 0.05,
+    pattern_fill = "black",
+    pattern_color = "black",
+    pattern_angle = 45,
+    pattern_alpha = 1
   ) +
-  facet_wrap(~ month, scales = "free_y", ncol = 1) +        # Stack facets vertically with free y-scales
+  geom_errorbar(
+    aes(ymin = mean_growth - se_growth,
+        ymax = mean_growth + se_growth),
+    position = position_dodge(width = 0.7),
+    width = 0.2,
+    color = "black"
+  ) +
+  facet_wrap(~ month, scales = "free_y", ncol = 1) +
   labs(
     x = "Site",
-    y = "Kelp Growth (cm)",
-    fill = "Treatment"
+    y = "Kelp Length (cm)",
+    fill = "Gravel Size"
   ) +
-  scale_pattern_manual(values = c("small" = "none", "large" = "stripe")) +  
+  scale_pattern_manual(values = c("small" = "none", "large" = "stripe")) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 25),  
-    axis.title.x = element_text(size = 25, face = 'bold'),  
-    axis.title.y = element_text(size = 25, face = 'bold'),  
-    panel.grid.major.x = element_blank(), 
-    strip.text = element_text(size = 25)  
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
+    axis.text.y = element_text(size = 40),
+    axis.title.x = element_text(size = 40, face = 'bold'),
+    axis.title.y = element_text(size = 40, face = 'bold'),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(size = 40)
   )
 
 # Display the plot
@@ -453,6 +497,11 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_surv, pattern = treatm
         color = "black",
         position = position_dodge(0.7)
     ) +
+   geom_text(
+        aes(label = paste0("n = ", n), y = mean_surv + se_surv + 1),  # Adjust position
+        size = 15, 
+        color = "black"
+    ) +
     labs(
         title = "Kelp Survival by Treatment",
         x = "Treatment",
@@ -462,11 +511,11 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_surv, pattern = treatm
     scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  
-        axis.text.x = element_text(size = 20),  
-        axis.text.y = element_text(size = 20),  
-        axis.title.x = element_text(size = 20, face = "bold"),  
-        axis.title.y = element_text(size = 20, face = "bold")  
+        plot.title = element_text(size = 38, face = "bold"),  
+        axis.text.x = element_text(size = 40),  
+        axis.text.y = element_text(size = 40),  
+        axis.title.x = element_text(size = 40, face = "bold"),  
+        axis.title.y = element_text(size = 40, face = "bold")  
     )
 
 plot 
@@ -525,13 +574,12 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_growth, fill = treatme
     scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  # Increase title size
-        axis.text.x = element_text(size = 20),  # Increase x-axis text size
-        axis.text.y = element_text(size = 20),  # Increase y-axis text size
-        axis.title.x = element_text(size = 20, face = "bold"),  # Increase x-axis label size
-        axis.title.y = element_text(size = 20, face = "bold"))  # Increase y-axis label size+
-
-
+        plot.title = element_text(size = 28, face = "bold"),  
+        axis.text.x = element_text(size = 30),  
+        axis.text.y = element_text(size = 30),  
+        axis.title.x = element_text(size = 30, face = "bold"),  
+        axis.title.y = element_text(size = 30, face = "bold")  
+    )
 
 plot
 
@@ -562,20 +610,25 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_growth, pattern = trea
         color = "black",
         position = position_dodge(0.7)
     ) +
+   geom_text(
+        aes(label = paste0("n = ", n), y = mean_growth + se_growth + 10),  # Adjust position
+        size = 15, 
+        color = "black"
+    ) +
     labs(
         title = "Kelp Growth by Treatment",
         x = "Treatment",
-        y = "Kelp Growth (cm)"
+        y = "Kelp Length (cm)"
     ) +
     theme_minimal() +
     scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  
-        axis.text.x = element_text(size = 20),  
-        axis.text.y = element_text(size = 20),  
-        axis.title.x = element_text(size = 20, face = "bold"),  
-        axis.title.y = element_text(size = 20, face = "bold")  
+        plot.title = element_text(size = 38, face = "bold"),  
+        axis.text.x = element_text(size = 40),  
+        axis.text.y = element_text(size = 40),  
+        axis.title.x = element_text(size = 40, face = "bold"),  
+        axis.title.y = element_text(size = 40, face = "bold")  
     )
 
 plot 
@@ -916,6 +969,11 @@ plot <- ggplot(summary_stats, aes(x = gravel_size, y = mean_surv, pattern = grav
         color = "black",
         position = position_dodge(0.7)
     ) +
+     geom_text(
+        aes(label = paste0("n = ", n), y = mean_surv + se_surv + 3),  # Adjust position
+        size = 15, 
+        color = "black"
+    ) +
     labs(
         title = "Kelp Survival by Gravel Size",
         x = "Gravel Size",
@@ -925,11 +983,11 @@ plot <- ggplot(summary_stats, aes(x = gravel_size, y = mean_surv, pattern = grav
     scale_pattern_manual(values = c("small" = "none", "large" = "stripe")) +  
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  
-        axis.text.x = element_text(size = 20),  
-        axis.text.y = element_text(size = 20),  
-        axis.title.x = element_text(size = 20, face = "bold"),  
-        axis.title.y = element_text(size = 20, face = "bold")  
+        plot.title = element_text(size = 28, face = "bold"),  
+        axis.text.x = element_text(size = 30),  
+        axis.text.y = element_text(size = 30),  
+        axis.title.x = element_text(size = 40, face = "bold"),  
+        axis.title.y = element_text(size = 40, face = "bold")  
     )
 
 plot 
@@ -947,7 +1005,7 @@ shapiro.test(growth_plots$kelp_growth[growth_plots$gravel_size == "small"]) #nor
 leveneTest(kelp_growth ~ gravel_size, data = growth_plots) #p = 0.5183 #normal 
 
 #t-test to compare kelp growth between treatments
-t_test_result  <- t.test(kelp_growth ~ gravel_size, data = plots) #p = 0.4022
+t_test_result  <- t.test(kelp_growth ~ gravel_size, data = growth_plots) #p = 0.4022
 t_test_result
 
 
@@ -956,7 +1014,7 @@ p_value <- formatC(t_test_result$p.value, format = "e", digits = 2)
 #barplot 
 #barplot 
 #calculate mean and standard deviation for each treatment
-summary_stats <- plots %>%
+summary_stats <- growth_plots %>%
     group_by(gravel_size) %>%
     summarise(
         mean_growth = mean(kelp_growth, na.rm = TRUE),
@@ -1022,22 +1080,26 @@ plot <- ggplot(summary_stats, aes(x = gravel_size, y = mean_growth, pattern = gr
         color = "black",
         position = position_dodge(0.7)
     ) +
+       geom_text(
+        aes(label = paste0("n = ", n), y = mean_growth + se_growth + 10),  # Adjust position
+        size = 15, 
+        color = "black"
+    ) +
     labs(
         title = "Kelp Growth by Gravel Size",
         x = "Treatment",
-        y = "Kelp Growth (cm)"
+        y = "Kelp Length (cm)"
     ) +
     theme_minimal() +
     scale_pattern_manual(values = c("small" = "none", "large" = "stripe")) +  
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  
-        axis.text.x = element_text(size = 20),  
-        axis.text.y = element_text(size = 20),  
-        axis.title.x = element_text(size = 20, face = "bold"),  
-        axis.title.y = element_text(size = 20, face = "bold")  
+        plot.title = element_text(size = 28, face = "bold"),  
+        axis.text.x = element_text(size = 30),  
+        axis.text.y = element_text(size = 30),  
+        axis.title.x = element_text(size = 40, face = "bold"),  
+        axis.title.y = element_text(size = 40, face = "bold")  
     )
-
 plot 
 
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/gravel_size/bwbar_growth_smallvlarge.png", plot = plot, width = 10, height = 10, dpi = 300)

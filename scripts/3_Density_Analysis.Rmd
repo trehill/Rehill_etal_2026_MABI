@@ -295,7 +295,7 @@ tukey_result
 
 #set the desired order for the sites
 transects_new$site <- factor(transects_new$site, 
-                                 levels = c("Taylor", "Ed King", "Dixon", "Ellis N", "Ellis S", "Nanat"))
+                                 levels = c("Taylor", "Dixon", "Ed King", "Ellis N", "Ellis S", "Nanat"))
 #visualize via boxplot 
 plot <- ggplot(transects_new, aes(x = site, y = urchin_site_density)) +
   geom_boxplot() +
@@ -326,10 +326,10 @@ plot <- ggplot(transects_new, aes(x = site, y = urchin_site_density, fill = site
     y = "Urchin Density (m²)"
   ) + 
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 15), 
-        axis.text.y = element_text(size = 15), 
-        axis.title.x = element_text(size = 16),  # Increase x-axis title size
-      axis.title.y = element_text(size = 16))  # Increase y-axis title size)  # Increase y-axis label size) +  # Rotate x-axis labels for readability
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 20), 
+        axis.text.y = element_text(size = 20), 
+        axis.title.x = element_text(size = 24),  # Increase x-axis title size
+      axis.title.y = element_text(size = 24))  # Increase y-axis title size)  # Increase y-axis label size) +  # Rotate x-axis labels for readability
   guides(fill = "none")  # Remove the legend
 
 plot 
@@ -349,7 +349,7 @@ data_legend <- data.frame(
 )
 
 # Reorder the Site factor to ensure Taylor appears first
-data_legend$Site <- factor(data_legend$Site, levels = c("Taylor", "Dixon", "Ellis N", "Ed King", "Ellis S", "Nanat"))
+data_legend$Site <- factor(data_legend$Site, levels = c("Taylor", "Dixon", "Ed King","Ellis N",  "Ellis S", "Nanat"))
 
 # Define colors and shapes
 colors <- c("Nanat" = "#4da607", 
@@ -368,11 +368,15 @@ shapes <- c("Nanat" = 15,  # Square
 
 # Plot
 plot <- ggplot(data_legend, aes(x = x, y = y, color = Site, shape = Site)) +
-  geom_point(size = 5) +  # Adjust size for better visibility
+  geom_point(size = 5) +
   scale_color_manual(values = colors) +
   scale_shape_manual(values = shapes) +
   theme_minimal() +
-  labs(color = "Site", shape = "Site")
+  labs(color = "Site", shape = "Site") +
+  theme(
+    legend.text = element_text(size = 24),        # Change to desired size
+    legend.title = element_text(size = 20)        # Optional: change legend title size
+  )
 
 # Save the plot
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/legend_densities.png", 
@@ -445,6 +449,11 @@ mean_urchin_density <- transects %>%
 overall_mean_density <- mean(transects$urchin_site_density, na.rm = TRUE)
 overall_mean_density #1.42
 
+overall_sd <- sd(transects$urchin_site_density, na.rm = TRUE)
+overall_n <- nrow(transects)  # Total number of transects
+overall_se <- overall_sd / sqrt(overall_n)
+
+overall_se
 
 # Define custom color palette
 site_colors <- c("Taylor" = "#cd3737",  
@@ -511,7 +520,7 @@ print(plot)
 
 #save the plot as a PNG file
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/densities_month_site_col.png", 
-       plot = plot, width = 10, height = 8, dpi = 300)
+       plot = plot, width = 8, height = 6, dpi = 300)
 
 
 
@@ -667,6 +676,13 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_urchin_density, patter
         color = "black",
         position = position_dodge(0.7)
     ) +
+  
+      geom_text(
+        aes(label = paste0("n = ", n), y = mean_urchin_density + se_urchin_density + 0.1),  # Adjust position
+        size = 10, 
+        color = "black"
+    ) +
+  
     labs(
         title = "Urchin Density by Treatment",
         x = "Treatment",
@@ -676,11 +692,11 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_urchin_density, patter
     scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  
-        axis.text.x = element_text(size = 20),  
-        axis.text.y = element_text(size = 20),  
-        axis.title.x = element_text(size = 20, face = "bold"),  
-        axis.title.y = element_text(size = 20, face = "bold")  
+        plot.title = element_text(size = 28, face = "bold"),  
+        axis.text.x = element_text(size = 30),  
+        axis.text.y = element_text(size = 30),  
+        axis.title.x = element_text(size = 30, face = "bold"),  
+        axis.title.y = element_text(size = 30, face = "bold")  
     )
 
 # Display the plot
@@ -694,51 +710,64 @@ plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities
 #sumamrize urchin density by site and month and treatment
 urchin_summary <- plots %>%
   group_by(treatment, site, month) %>%
-  summarise(total_urchin_density = sum(urchin_density, na.rm = TRUE), .groups = "drop")%>%
-  mutate(total_urchin_density = ifelse(site == "Nanat" & treatment == "caged" & month == "August", 0, total_urchin_density))
+  summarise(
+    mean_urchin_density = mean(urchin_density, na.rm = TRUE),
+    sd_urchin_density = sd(urchin_density, na.rm = TRUE),
+    n = n(),
+    se_urchin_density = sd_urchin_density / sqrt(n),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    mean_urchin_density = ifelse(site == "Nanat" & treatment == "caged" & month == "August", 0, mean_urchin_density),
+    se_urchin_density = ifelse(site == "Nanat" & treatment == "caged" & month == "August", 0, se_urchin_density)
+  )
 
-#Ensure 'site' is ordered correctly
+
+## Reorder factors for plotting
 urchin_summary$site <- factor(urchin_summary$site, levels = c("Nanat", "Ellis S", "Ellis N", "Dixon", "Ed King", "Taylor"))
 urchin_summary$month <- factor(urchin_summary$month, levels = c("April", "May", "June", "August"))
 
-# Create the bar chart with pattern instead of color
-plot <- ggplot(urchin_summary, aes(x = site, y = total_urchin_density, pattern = treatment)) +
+# Bar plot with patterns and error bars
+plot <- ggplot(urchin_summary, aes(x = site, y = mean_urchin_density, pattern = treatment)) +
   geom_bar_pattern(
-    aes(pattern = treatment), 
-    stat = "identity", 
-    position = position_dodge(width = 0.7),  # Ensure bars are side-by-side, not stacked
+    stat = "identity",
+    position = position_dodge(width = 0.7),
     width = 0.7,
-    fill = "white",  # No solid fill color
-    color = "black",  # Black outline for all bars
-    pattern_density = 0.05,       
-    pattern_spacing = 0.05,       
-    pattern_fill = "black",       
-    pattern_color = "black",      
-    pattern_angle = 45,           
-    pattern_alpha = 1  # Ensures uniform patterns
+    fill = "white",
+    color = "black",
+    pattern_density = 0.05,
+    pattern_spacing = 0.05,
+    pattern_fill = "black",
+    pattern_color = "black",
+    pattern_angle = 45,
+    pattern_alpha = 1
   ) +
-  facet_wrap(~ month, scales = "fixed", ncol = 1) +  # Stack facets vertically
+  geom_errorbar(
+    aes(ymin = mean_urchin_density - se_urchin_density,
+        ymax = mean_urchin_density + se_urchin_density),
+    position = position_dodge(width = 0.7),
+    width = 0.2,
+    color = "black"
+  ) +
+  facet_wrap(~ month, scales = "fixed", ncol = 1) +
   labs(
     x = "Site",
-    y = "Urchin Density (m²)",
+    y = "Urchin Density (ind/m²)",
     fill = "Treatment"
   ) +
-  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  # Apply pattern to "caged"
+  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 25),  
-    axis.title.x = element_text(size = 25, face = 'bold'),  
-    axis.title.y = element_text(size = 25, face = 'bold'),  
-    panel.grid.major.x = element_blank(), 
-    strip.text = element_text(size = 25)  
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
+    axis.text.y = element_text(size = 40),
+    axis.title.x = element_text(size = 40, face = 'bold'),
+    axis.title.y = element_text(size = 40, face = 'bold'),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(size = 40)
   )
 
-# Display the plot
-print(plot)
-
 #save
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bwdensity_site_month.png", plot = plot,  width = 15, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bwdensity_site_month.png", plot = plot,  width = 15, height = 12, dpi = 300)
 
 ```
 
@@ -750,11 +779,12 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/urchin_densities/bwdensi
 # Select relevant columns and reshape the data
 grazers_summary <- transects %>%
   dplyr::select(site, total_n_ru, total_n_gu, total_n_pu, total_n_sn, total_n_pyc, total_n_ab) %>%
-  pivot_longer(cols = -site, names_to = "grazer", values_to = "count") %>%
+  pivot_longer(cols = -site, names_to = "species", values_to = "count") %>%
   group_by(site) %>%
   mutate(count = count,  # Keep raw count
          proportion = count / sum(count))  # Calculate proportions per site
 
+grazers_summary$site <- factor(grazers_summary$site, levels = c("Ellis N", "Ellis S", "Taylor", "Dixon", "Ed King", "Nanat" ))
 # Define custom colors
 grazer_colors <- c(
   "total_n_pu" = "#8a54b3",  # Purple Urchin
@@ -766,18 +796,18 @@ grazer_colors <- c(
 )
 
 # Create the proportional stacked bar chart
-ggplot(grazers_summary, aes(x = site, y = proportion, fill = grazer)) +
+ggplot(grazers_summary, aes(x = site, y = proportion, fill = species)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = grazer_colors, labels = c("Abalone", "Green Urchin", "Purple Urchin", "Pycnopodia",  "Red Urchin",  "Turban Snail")) +
-  labs(x = "Site", y = "Proportion of Grazers", fill = "Grazer Type") +
+  labs(x = "Site", y = "Proportion of Species", fill = "Species") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Create the grazer counts stacked bar chart
-plot <- ggplot(grazers_summary, aes(x = site, y = count, fill = grazer)) +  
+plot <- ggplot(grazers_summary, aes(x = site, y = count, fill = species)) +  
   geom_bar(stat = "identity") +  
   scale_fill_manual(values = grazer_colors, labels = c("Abalone", "Green Urchin", "Purple Urchin", "Pycnopodia", "Red Urchin", "Turban Snail")) +  
-  labs(x = "Site", y = "Counts of Grazers", fill = "Grazer Type") +  
+  labs(x = "Site", y = "Counts of Species", fill = "Species") +  
   theme_minimal() +  
   theme(
     axis.text.x = element_text(size = 14, angle = 45, hjust = 1),  # Larger x-axis labels
@@ -797,7 +827,7 @@ ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/grazer_densities/grazer_
 #Turban snails densities 
 ```{r}
 #Were cages effective at reducing grazers? 
-#Did urchin densities vary significantly between caged and uncaged plots, irrelavant of site or month 
+#Did turban snail densities vary significantly between caged and uncaged plots, irrelavant of site or month 
 
 #check distribution of urchin density data - histogram
 ggplot(plots, aes(x = ts_density)) +
@@ -868,11 +898,11 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_ts_density, fill = tre
     scale_fill_manual(values = c("caged" = "#FF5733", "open" = "#076fa6")) +
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  # Increase title size
-        axis.text.x = element_text(size = 20),  # Increase x-axis text size
-        axis.text.y = element_text(size = 20),  # Increase y-axis text size
-        axis.title.x = element_text(size = 20, face = "bold"),  # Increase x-axis label size
-        axis.title.y = element_text(size = 20, face = "bold")  # Increase y-axis label size
+        plot.title = element_text(size = 28, face = "bold"),  
+        axis.text.x = element_text(size = 30),  
+        axis.text.y = element_text(size = 30),  
+        axis.title.x = element_text(size = 30, face = "bold"),  
+        axis.title.y = element_text(size = 30, face = "bold")  
     )
 
 plot
@@ -936,20 +966,25 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_ts_density, pattern = 
         color = "black",
         position = position_dodge(0.7)
     ) +
+     geom_text(
+        aes(label = paste0("n = ", n), y = mean_ts_density + se_ts_density + 0.1),  # Adjust position
+        size = 10, 
+        color = "black"
+    ) +
     labs(
         title = "Turban Snail Density by Treatment",
         x = "Treatment",
-        y = "Turban Snail Density (m²)"
+        y = "Red Turban Snail Density (m²)"
     ) +
     theme_minimal() +
     scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 18, face = "bold"),  
-        axis.text.x = element_text(size = 20),  
-        axis.text.y = element_text(size = 20),  
-        axis.title.x = element_text(size = 20, face = "bold"),  
-        axis.title.y = element_text(size = 20, face = "bold")  
+        plot.title = element_text(size = 28, face = "bold"),  
+        axis.text.x = element_text(size = 30),  
+        axis.text.y = element_text(size = 30),  
+        axis.title.x = element_text(size = 30, face = "bold"),  
+        axis.title.y = element_text(size = 30, face = "bold")  
     )
 
 # Display the plot
@@ -963,7 +998,13 @@ plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/turban_densities
 #sumamrize urchin density by site and month and treatment
 turban_summary <- plots %>%
   group_by(treatment, site, month) %>%
-  summarise(total_turban_density = sum(ts_density, na.rm = TRUE), .groups = "drop")
+  summarise(
+    mean_density = mean(ts_density, na.rm = TRUE),
+    sd_density = sd(ts_density, na.rm = TRUE),
+    n = n(),
+    se_density = sd_density / sqrt(n),
+    .groups = "drop"
+  )
 
 
 #Ensure 'site' is ordered correctly
@@ -971,37 +1012,45 @@ turban_summary$site <- factor(turban_summary$site, levels = c("Nanat", "Ellis S"
 turban_summary$month <- factor(turban_summary$month, levels = c("April", "May", "June", "August"))
 
 # Create the bar chart with pattern instead of color
-plot <- ggplot(turban_summary, aes(x = site, y = total_turban_density, pattern = treatment)) +
+plot <- ggplot(turban_summary, aes(x = site, y = mean_density, pattern = treatment)) +
   geom_bar_pattern(
-    aes(pattern = treatment), 
-    stat = "identity", 
-    position = position_dodge(width = 0.7),  # Ensure bars are side-by-side, not stacked
+    stat = "identity",
+    position = position_dodge(width = 0.7),
     width = 0.7,
-    fill = "white",  # No solid fill color
-    color = "black",  # Black outline for all bars
-    pattern_density = 0.05,       
-    pattern_spacing = 0.05,       
-    pattern_fill = "black",       
-    pattern_color = "black",      
-    pattern_angle = 45,           
-    pattern_alpha = 1  # Ensures uniform patterns
+    fill = "white",
+    color = "black",
+    pattern_density = 0.05,
+    pattern_spacing = 0.05,
+    pattern_fill = "black",
+    pattern_color = "black",
+    pattern_angle = 45,
+    pattern_alpha = 1
   ) +
-  facet_wrap(~ month, scales = "fixed", ncol = 1) +  # Stack facets vertically
+  geom_errorbar(
+    aes(ymin = mean_density - se_density,
+        ymax = mean_density + se_density),
+    position = position_dodge(width = 0.7),
+    width = 0.2,
+    color = "black"
+  ) +
+  facet_wrap(~ month, scales = "fixed", ncol = 1) +
   labs(
     x = "Site",
-    y = "Turban Snail Density (m²)",
+    y = "Red Turban Snail Density (m²)",
     fill = "Treatment"
   ) +
-  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  # Apply pattern to "caged"
+  scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 25),  
-    axis.title.x = element_text(size = 25, face = "bold"),  
-    axis.title.y = element_text(size = 25, face = "bold"),  
-    panel.grid.major.x = element_blank(), 
-    strip.text = element_text(size = 25)  
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
+    axis.text.y = element_text(size = 40),
+    axis.title.x = element_text(size = 40, face = 'bold'),
+    axis.title.y = element_text(size = 40, face = 'bold'),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(size = 40)
   )
+
+
 
 # Display the plot
 print(plot)
@@ -1052,6 +1101,12 @@ mean_ts_density <- transects %>%
 #calculate overall mean ts density across all sites and months
 overall_mean_density <- mean(transects$ts_site_density, na.rm = TRUE)
 overall_mean_density #3.08
+
+overall_sd <- sd(transects$ts_site_density, na.rm = TRUE)
+overall_n <- nrow(transects)  # Total number of transects
+overall_se <- overall_sd / sqrt(overall_n)
+
+overall_se
 
 #create the plot
 plot <- ggplot(transects, aes(x = month, y = ts_site_density, color = site, group = site)) +
@@ -1188,20 +1243,23 @@ plot <- ggplot(transects, aes(x = month, y = ts_site_density, color = site, grou
   scale_color_manual(values = site_colors) +  
   scale_shape_manual(values = site_shapes) +  # Apply custom shapes
   theme_minimal() +
-  theme(
+ theme(
     legend.position = "bottom",
     plot.title = element_text(size = 18, face = "bold"),  
     axis.title = element_text(size = 16, face = "bold"),  
     axis.text = element_text(size = 14),  
-    legend.text = element_text(size = 14)  
+    legend.text = element_text(size = 14),  
+    panel.grid.major.x = element_blank(), 
+    #strip.text = element_text(size = 40)  
   )
+
 
 # Display the plot
 print(plot)
 
 #save the plot as a PNG file
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/turban_densities/densities_month_site_col.png", 
-       plot = plot, width = 10, height = 8, dpi = 300)
+       plot = plot, width = 8, height = 6, dpi = 300)
 
 ```
 

@@ -61,6 +61,20 @@ plot
 ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/abiotic_correlation_plot.png", plot = plot, width = 5, height = 5, dpi = 300)
 
 ```
+#Standardize and scale predictors 
+```{r}
+#standardizing predictors
+data$mean_temperature_c <- scale(data$mean_temperature_c)
+data$max_temperature_c <- scale(data$max_temperature_c)
+data$mean_light_lux <- scale(data$mean_light_lux)
+data$bottom_do <- scale(data$bottom_do)
+data$bottom_salinity <- scale(data$bottom_salinity)
+data$urchin_density <- scale(data$urchin_density)
+data$urchin_site_density <- scale(data$urchin_site_density)
+data$mean_current <- scale(data$mean_current)
+data$ts_density <- scale(data$ts_density)
+data$ts_site_density <- scale(data$ts_site_density)
+```
 
 
 #Investigating the abiotic variables for kelp survival and growth 
