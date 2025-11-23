@@ -23,12 +23,12 @@ library(stringr)
 #Read data 
 ```{r}
 
-urchin_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/urchin_monitoring_transects.csv")
+urchin_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/urchin_monitoring_transects.csv")
 
-kelp_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/green_gravel_monitoring.csv")
+kelp_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/green_gravel_monitoring.csv")
 
 #read in monitoring_periods, manually entered time periods to be assessed for each associated month 
-monitoring_periods<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/monitoring_periods.csv")
+monitoring_periods<- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/monitoring_periods.csv")
 
 ```
 
@@ -131,7 +131,6 @@ kelp_data <- kelp_data %>%
 #GRAZER DENSITY #############
 #make a new column that describes grazer density per m^2 
 #grazers ONLY include urchins, turban snails and abalone 
-
 kelp_data <- kelp_data %>%
   mutate(
     total_grazers = rowSums(across(c(n_ru, n_gu, n_pu, n_ru_side, n_pu_side, n_gu_side, n_ab, n_ts)), na.rm = TRUE),
@@ -175,13 +174,15 @@ kelp_data$kelp_growth <- rowSums(kelp_data[, c("kelp_total1", "kelp_total2", "ke
 kelp_data <- kelp_data %>%
   mutate(kelp_growth = ifelse(kelp_growth == 0, NA, kelp_growth))
 
+write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring_Aug.csv", row.names = FALSE)
+
 #remove August month 
 kelp_data <- kelp_data %>%
   filter(!month %in% c("August"))
 
 
 #save the cleaned dataframe to a new CSV file
-write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv", row.names = FALSE)
+write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring.csv", row.names = FALSE)
   
 
 summary(kelp_data)
@@ -260,7 +261,7 @@ transects_summary <- transects_summary %>%
   mutate(ts_site_density = total_n_sn/row_count)
 
 #save the cleaned dataframe to a new CSV file
-write.csv(transects_summary, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv", row.names = FALSE)
+write.csv(transects_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_monitoring_transects.csv", row.names = FALSE)
 
 summary(transects_summary)
 
@@ -268,7 +269,7 @@ summary(transects_summary)
 
 #Environmental YSI Data 
 ```{r}
-ysi_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/YSI_measurement.csv")
+ysi_data <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/YSI_measurement.csv")
 
 #SITE ############################
 unique(ysi_data$site)
@@ -305,13 +306,42 @@ bottom_data <- bottom_data %>%
 
 
 #save the cleaned dataframe to a new CSV file
-write.csv(bottom_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv", row.names = FALSE)
+write.csv(bottom_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_ysi_measurement.csv", row.names = FALSE)
 
+```
+
+###Determine ysi range by site for supplemental table 
+```{r}
+do_summary <- ysi_data %>%
+  group_by(site) %>%
+  summarise(
+    min_do = min(do, na.rm = TRUE),
+    max_do= max(do, na.rm = TRUE),
+    mean_do = mean(do, na.rm = TRUE)
+  )
+
+do_summary
+
+#save table 
+write.csv(do_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/DO_summary_supp.csv", row.names = FALSE)
+
+sal_summary <- ysi_data %>%
+  group_by(site) %>%
+  summarise(
+    min_sal = min(salinity, na.rm = TRUE),
+    max_sal= max(salinity, na.rm = TRUE),
+    mean_sal = mean(salinity, na.rm = TRUE)
+  )
+
+sal_summary
+
+#save table 
+write.csv(sal_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/sal_summary_supp.csv", row.names = FALSE)
 ```
 
 #HOBO loggers 
 ```{r}
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/combined_hobo.csv")
 
 #SITE ############################
 unique(hobo$Site)
@@ -395,15 +425,15 @@ summary_hobo <- summary_hobo %>%
 hobo_light <- summary_hobo %>%
   dplyr::select(site, month, mean_light_lux) 
 
-write.csv(summary_hobo, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo.csv", row.names = FALSE)
-write.csv(hobo_light, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo_light.csv", row.names = FALSE)
+write.csv(summary_hobo, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/summary_hobo.csv", row.names = FALSE)
+write.csv(hobo_light, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/summary_hobo_light.csv", row.names = FALSE)
 
 ```
 
 #Making relevant ENV logger variables 
 ```{r}
 
-env_logger <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv")
+env_logger <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/combined_env.csv")
 
 #SITE ############################
 unique(env_logger$Site)
@@ -463,15 +493,15 @@ summary_env <- env_logger %>%
 summary_env <- summary_env %>%
   rename(month = associated_month)
 
-write.csv(summary_env, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_env.csv", row.names = FALSE)
+write.csv(summary_env, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/summary_env.csv", row.names = FALSE)
 
 ```
 
 #Combining temperature data between hobo and ENV loggers 
 ```{r}
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo.csv")
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/summary_hobo.csv")
 
-env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_env.csv")
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/summary_env.csv")
 
 hobo <- hobo %>%
   dplyr::select(-mean_light_lux) 
@@ -486,12 +516,12 @@ combined_data <- combined_data %>%
     .groups = "drop"
   )
 
-write.csv(combined_data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/temp_summary.csv", row.names = FALSE)
+write.csv(combined_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/temp_summary.csv", row.names = FALSE)
 ```
 
 #Making relevant tilt variables 
 ```{r}
-tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/tilt_summary.csv")
+tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/tilt_summary.csv")
 
 #SITE ############################
 unique(tilt$Site)
@@ -554,7 +584,7 @@ summary_tilt <- summary_tilt %>%
   rename(month = associated_month)
 
 
-write.csv(summary_tilt, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_tilt.csv", row.names = FALSE)
+write.csv(summary_tilt, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/summary_tilt.csv", row.names = FALSE)
 
 ```
 
@@ -562,17 +592,17 @@ write.csv(summary_tilt, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_dat
   #load data
 ```{r}
 
-transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv")
+transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_monitoring_transects.csv")
 
-plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
+plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring.csv")
 
-ysi <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_ysi_measurement.csv")
+ysi <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_ysi_measurement.csv")
 
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/summary_hobo_light.csv")
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/summary_hobo_light.csv")
 
-env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/temp_summary.csv")
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/temp_summary.csv")
 
-tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/summary_tilt.csv")
+tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/summary_tilt.csv")
 
 ```
 
@@ -614,7 +644,7 @@ data <- data %>%
     
 
 
-write.csv(data, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv", row.names = FALSE)
+write.csv(data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_data.csv", row.names = FALSE)
 
 
 ```

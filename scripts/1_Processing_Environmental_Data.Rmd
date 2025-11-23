@@ -23,7 +23,7 @@ library(patchwork)
 #HOBO LOGGER DATA 
 ```{r}
 #Set the path to your main folder
-main_folder <- "/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO"
+main_folder <- "./raw_data/HOBO"
 
 #Get a list of site folders within the main folder
 site_folders <- list.dirs(main_folder, recursive = FALSE)
@@ -55,37 +55,38 @@ for (site_folder in site_folders) {
 
 
 #Read each combined file and add another column called site 
-ek<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/ED_KING/combined_dataset.csv") 
+ek<- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/HOBO/ED_KING/combined_dataset.csv") 
   ek$Site <- "EK"
-dx<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/DIXON/combined_dataset.csv") 
+dx<- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/HOBO/DIXON/combined_dataset.csv") 
   dx$Site <- "DX"
-es <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/ELLIS_S/combined_dataset.csv") 
+es <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/HOBO/ELLIS_S/combined_dataset.csv") 
   es$Site <- "ES"
-en <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/ELLIS_N/combined_dataset.csv") 
+en <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/HOBO/ELLIS_N/combined_dataset.csv") 
   en$Site <- "EN"
-tr <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/TAYLOR/combined_dataset.csv") 
+tr <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/HOBO/TAYLOR/combined_dataset.csv") 
   tr$Site <- "TR"
-nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/HOBO/NANAT/combined_dataset.csv") 
+nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/HOBO/NANAT/combined_dataset.csv") 
   nn$Site <- "NN"
 
 #Combine all site files and add to processed data folder 
 hobo_combined <- rbind(ek, dx, es, en, tr, nn)
 
+#Remove anamolies (likely when taking them out)
 hobo_combined <- hobo_combined %>%
   filter(temperature_c <= 20)
 
 write.csv(hobo_combined, 
-"/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv", 
+"/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/combined_hobo.csv", 
           row.names = FALSE)
 
 #read file back in 
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/combined_hobo.csv")
 ```
 
 ##Light lux over time
 ```{r}
 #Read and preprocess the data
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/combined_hobo.csv")
 
 hobo$date <- as.Date(hobo$date)
 
@@ -138,7 +139,7 @@ plot_light <- ggplot(hobo_daily_mean, aes(x = date, y = daily_mean_light_lux, co
 plot_light 
 
 #save plot 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meanlight.jpg", plot = plot_light, width = 9, height = 6, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/environmental_supps/meanlight.jpg", plot = plot_light, width = 9, height = 6, dpi = 300)
 
 #save 
 
@@ -149,11 +150,27 @@ light <- plot_light + scale_x_date(limits = c(start_date, end_date)) + theme(axi
 
 light
 ```
+##Determine flux (light) range by site for supplemental table 
+```{r}
+hobo_summary <- hobo_daily_mean %>%
+  group_by(Site) %>%
+  summarise(
+    min_light = min(daily_mean_light_lux, na.rm = TRUE),
+    max_light = max(daily_mean_light_lux, na.rm = TRUE),
+    mean_light = mean(daily_mean_light_lux, na.rm = TRUE)
+  )
+
+hobo_summary
+
+#save table 
+write.csv(hobo_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/light_summary_supp.csv", row.names = FALSE)
+
+```
 
 #ENV LOGGER DATA
 ```{r}
 #Set the path to your main folder
-main_folder <- "/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV"
+main_folder <- "./raw_data/ENV"
 
 #Get a list of site folders within the main folder
 site_folders <- list.dirs(main_folder, recursive = FALSE)
@@ -185,28 +202,28 @@ for (site_folder in site_folders) {
 
 
 #Read each combined file and add another column called site 
-ek<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/ED_KING/combined_dataset.csv") 
+ek<- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/ENV/ED_KING/combined_dataset.csv") 
   ek$Site <- "EK"
-dx<- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/DIXON/combined_dataset.csv") 
+dx<- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/ENV/DIXON/combined_dataset.csv") 
   dx$Site <- "DX"
-es <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/ELLIS_S/combined_dataset.csv") 
+es <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/ENV/ELLIS_S/combined_dataset.csv") 
   es$Site <- "ES"
-en <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/ELLIS_N/combined_dataset.csv") 
+en <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/ENV/ELLIS_N/combined_dataset.csv") 
   en$Site <- "EN"
-tr <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/TAYLOR/combined_dataset.csv") 
+tr <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/ENV/TAYLOR/combined_dataset.csv") 
   tr$Site <- "TR"
-nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/ENV/NANAT/combined_dataset.csv") 
+nn <-read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/ENV/NANAT/combined_dataset.csv") 
   nn$Site <- "NN"
 
 #Combine all site files and add to processed data folder 
 env_combined <- rbind(ek, dx, es, en, tr, nn)
 
-
+#Remove anomalies (likely when taking loggers out of ocean )
 env_combined <- env_combined %>%
   filter(temperature_c <= 20)
 
 write.csv(env_combined, 
-"/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv", 
+"/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/combined_env.csv", 
           row.names = FALSE)
 
 
@@ -216,7 +233,7 @@ write.csv(env_combined,
 ```{r}
 
 #Set the path to your main folder
-main_folder <- "/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters"
+main_folder <- "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters"
 
 #Get a list of site folders within the main folder
 site_folders <- list.dirs(main_folder, recursive = FALSE)
@@ -246,29 +263,29 @@ for (site_folder in site_folders) {
   cat(paste("Combined dataset saved in:", output_file, "\n"))
 }
 
-column_names <- colnames(read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/EK/combined_dataset.csv", nrows = 1))
+column_names <- colnames(read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters/EK/combined_dataset.csv", nrows = 1))
 
-ek <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/EK/combined_dataset.csv", 
+ek <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters/EK/combined_dataset.csv", 
                skip = 136792, col.names = column_names)
 ek$Site <- "EK"
 
-dx <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/DX/combined_dataset.csv", 
+dx <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters/DX/combined_dataset.csv", 
                skip = 136792, col.names = column_names)
 dx$Site <- "DX"
 
-es <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/ES/combined_dataset.csv", 
+es <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters/ES/combined_dataset.csv", 
                skip = 136792, col.names = column_names)
 es$Site <- "ES"
 
-en <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/EN/combined_dataset.csv", 
+en <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters/EN/combined_dataset.csv", 
                skip = 136792, col.names = column_names)
 en$Site <- "EN"
 
-tr <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/TR/combined_dataset.csv", 
+tr <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters/TR/combined_dataset.csv", 
                skip = 136792, col.names = column_names)
 tr$Site <- "TR"
 
-nn <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/raw_data/Tilt_meters/NN/combined_dataset.csv", 
+nn <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/raw_data/Tilt_meters/NN/combined_dataset.csv", 
                skip = 136792, col.names = column_names)
 nn$Site <- "NN"
 
@@ -278,13 +295,13 @@ tilt_combined <- rbind(ek, dx, es, en, tr, nn)
 
 
 write.csv(tilt_combined, 
-"/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_tilt.csv", 
+"/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/combined_tilt.csv", 
           row.names = FALSE)
 ```
 
 ##Plotting tilt data 
 ```{r}
-tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_tilt.csv")
+tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/combined_tilt.csv")
 
 #convert time to date format
 tilt$date <- as.Date(tilt$date)
@@ -307,7 +324,7 @@ tilt_summary <- tilt_filtered %>%
             max_max_speed = max(speed_upper))
                                     
 
-write.csv(tilt_summary, "/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/tilt_summary.csv", row.names = FALSE)
+write.csv(tilt_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/tilt_summary.csv", row.names = FALSE)
 
 # Plot the smoothed data
 plot <- ggplot(tilt_summary, aes(x = date, y = mean_speed_mpers, color = Site)) + 
@@ -333,17 +350,18 @@ plot <- ggplot(tilt_summary, aes(x = date, y = mean_speed_mpers, color = Site)) 
     )
   ) +
   facet_wrap(~Site, scales = "free_y")  # Create separate panels for each site with individual y-scales
+
 plot
 
 
-# Smooth the data by calculating daily mean temperature for each site
+#Smooth the data by calculating daily mean for each site
 tilt_plot <- tilt_summary %>%
   group_by(Site, date) %>%
   summarise(mean_speed_mpers = mean(mean_speed_mpers, na.rm = TRUE)) %>%
   ungroup()
 
 
-# Plot the daily mean of light availability over time by site
+# lot the daily mean over time by site
 plot_current <- ggplot(tilt_plot, aes(x = date, y = mean_speed_mpers, color = Site)) +
   geom_line(aes(group = Site), na.rm = TRUE) +  # Avoid gaps and handle missing values
   labs(
@@ -368,7 +386,7 @@ plot_current <- ggplot(tilt_plot, aes(x = date, y = mean_speed_mpers, color = Si
 
 plot_current 
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/current.jpg", plot = plot_current, width = 9, height = 6, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/environmental_supps/current.jpg", plot = plot_current, width = 9, height = 6, dpi = 300)
 
 
 start_date <- as.Date("2024-03-01")
@@ -378,12 +396,28 @@ current <- plot_current + scale_x_date(limits = c(start_date, end_date)) + theme
 
 current
 ```
+###Determine tilt_plot range by site for supplemental table 
+```{r}
+tilt_summary <- tilt_plot %>%
+  group_by(Site) %>%
+  summarise(
+    min_current = min(mean_speed_mpers, na.rm = TRUE),
+    max_current = max(mean_speed_mpers, na.rm = TRUE),
+    mean_current = mean(mean_speed_mpers, na.rm = TRUE)
+  )
+
+tilt_summary
+
+#save table 
+write.csv(tilt_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/current_summary_supp.csv", row.names = FALSE)
+
+```
 
 #Plotting temperature (using both ENV and HOBO)
 ##read in data and combine + summarize across both dataset 
 ```{r}
-hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/HOBO/combined_hobo.csv")
-env <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/ENV/combined_env.csv")
+hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/combined_hobo.csv")
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/combined_env.csv")
 
 hobo <- hobo %>%
   select(-n, -light_lux) %>%
@@ -444,10 +478,10 @@ plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) +
 plot 
 
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp_bysite.jpg", plot = plot, width = 9, height = 6, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/environmental_supps/meantemp_bysite.jpg", plot = plot, width = 9, height = 6, dpi = 300)
 
 
-# Plot temperature vs. time, colored by site (all on the same graph)
+#Plot temperature vs. time, colored by site (all on the same graph)
 plot_temp <- plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color = Site)) + 
   geom_line() +  # Line plot for temperature over time
   labs(
@@ -472,7 +506,7 @@ plot_temp <- plot <- ggplot(env_smoothed, aes(x = date, y = temperature_c, color
 
 plot_temp 
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/meantemp.jpg", plot = plot_temp, width = 9, height = 6, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/environmental_supps/meantemp.jpg", plot = plot_temp, width = 9, height = 6, dpi = 300)
 
 
 start_date <- as.Date("2024-03-01")
@@ -485,18 +519,33 @@ temp
 
 ```
 
+###Determine temperature range by site for supplemental table 
+```{r}
+env_summary <- env_smoothed %>%
+  group_by(Site) %>%
+  summarise(
+    min_temp = min(temperature_c, na.rm = TRUE),
+    max_temp = max(temperature_c, na.rm = TRUE),
+    mean_temp = mean(temperature_c, na.rm = TRUE)
+  )
+
+env_summary
+
+#save table 
+write.csv(env_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/temp_summary_supp.csv", row.names = FALSE)
+
+```
 
 #Combining plots 
 ```{r}
 
-library(patchwork)
-# Combine the two plots vertically
+#Combine the two plots vertically
 combined_plot <- temp / light / current
 
-# Display the combined plot
+#Display the combined plot
 print(combined_plot)
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/combined_env.jpg", plot = combined_plot, width = 9, height = 15, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/environmental_supps/combined_env.jpg", plot = combined_plot, width = 9, height = 15, dpi = 300)
 
 ```
 

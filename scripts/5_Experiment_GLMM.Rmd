@@ -33,7 +33,7 @@ library(lmerTest)
 
 #Load data 
 ```{r}
-data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
+data <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_data.csv")
 
 #remove growth = 0 from dataset 
 growth_data <- data %>% drop_na(kelp_growth)
@@ -58,7 +58,7 @@ plot <- ggcorrplot(
 plot
 
 #save the plot
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/abiotic_correlation_plot.png", plot = plot, width = 5, height = 5, dpi = 300)
+ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/abiotic_correlation_plot.png", plot = plot, width = 5, height = 5, dpi = 300)
 
 ```
 #Standardize and scale predictors 
@@ -74,6 +74,9 @@ data$urchin_site_density <- scale(data$urchin_site_density)
 data$mean_current <- scale(data$mean_current)
 data$ts_density <- scale(data$ts_density)
 data$ts_site_density <- scale(data$ts_site_density)
+
+
+
 ```
 
 
@@ -83,7 +86,7 @@ data$ts_site_density <- scale(data$ts_site_density)
 ###base model + predictor 
 ```{r}
 #starting with a minimal model (only random effects)
-base_model <- glmmTMB(cbind(n_kelp_gravel, n_gravel - n_kelp_gravel) ~ treatment  + (1 | site), 
+base_model <- glmmTMB(cbind(n_kelp_gravel, n_gravel - n_kelp_gravel) ~ treatment  + (1 | site)  + (1 | month), 
                       family = binomial, 
                       data = data)
 
@@ -91,7 +94,7 @@ base_model <- glmmTMB(cbind(n_kelp_gravel, n_gravel - n_kelp_gravel) ~ treatment
 #predictor_list<- c("grazers_site_density",  "grazer_density","mean_temperature_c", "max_temperature_c", "mean_current","gravel_size", "mean_light_lux","bottom_do", "bottom_salinity")
 
 ###
-predictor_list<- c( "urchin_site_density", "urchin_density", "ts_density", "ts_site_density",  "gravel_size", "mean_temperature_c", "max_temperature_c", "mean_light_lux", "mean_current",  "bottom_do","bottom_salinity", "month")
+predictor_list<- c( "urchin_site_density", "urchin_density", "ts_density", "ts_site_density",  "gravel_size", "mean_temperature_c", "max_temperature_c", "mean_light_lux", "mean_current",  "bottom_do","bottom_salinity")
 
 
 ```
@@ -113,7 +116,7 @@ while (!converged) {
     formula <- as.formula(
       paste("cbind(n_kelp_gravel, n_gravel - n_kelp_gravel) ~ treatment +", 
             paste(c(selected_predictors, predictor), collapse = " + "), 
-            "+ (1 | site)")
+            "+ (1 | site) + (1 | month)")
     )
     new_model <- glmmTMB(formula, family = binomial, data = data)
     new_aic <- AIC(new_model)
@@ -132,7 +135,7 @@ while (!converged) {
     formula <- as.formula(
       paste("cbind(n_kelp_gravel, n_gravel - n_kelp_gravel) ~ treatment +", 
             paste(remaining_predictors, collapse = " + "), 
-            "+ (1 | site)")
+            "+ (1 | site) + (1 | month)")
     )
     new_model <- glmmTMB(formula, family = binomial, data = data)
     new_aic <- AIC(new_model)
@@ -150,7 +153,7 @@ while (!converged) {
 print(selected_predictors)
 summary(current_model)
 
-
+exp(cbind(OR = fixef(current_model)$cond, confint(current_model, parm = "beta_", method = "Wald")))
 ``` 
 
   #final_model 
@@ -158,32 +161,7 @@ summary(current_model)
 survival_model <- current_model
 ```
 
-  #look at model selection via dredging 
-```{r}
-#scaled_data <-  data %>%
-#  mutate(across(c(urchin_site_density, urchin_density, ts_density, ts_site_density, 
-#                  mean_temperature_c, max_temperature_c, mean_light_lux, 
-#                 mean_current, max_current, bottom_salinity, bottom_do, bottom_ph), 
-#                scale)) %>%
-#  na.omit(data)
 
-
-
-#global_model <- glmmTMB(cbind(n_kelp_gravel, n_gravel - n_kelp_gravel) ~ treatment  + urchin_site_density + urchin_density + ts_site_density + ts_density +  gravel_size  + mean_temperature_c + max_temperature_c +  mean_light_lux + mean_current + bottom_do + bottom_salinity + (1 | site), 
-                      #family = binomial(link="logit"), 
-                      #data = scaled_data, 
-                      #na.action = "na.fail")  # Ensure missing data handling is explicit)
-
-#summary(global_model)
-
-
-#b <- dredge(global_model, beta = c("none", "sd", "partial.sd"), evaluate = TRUE,
- # rank = "AICc", fixed = "cond(treatment)")
-
-
-#get.models(b, subset = 1)[[1]] 
-```
-  
   #visualize (+ save)
 ```{r}
 
@@ -196,17 +174,17 @@ simulationOutput <- simulateResiduals(fittedModel = fittedModel, plot = T)
 simulationOutput
 
 #save the testDispersion plot
-png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/survival_testDispersion_plot.png", width = 800, height = 600)
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/survival_testDispersion_plot.png", width = 800, height = 600)
 testDispersion(fittedModel)
 dev.off()
 
 #save the QQ plot
-png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/survival_QQ_plot.png", width = 800, height = 600)
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/survival_QQ_plot.png", width = 800, height = 600)
 plotQQunif(simulationOutput)  # Generate QQ plot
 dev.off()
 
 #save residual vs predictor plot
-png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/suvival_residuals_vs_predictor.png", width = 800, height = 600)
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/suvival_residuals_vs_predictor.png", width = 800, height = 600)
 plotResiduals(simulationOutput)
 dev.off()
 
@@ -216,32 +194,34 @@ dev.off()
 
   #collinearity 
 ```{r}
-lm_model <- lm(n_gravel ~ treatment +ts_site_density + gravel_size + mean_current + mean_light_lux, data = data)
+lm_model <- lm(n_gravel ~ treatment + ts_site_density + gravel_size + mean_current + mean_light_lux, data = data)
 
 vif(lm_model, type="predictor") 
 
-
+# "gravel_size"     "mean_light_lux"  "mean_current"    "ts_site_density"
 ```
 
 ##Growth models 
-  #base model + predictors 
+
+#base model + predictors 
 ```{r}
+
+growth_data <- data[!is.na(data$kelp_growth)  ,]   #do for each month - April May June
+
 #starting with a minimal model (only random effects)
-base_model <- glmmTMB(kelp_growth ~ treatment + (1 | site), 
+base_model <- glmmTMB(kelp_growth ~ treatment + (1 | site) + (1 | month), 
                       family = Gamma(link="log"), 
                       data = growth_data)
-
-#predictors 
-#predictor_list<- c("grazers_site_density",  "grazer_density","mean_temperature_c", "max_temperature_c", "mean_current","gravel_size", "mean_light_lux","bottom_do", "bottom_salinity")
-
 
 predictor_list<- c("urchin_site_density", "urchin_density", "ts_density", "ts_site_density",  "gravel_size", "mean_temperature_c", "max_temperature_c", "mean_light_lux", "mean_current",  "bottom_do","bottom_salinity")
 
 
 ```
 
-  #chose model based on  forward and backward feature seleciton
+#Growth - June
 ```{r}
+growth_data <- data[!is.na(data$kelp_growth)  & data$month == "June",]   #do for each month - April May June
+
 # Initialize variables
 selected_predictors <- c()
 current_model <- base_model
@@ -257,7 +237,7 @@ while (!converged) {
     formula <- as.formula(
       paste("kelp_growth ~ treatment +", 
             paste(c(selected_predictors, predictor), collapse = " + "), 
-            "+ (1 | site)")
+            "+ (1 | site)  ")
     )
     new_model <- glmmTMB(formula, family = Gamma(link="log"), data = growth_data)
     new_aic <- AIC(new_model)
@@ -276,7 +256,7 @@ while (!converged) {
     formula <- as.formula(
       paste("kelp_growth ~ treatment +", 
             paste(c(selected_predictors, predictor), collapse = " + "), 
-            "+ (1 | site)")
+            "+ (1 | site) ")
     )
     new_model <- glmmTMB(formula, family = Gamma(link="log"), data = growth_data)
     new_aic <- AIC(new_model)
@@ -294,47 +274,18 @@ while (!converged) {
 print(selected_predictors)
 summary(current_model)
 
-```
-  #model selection via dredging 
-```{r}
-#predictor_list<- c( "urchin_site_density", "urchin_density", "ts_density", "ts_site_density",  "gravel_size", "mean_temperature_c", "max_temperature_c", "mean_light_lux", "mean_current",  "bottom_do","bottom_salinity")
+june_model <- current_model
 
-#remove growth = 0 from dataset 
-#growth_data <- data %>% drop_na(kelp_growth)
-
-#scaled_growth_data <-  growth_data %>%
-#  mutate(across(c(urchin_site_density, urchin_density, ts_density, ts_site_density, 
-#                  mean_temperature_c, max_temperature_c, mean_light_lux, 
-#                  mean_current, bottom_salinity, max_current, bottom_do, bottom_ph), 
-#               scale))%>%
-#  na.omit(scaled_growth_data)
-
-#global_model <- glmmTMB(kelp_growth ~ treatment  +  urchin_site_density + urchin_density + ts_site_density + ts_density + gravel_size  + mean_temperature_c + max_temperature_c +  mean_light_lux + mean_current + bottom_do + bottom_salinity + (1 | site), 
-#                      family = Gamma(link="log"), 
-#                     data = scaled_growth_data, 
-#                     na.action = "na.fail")  # Ensure missing data handling is explicit)
-
-#a <- dredge(global_model, beta = c("none", "sd", "partial.sd"), evaluate = TRUE,
-#  rank = "AICc", fixed = "cond(treatment)")
-
-#get.models(a, subset = 1)[[1]] 
-
-
-```
-
-
-```{r}
-lm_model <- lm(kelp_growth ~ treatment + ts_density + mean_temperature_c + mean_light_lux + mean_current + urchin_site_density + urchin_density + gravel_size + bottom_do, data = growth_data)
+#Check colinearity 
+lm_model <- lm(kelp_growth ~ treatment + ts_density + mean_light_lux + urchin_site_density + urchin_density, data = growth_data)
 
 vif(lm_model, type="predictor") 
 
 vif(lm_model) 
-```
- 
- #visualize 
-```{r}
+
+#Visualize 
 #simple model 
-fittedModel <- current_model
+fittedModel <- june_model
 
 testDispersion(fittedModel) #check for overdispersion
 
@@ -343,118 +294,210 @@ simulationOutput
 
 
 #save the testDispersion plot
-png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/growth_plot_testDispersion_plot.png", width = 800, height = 600)
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_testDispersion_plot_june.png", width = 800, height = 600)
 testDispersion(fittedModel)
 dev.off()
 
 
 #save the QQ plot
-png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/growth_plot_QQ_plot.png", width = 800, height = 600)
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_QQ_plot_june.png", width = 800, height = 600)
 plotQQunif(simulationOutput)  # Generate QQ plot
 dev.off()
 
 #save residual vs predictor plot
-png("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/growth_plot_residuals_vs_predictor.png", width = 800, height = 600)
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_residuals_vs_predictor_june.png", width = 800, height = 600)
 plotResiduals(simulationOutput)
 dev.off()
 
-```
 
-  #final model 
+``` 
+
 ```{r}
-growth_model <- current_model
+growth_data <- data[!is.na(data$kelp_growth)  & data$month == "May",]   #do for each month - April May June
+
+# Initialize variables
+selected_predictors <- c()
+current_model <- base_model
+current_aic <- AIC(base_model)
+converged <- FALSE
+
+# Stepwise selection loop
+while (!converged) {
+  converged <- TRUE
+  
+  # Forward selection
+  for (predictor in setdiff(predictor_list, selected_predictors)) {
+    formula <- as.formula(
+      paste("kelp_growth ~ treatment +", 
+            paste(c(selected_predictors, predictor), collapse = " + "), 
+            "+ (1 | site)  ")
+    )
+    new_model <- glmmTMB(formula, family = Gamma(link="log"), data = growth_data)
+    new_aic <- AIC(new_model)
+    
+    if (new_aic < current_aic) {
+      current_model <- new_model
+      current_aic <- new_aic
+      selected_predictors <- c(selected_predictors, predictor)
+      converged <- FALSE
+    }
+  }
+  
+  # Backward elimination
+  for (predictor in selected_predictors) {
+    remaining_predictors <- setdiff(selected_predictors, predictor)
+    formula <- as.formula(
+      paste("kelp_growth ~ treatment +", 
+            paste(c(selected_predictors, predictor), collapse = " + "), 
+            "+ (1 | site) ")
+    )
+    new_model <- glmmTMB(formula, family = Gamma(link="log"), data = growth_data)
+    new_aic <- AIC(new_model)
+    
+    if (new_aic < current_aic) {
+      current_model <- new_model
+      current_aic <- new_aic
+      selected_predictors <- remaining_predictors
+      converged <- FALSE
+    }
+  }
+}
+
+# Print results
+print(selected_predictors)
+summary(current_model)
+
+may_model <- current_model
+
+#Check colinearity 
+lm_model <- lm(kelp_growth ~ treatment + ts_density + mean_light_lux + urchin_site_density + urchin_density, data = growth_data)
+
+vif(lm_model, type="predictor") 
+
+vif(lm_model) 
+
+#Visualize 
+#simple model 
+fittedModel <- may_model
+
+testDispersion(fittedModel) #check for overdispersion
+
+simulationOutput <- simulateResiduals(fittedModel = fittedModel, plot = T)
+simulationOutput
+
+
+#save the testDispersion plot
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_testDispersion_plot_may.png", width = 800, height = 600)
+testDispersion(fittedModel)
+dev.off()
+
+
+#save the QQ plot
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_QQ_plot_may.png", width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+#save residual vs predictor plot
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_residuals_vs_predictor_may.png", width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
 ```
 
-#Combine growth and survival model (co-efficient plot)
-
-#PLOT ALL COEFFICIENT FIGURES 
+#Growth - April
 ```{r}
-# Extract coefficients and confidence intervals for each model
-kelp_model_tidy <- tidy(survival_model, conf.int = TRUE) %>%
-  mutate(model = "Kelp Survival GLMM")
+growth_data <- data[!is.na(data$kelp_growth)  & data$month == "April",]   #do for each month - April May June
 
-growth_model_tidy <- tidy(growth_model, conf.int = TRUE) %>%
-  mutate(model = "Kelp Growth GLMM")
+predictor_list<- c("urchin_site_density", "urchin_density", "ts_density", "ts_site_density",  "gravel_size", "mean_temperature_c", "max_temperature_c", "mean_light_lux",  "bottom_do","bottom_salinity") #remove mean current from predictor because all NA for this month 
 
+# Initialize variables
+selected_predictors <- c()
+current_model <- base_model
+current_aic <- AIC(base_model)
+converged <- FALSE
 
-# Combine all models into one data frame
-all_models <- bind_rows(kelp_model_tidy, growth_model_tidy)
+# Stepwise selection loop
+while (!converged) {
+  converged <- TRUE
+  
+  # Forward selection
+  for (predictor in setdiff(predictor_list, selected_predictors)) {
+    formula <- as.formula(
+      paste("kelp_growth ~ treatment +", 
+            paste(c(selected_predictors, predictor), collapse = " + "), 
+            "+ (1 | site)  ")
+    )
+    new_model <- glmmTMB(formula, family = Gamma(link="log"), data = growth_data)
+    new_aic <- AIC(new_model)
+    
+    if (new_aic < current_aic) {
+      current_model <- new_model
+      current_aic <- new_aic
+      selected_predictors <- c(selected_predictors, predictor)
+      converged <- FALSE
+    }
+  }
+  
+  # Backward elimination
+  for (predictor in selected_predictors) {
+    remaining_predictors <- setdiff(selected_predictors, predictor)
+    formula <- as.formula(
+      paste("kelp_growth ~ treatment +", 
+            paste(c(selected_predictors, predictor), collapse = " + "), 
+            "+ (1 | site) ")
+    )
+    new_model <- glmmTMB(formula, family = Gamma(link="log"), data = growth_data)
+    new_aic <- AIC(new_model)
+    
+    if (new_aic < current_aic) {
+      current_model <- new_model
+      current_aic <- new_aic
+      selected_predictors <- remaining_predictors
+      converged <- FALSE
+    }
+  }
+}
 
-# Filter out random effects (if you only want fixed effects)
-all_models <- all_models %>%
-  filter(effect == "fixed" | is.na(effect))  # GLM doesn't have an 'effect' column, so allow NA
+# Print results
+print(selected_predictors)
+summary(current_model)
 
-# Define the color scheme for each model
-model_colors <- c(
-  "Kelp Survival GLMM" = "#eacf62",
-  "Kelp Growth GLMM" = "#FF5733"
-)
+april_model <- current_model
 
-# Define the desired order of predictors in reverse
-predictor_order <- rev(c('treatmentopen', 'gravel_sizesmall', 'urchin_site_density','urchin_density', 'ts_site_density', 'ts_density', 
-                         "max_temperature_c", "mean_temperature_c", "mean_light_lux",'mean_current', 'bottom_do', 'bottom_salinity','(Intercept)'))
+#Check colinearity 
+lm_model <- lm(kelp_growth ~ treatment + ts_density + mean_light_lux + urchin_site_density + urchin_density, data = growth_data)
 
+vif(lm_model, type="predictor") 
 
-# Modify the ggplot code to reorder the terms and increase font sizes
-plot <- ggplot(all_models, aes(x = factor(term, levels = predictor_order),  
-                               y = estimate, ymin = conf.low, ymax = conf.high,  
-                               color = model)) +    
-  geom_pointrange(position = position_dodge(width = 0.5)) +    
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray") +    
-  coord_flip() +    
-  scale_color_manual(values = model_colors) +    
-  labs(
-    title = "Coefficient and Confidence Interval Plot",
-    x = "Predictors",
-    y = "Estimate",
-    color = "Model"
-  ) +    
-  theme_minimal() +
-  theme(
-    text = element_text(size = 18),         # Base text size
-    axis.text = element_text(size = 16),    # Axis tick labels
-    axis.title = element_text(size = 18),   # Axis titles
-    legend.text = element_text(size = 16),  # Legend text
-    legend.title = element_text(size = 18), # Legend title
-    plot.title = element_text(size = 20, face = "bold") # Plot title
-  )
+vif(lm_model) 
 
-plot
+#Visualize 
+#simple model 
+fittedModel <- april_model
 
-plot <- ggplot(
-  all_models %>% filter(!term %in% c("mean_current", "(Intercept)")),  # Remove 'current' and 'intercept'
-  aes(
-    x = factor(term, levels = predictor_order[!predictor_order %in% c("mean_current", "(Intercept)")]),  # Remove from ordering
-    y = estimate, ymin = conf.low, ymax = conf.high,
-    color = model
-  )) +
-  geom_pointrange(position = position_dodge(width = 0.5)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray") +
-  coord_flip() +
-  scale_color_manual(values = model_colors) +
-  labs(
-    title = "Coefficient and Confidence Interval Plot",
-    x = "Predictors",
-    y = "Estimate",
-    color = "Model"
-  ) +
-  theme_minimal(base_size = 18) +
-  theme(
-    axis.text = element_text(size = 16),
-    axis.title = element_text(size = 18),
-    legend.text = element_text(size = 16),
-    legend.title = element_text(size = 18),
-    plot.title = element_text(size = 20, face = "bold")
-  )
+testDispersion(fittedModel) #check for overdispersion
 
-plot
+simulationOutput <- simulateResiduals(fittedModel = fittedModel, plot = T)
+simulationOutput
 
 
+#save the testDispersion plot
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_testDispersion_plot_april.png", width = 800, height = 600)
+testDispersion(fittedModel)
+dev.off()
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/combined_dot_and_whisker_plot.png", 
-       plot = plot, width = 15, height = 10, dpi = 300)
 
+#save the QQ plot
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_QQ_plot_april.png", width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+#save residual vs predictor plot
+png("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/models/growth_plot_residuals_vs_predictor_april.png", width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
 ```
+
+
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
