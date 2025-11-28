@@ -55,11 +55,11 @@ data$ts_site_density <- scale(data$ts_site_density)
 #Global model
 ```{r}
 #starting with a minimal model (only random effects)
-base_model <- glmmTMB(urchin_density ~ treatment*urchin_site_density  + (1 | site) + (1 | month), 
+base_model <- glmmTMB(urchin_density ~ treatment  + (1 | site) + (1 | month), 
                       family = tweedie(link = "log"), 
                       data = data)
 
-predictor_list <- c( "mean_temperature_c", "max_temperature_c", "mean_current", "bottom_do", "bottom_salinity")
+predictor_list <- c( "mean_temperature_c", "max_temperature_c", "mean_current", "bottom_do", "bottom_salinity", "urchin_site_density")
 
 
 ```
@@ -79,7 +79,7 @@ while (!converged) {
   # Forward selection
   for (predictor in setdiff(predictor_list, selected_predictors)) {
     formula <- as.formula(
-      paste("urchin_density ~ treatment*urchin_site_density +", 
+      paste("urchin_density ~ treatment +", 
             paste(c(selected_predictors, predictor), collapse = " + "), 
             "+ (1 | site) + (1 | month)")
     )
@@ -98,7 +98,7 @@ while (!converged) {
   for (predictor in selected_predictors) {
     remaining_predictors <- setdiff(selected_predictors, predictor)
     formula <- as.formula(
-      paste("urchin_density ~ treatment*urchin_site_density +", 
+      paste("urchin_density ~ treatment +", 
             paste(remaining_predictors, collapse = " + "), 
             "+ (1 | site) + (1 | month)")
     )
