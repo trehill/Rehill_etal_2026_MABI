@@ -35,9 +35,9 @@ library(ggpattern)
 
 #load data 
 ```{r}
-transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_monitoring_transects.csv")
+transects <- read.csv("/Users/tessarehill/Desktop/Grazer_exclusion/processed_data/cleaned_monitoring_transects.csv")
 
-plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring.csv")
+plots <- read.csv("/Users/tessarehill/Desktop/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring.csv")
 
 ```
 
@@ -117,29 +117,30 @@ april_data$site <- factor(april_data$site,
 plot <- ggplot(april_data, aes(x = site, y = urchin_site_density, fill = site)) +
   geom_bar(stat = "identity", color = "black", fill = "grey") +  # Black outlines, grey fill
   
-  # Labels and title
-  labs(
-    #title = "Baseline Urchin Densities (April)",
-    x = "Site",
-    y = "Urchin Density (m²)"
-  ) +
+labs(
+  x = "Site",
+  y = expression(bold("Urchin Density (" * m^{-2} * ")"))
+
+) + 
+
   
   # Theme adjustments
   theme_minimal() +
   theme(
+    axis.line = element_line(color = "black"),
     plot.title = element_text(size = 18, face = "bold", hjust = 0.5),  # Larger title, centered
     axis.text.x = element_text(size = 14, angle = 45, hjust = 1),  # Larger x-axis labels
     axis.text.y = element_text(size = 14),  # Larger y-axis labels
     axis.title.x = element_text(size = 16, face = "bold"),  # Larger x-axis title
     axis.title.y = element_text(size = 16, face = "bold"),  # Larger y-axis title
-    legend.position = "none"  # Remove legend since color is not site-specific
+    legend.position = "none"
   )
 
 #display the plot
 plot
 
 
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/urchin_densities/baseline_densities.png", plot = plot, width = 10, height = 8, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/baseline_densities.png", plot = plot, width = 10, height = 8, dpi = 300)
 ```
 
 #Density analysis (same as above, do urchin densities differ by site, but remove March and August data)
@@ -178,12 +179,13 @@ plot <- ggplot(transects_new, aes(x = site, y = urchin_site_density, fill = site
     "Taylor" = "#cd3737"
   )) + 
   labs(
-    title = "Urchin Density Across Sites", 
     x = "Site", 
-    y = "Urchin Density (m²)"
+    y = expression(Urchin~Density~(m^{-2}))
   ) + 
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 20), 
+  theme(
+        axis.line = element_line(color = "black"),
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 20), 
         axis.text.y = element_text(size = 20), 
         axis.title.x = element_text(size = 24),  # Increase x-axis title size
       axis.title.y = element_text(size = 24)) + # Increase y-axis title size)  # Increase y-axis label size) +  # Rotate x-axis labels for readability
@@ -192,7 +194,7 @@ plot <- ggplot(transects_new, aes(x = site, y = urchin_site_density, fill = site
 plot 
 
 # Save the plot
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/urchin_densities/col_box_densities_by_site.png", 
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/col_box_densities_by_site.png", 
        plot = plot, width = 10, height = 8, dpi = 300)
 
 
@@ -230,6 +232,7 @@ plot <- ggplot(data_legend, aes(x = x, y = y, color = Site, shape = Site)) +
   theme_minimal() +
   labs(color = "Site", shape = "Site") +
   theme(
+    axis.line = element_line(color = "black"),
     legend.text = element_text(size = 24),        # Change to desired size
     legend.title = element_text(size = 20)        # Optional: change legend title size
   )
@@ -237,7 +240,7 @@ plot <- ggplot(data_legend, aes(x = x, y = y, color = Site, shape = Site)) +
 plot 
 
 # Save the plot
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/urchin_densities/legend_densities.png", 
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/legend_densities.png", 
        plot = plot, width = 10, height = 8, dpi = 300)
 
 #define categories
@@ -342,13 +345,14 @@ plot <- ggplot(transects, aes(x = month, y = urchin_site_density, color = site, 
   labs(
     #title = "Urchin Density by Month Across Sites",
     x = "Month",
-    y = "Urchin Density (m²)"
+    y = expression(bold("Urchin Density (" * m^{-2} * ")"))
   ) +
   scale_x_discrete(labels = c("March", "April", "May", "June", "mean")) +  
   scale_color_manual(values = site_colors) +  
   scale_shape_manual(values = site_shapes) +  # Apply custom shapes
   theme_minimal() +
   theme(
+    axis.line = element_line(color = "black"),
     legend.position = "bottom",
     plot.title = element_text(size = 18, face = "bold"),  
     axis.title = element_text(size = 16, face = "bold"),  
@@ -360,7 +364,7 @@ plot <- ggplot(transects, aes(x = month, y = urchin_site_density, color = site, 
 print(plot)
 
 #save the plot as a PNG file
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/urchin_densities/densities_month_site_col.png", 
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/densities_month_site_col.png", 
        plot = plot, width = 8, height = 6, dpi = 300)
 
 
@@ -382,18 +386,27 @@ ggplot(plots, aes(x = urchin_density)) +
 
 #calculate values for reporting 
 #calculate the mean and standard error for each treatment
-treatment_site <- plots %>%
-  group_by(treatment, site) %>%
-  summarise(
-    site_mean_density = mean(urchin_density, na.rm = TRUE),  # Mean of urchin density
-  )
+#treatment_site <- plots %>%
+#  group_by(treatment, site) %>%
+#  summarise(
+#    site_mean_density = mean(urchin_density, na.rm = TRUE),  # Mean of urchin density
+#  )
 
 
-summary_stats <- treatment_site %>%
+#summary_stats <- treatment_site %>%
+#  group_by(treatment) %>%
+#  summarise(
+#    mean_density = mean(site_mean_density, na.rm = TRUE),  # Mean of urchin density
+#    sd_density = sd(site_mean_density, na.rm = TRUE),      # Standard deviation of urchin density
+#    n = n(),                                           # Sample size
+#    sem = sd_density / sqrt(n)                         # Standard error of the mean
+#  )
+
+summary_stats <- plots %>%
   group_by(treatment) %>%
   summarise(
-    mean_density = mean(site_mean_density, na.rm = TRUE),  # Mean of urchin density
-    sd_density = sd(site_mean_density, na.rm = TRUE),      # Standard deviation of urchin density
+    mean_density = mean(urchin_density, na.rm = TRUE),  # Mean of urchin density
+    sd_density = sd(urchin_density, na.rm = TRUE),      # Standard deviation of urchin density
     n = n(),                                           # Sample size
     sem = sd_density / sqrt(n)                         # Standard error of the mean
   )
@@ -444,11 +457,12 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_density, pattern = tre
   
     labs(
         x = "Treatment",
-        y = "Urchin Density (m²)"
+        y = expression(bold("Urchin Density (" * m^{-2} * ")")),
     ) +
     theme_minimal() +
     scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  
     theme(
+        axis.line = element_line(color = "black"),
         legend.position = "none",
         plot.title = element_text(size = 28, face = "bold"),  
         axis.text.x = element_text(size = 30),  
@@ -460,7 +474,7 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_density, pattern = tre
 # Display the plot
 print(plot)
 
-plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/urchin_densities/bwbar_treatment.png", 
+plot <- ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/bwbar_treatment.png", 
        plot = plot, 
        width = 10, height = 10, dpi = 300)
 
@@ -510,12 +524,13 @@ plot <- ggplot(urchin_summary, aes(x = site, y = mean_urchin_density, pattern = 
   facet_wrap(~ month, scales = "fixed", ncol = 1) +
   labs(
     x = "Site",
-    y = "Urchin Density (ind/m²)",
+    y = expression(bold("Urchin Density (" * m^{-2} * ")")),
     fill = "Treatment"
   ) +
   scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +
   theme_minimal() +
   theme(
+    axis.line = element_line(color = "black"),
     axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
     axis.text.y = element_text(size = 40),
     axis.title.x = element_text(size = 40, face = 'bold'),
@@ -526,7 +541,7 @@ plot <- ggplot(urchin_summary, aes(x = site, y = mean_urchin_density, pattern = 
 
 plot 
 #save
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/urchin_densities/bwdensity_site_month.png", plot = plot,  width = 15, height = 12, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/bwdensity_site_month.png", plot = plot,  width = 15, height = 12, dpi = 300)
 
 ```
 
@@ -558,20 +573,21 @@ grazer_colors <- c(
 # Create the grazer counts stacked bar chart
 plot <- ggplot(grazers_summary, aes(x = site, y = count, fill = species)) +  
   geom_bar(stat = "identity") +  
-  scale_fill_manual(values = grazer_colors, labels = c("Abalone", "Green Urchin", "Purple Urchin", "Pycnopodia", "Red Urchin", "Turban Snail")) +  
+  scale_fill_manual(values = grazer_colors, labels = c("Abalone", "Green Urchin", "Purple Urchin", "Sunflower Sea Star", "Red Urchin", "Turban Snail")) +  
   labs(x = "Site", y = "Counts of Species", fill = "Species") +  
   theme_minimal() +  
   theme(
-    axis.text.x = element_text(size = 14, angle = 45, hjust = 1),  # Larger x-axis labels
-    axis.text.y = element_text(size = 14),  # Larger y-axis labels
-    axis.title.x = element_text(size = 16, face = "bold"),  # Larger x-axis title
-    axis.title.y = element_text(size = 16, face = "bold"),  # Larger y-axis title
-    legend.title = element_text(size = 16, face = "bold"),  # Larger legend title
-    legend.text = element_text(size = 14)  # Larger legend labels
+    axis.line = element_line(color = "black"),
+    axis.text.x = element_text(size = 18, angle = 45, hjust = 1),  # Larger x-axis labels
+    axis.text.y = element_text(size = 18),  # Larger y-axis labels
+    axis.title.x = element_text(size = 24, face = "bold"),  # Larger x-axis title
+    axis.title.y = element_text(size = 24, face = "bold"),  # Larger y-axis title
+    legend.title = element_text(size = 24, face = "bold"),  # Larger legend title
+    legend.text = element_text(size = 18)  # Larger legend labels
   )
 
 plot
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/grazer_densities/grazer_counts.png", 
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/grazer_densities/grazer_counts.png", 
        plot = plot, 
        width = 15, height = 10, dpi = 300)
 ```
@@ -587,18 +603,27 @@ ggplot(plots, aes(x = ts_density)) +
 
 #calculate values for reporting 
 #calculate the mean and standard error for each treatment
-treatment_site <- plots %>%
-  group_by(treatment, site) %>%
-  summarise(
-    site_mean_density = mean(ts_density, na.rm = TRUE),  # Mean of urchin density
-  )
+#treatment_site <- plots %>%
+#  group_by(treatment, site) %>%
+#  summarise(
+#    site_mean_density = mean(ts_density, na.rm = TRUE),  # Mean of urchin density
+#  )
 
 
-summary_stats <- treatment_site %>%
+#summary_stats <- treatment_site %>%
+#  group_by(treatment) %>%
+#  summarise(
+#    mean_density = mean(site_mean_density, na.rm = TRUE),  # Mean of urchin density
+#    sd_density = sd(site_mean_density, na.rm = TRUE),      # Standard deviation of urchin density
+#    n = n(),                                           # Sample size
+ #   sem = sd_density / sqrt(n)                         # Standard error of the mean
+ # )
+
+summary_stats <- plots %>%
   group_by(treatment) %>%
   summarise(
-    mean_density = mean(site_mean_density, na.rm = TRUE),  # Mean of urchin density
-    sd_density = sd(site_mean_density, na.rm = TRUE),      # Standard deviation of urchin density
+    mean_density = mean(ts_density, na.rm = TRUE),  # Mean of urchin density
+    sd_density = sd(ts_density, na.rm = TRUE),      # Standard deviation of urchin density
     n = n(),                                           # Sample size
     sem = sd_density / sqrt(n)                         # Standard error of the mean
   )
@@ -646,11 +671,12 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_density, pattern = tre
     ) +
     labs(
         x = "Treatment",
-        y = "Red Turban Snail Density (m²)"
+        y = expression(bold("Red Turban Density (" * m^{-2} * ")"))
     ) +
     theme_minimal() +
     scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  
     theme(
+        axis.line = element_line(color = "black"),
         legend.position = "none",
         plot.title = element_text(size = 28, face = "bold"),  
         axis.text.x = element_text(size = 30),  
@@ -662,7 +688,7 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_density, pattern = tre
 # Display the plot
 print(plot)
 
-plot <- ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/turban_densities/bwbar_treatment.png", 
+plot <- ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/turban_densities/bwbar_treatment.png", 
        plot = plot, 
        width = 10, height = 10, dpi = 300)
 
@@ -706,14 +732,15 @@ plot <- ggplot(turban_summary, aes(x = site, y = mean_density, pattern = treatme
     color = "black"
   ) +
   facet_wrap(~ month, scales = "fixed", ncol = 1) +
-  labs(
-    x = "Site",
-    y = "Red Turban Snail Density (m²)",
-    fill = "Treatment"
-  ) +
+labs(
+  x = "Site",
+  y = expression(bold("Red Turban Density (" * m^{-2} * ")")),
+  fill = "Treatment"
+) +
   scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +
   theme_minimal() +
   theme(
+    axis.line = element_line(color = "black"),
     axis.text.x = element_text(angle = 45, hjust = 1, size = 30),
     axis.text.y = element_text(size = 40),
     axis.title.x = element_text(size = 40, face = 'bold'),
@@ -728,7 +755,7 @@ plot <- ggplot(turban_summary, aes(x = site, y = mean_density, pattern = treatme
 print(plot)
 
 #save
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/turban_densities/bwdensity_site_month.png", plot = plot,  width = 15, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/turban_densities/bwdensity_site_month.png", plot = plot,  width = 15, height = 12, dpi = 300)
 
 
 
@@ -801,13 +828,14 @@ plot <- ggplot(transects, aes(x = month, y = ts_site_density, color = site, grou
   labs(
     #title = "ts Density by Month Across Sites",
     x = "Month",
-    y = "Red Turban Snail Density (m²)"
+    y = expression(bold("Red Turban Density (" * m^{-2} * ")"))
   ) +
   scale_x_discrete(labels = c("March", "April", "May", "June", "mean")) +  
   scale_color_manual(values = site_colors) +  
   scale_shape_manual(values = site_shapes) +  # Apply custom shapes
   theme_minimal() +
   theme(
+    axis.line = element_line(color = "black"),
     legend.position = "bottom",
     plot.title = element_text(size = 18, face = "bold"),  
     axis.title = element_text(size = 16, face = "bold"),  
@@ -819,7 +847,7 @@ plot <- ggplot(transects, aes(x = month, y = ts_site_density, color = site, grou
 print(plot)
 
 #save the plot as a PNG file
-ggsave("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/plots/turban_densities/densities_month_site_col.png", 
+ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/turban_densities/densities_month_site_col.png", 
        plot = plot, width = 8, height = 6, dpi = 300)
 
 ```
