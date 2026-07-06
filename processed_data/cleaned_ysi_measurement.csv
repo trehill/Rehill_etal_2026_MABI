@@ -1,0 +1,23 @@
+"site","month","bottom_temp","bottom_do","bottom_salinity","bottom_ph"
+"Dixon","March",9,NA,28.9,NA
+"Dixon","April",9.7,96.2,31.94,NA
+"Dixon","May",12,101.9,31.02,8.14
+"Dixon","June",11.1,127.4,26.22,7.11
+"Dixon","August",11.8,NA,NA,NA
+"Ed King","May",10.4,88.3,32.38,7.92
+"Ed King","June",11,102,26.28,7.9
+"Ellis N","March",9.1,NA,28.6,NA
+"Ellis N","April",9.7,84.1,32,8
+"Ellis N","May",11.5,110.2,31.78,8.04
+"Ellis N","June",10.7,114.9,26.35,5.83
+"Ellis S","March",8.6,NA,27.3,NA
+"Ellis S","April",9.7,86.6,31.85,8.01
+"Ellis S","May",9.9,72.1,32.75,7.82
+"Ellis S","June",10.9,118.6,26.28,5.93
+"Nanat","March",8.9,NA,28.4,NA
+"Nanat","April",9.6,86.4,31.82,8
+"Nanat","May",9.9,69.4,32.73,7.78
+"Nanat","June",11,119.5,26.26,6.03
+"Taylor","April",10.2,121,26,NA
+"Taylor","May",10.5,120,25,NA
+"Taylor","June",11.4,121.3,26.16,8.09
