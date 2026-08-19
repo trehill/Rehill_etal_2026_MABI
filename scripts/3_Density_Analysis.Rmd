@@ -295,7 +295,35 @@ urchin_density_summary <- transects_new %>%
 print(urchin_density_summary)
 
 ```
+#Turban Snails plot
+```{r}
+#plot without color 
+#set the desired order for the sites
+transects_new$site <- factor(transects_new$site, 
+                                 levels = c("Ed King","Taylor", "Dixon", "Ellis S","Ellis N",  "Nanat"))
 
+plot <- ggplot(transects_new, aes(x = site, y = ts_site_density)) + 
+  geom_boxplot() + 
+  labs(
+    x = "Site", 
+    y = expression(Red~Turban~Snail~Density~(m^{-2}))
+  ) + 
+  theme_minimal() + 
+  theme(
+        axis.line = element_line(color = "black"),
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 20), 
+        axis.text.y = element_text(size = 20), 
+        axis.title.x = element_text(size = 24),  # Increase x-axis title size
+      axis.title.y = element_text(size = 24)) + # Increase y-axis title size)  # Increase y-axis label size) +  # Rotate x-axis labels for readability
+  guides(fill = "none")  # Remove the legend
+
+plot 
+
+# Save the plot
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/turban_densities/box_densities_by_site.png", 
+       plot = plot, width = 10, height = 8, dpi = 300)
+
+```
 #Do urchin densities change across months? 
 ```{r}
 
