@@ -23,7 +23,7 @@ library(GGally)
 
 #Read in data 
 ```{r}
-data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_data.csv")
+data <- read.csv("/Users/tessarehill/Desktop/Exclosures/processed_data/cleaned_data.csv")
 
 ```
 
@@ -35,16 +35,16 @@ data <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/clean
 #select only the environmental variables
 env_data <- data %>%
   dplyr::select(mean_temperature_c, mean_light_lux, bottom_do, bottom_salinity, 
-         bottom_ph, mean_depth_m, max_temperature_c, max_current, mean_current, urchin_site_density, ts_site_density) %>%
+          max_temperature_c, mean_current, urchin_site_density, ts_site_density) %>%
   rename(
     `temp (mean)` = mean_temperature_c,
     `temp (max)` = max_temperature_c,
     `light (lux)` = mean_light_lux,
     `bottom DO` = bottom_do,
-    `bottom pH` = bottom_ph,
+    #`bottom pH` = bottom_ph,
     `bottom salinity` = bottom_salinity,
-    `depth (mean)` = mean_depth_m,
-    `current (max)` = max_current,
+    #`depth (mean)` = mean_depth_m,
+    #`current (max)` = max_current,
     `current (mean)` = mean_current, 
     `urchin site\n density` = urchin_site_density, 
     `turban snail\n site density` = ts_site_density, 
@@ -68,7 +68,7 @@ p <- ggpairs(env_data,
 p
 
 # Save the plot as a PNG file
-ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/environmental_supps/environmental_scatterplot_matrix.png", plot = p, width = 10, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/environmental_supps/environmental_scatterplot_matrix.png", plot = p, width = 10, height = 10, dpi = 300)
 
 
 ```

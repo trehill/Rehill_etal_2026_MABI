@@ -5,6 +5,7 @@ date: "2026-08-13"
 output: html_document
 ---
 
+
 # FINAL ANALYSIS RECOMMENDED BY LAUREN DYKMAN
 
 # Steps:
@@ -47,7 +48,7 @@ library(visreg)
 
 # Insert your file path here
 ```{r}
-path <- "/Users/tessarehill/Library/CloudStorage/Dropbox/MSc/Exclosures"
+path <- "/Users/tessarehill/Desktop/Exclosures"
 ```
 
 # Load data
@@ -86,8 +87,34 @@ cor.test(data$ts_density, data$mean_current, method = "pearson") # 0.08
 #   Bottom salinity and dissolved oxygen covary significantly.
 ```
 
-# Standardize and scale predictors 
+
+#Correlation among ABIOTIC predictors
 ```{r}
+
+data2 <- read.csv("/Users/tessarehill/Desktop/Exclosures/processed_data/cleaned_data.csv")
+
+cor_matrix <- cor(data2[, c("mean_light_lux", "mean_temperature_c", "max_temperature_c",  "mean_current", "bottom_salinity",  "bottom_do", "urchin_site_density", 'ts_site_density' )], use = "complete.obs")
+
+#rename variables
+# Rename row and column names
+colnames(cor_matrix) <- rownames(cor_matrix) <- c("Light (lux)", "Temp (mean)", "Temp (max)", 
+                                                  "Current (mean)",  "Bottom salinity", "Bottom DO", "Urchin Site Density", "Turban Snail Site Density")
+
+#create the correlation plot
+plot <- ggcorrplot(
+  cor_matrix, 
+  method = "circle",   #use circles for visualization
+  lab = TRUE           #add correlation coefficients as labels
+)
+plot
+
+#save the plot
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/models/abiotic_correlation_plot.png", plot = plot, width = 7, height = 7, dpi = 300)
+
+```
+
+```{r}
+# Standardize and scale predictors 
 data$urchin_density <- scale(data$urchin_density)
 data$urchin_site_density <- scale(data$urchin_site_density)
 data$ts_density <- scale(data$ts_density)
@@ -318,7 +345,7 @@ plot(output$`AIC(gm)`)
 
 # Setting and examining the optimal model
 ```{r}
-optimal.model <- glmmTMB(kelp_length_cm ~ treatment + gravel_size + month + urchin_site_density + ts_site_density + mean_temperature_c + mean_light_lux + mean_current + bottom_salinity + gravel_size:month + (1 | site/plot_id), family = Gamma(link = "log"), data = data.length)
+optimal.model <- glmmTMB(kelp_length_cm ~ treatment + gravel_size + month + urchin_site_density + ts_site_density + mean_temperature_c + mean_light_lux + mean_current + bottom_salinity + urchin_density + gravel_size:month + (1 | site/plot_id), family = Gamma(link = "log"), data = data.length)
 
 summary(optimal.model)
 Anova(optimal.model)

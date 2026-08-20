@@ -28,7 +28,7 @@ library(cowplot)
 #Read in files 
 ```{r}
 
-plots <- read.csv("/Users/tessarehill/Desktop/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring.csv")
+plots <- read.csv("/Users/tessarehill/Desktop/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
 
 growth_plots <-  plots[!is.na(plots$kelp_growth), ]
 
@@ -101,7 +101,7 @@ plot <- ggplot(survival_summary, aes(x = site, y = mean_survival, pattern = trea
 print(plot)
 
 #save
-ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/kelp_survival/bwsurvival_site_month.png", plot = plot,  width = 15, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/kelp_survival/bwsurvival_site_month.png", plot = plot,  width = 15, height = 10, dpi = 300)
 
 #KELP GROWTH ####
 growth_summary <- growth_plots %>%
@@ -159,7 +159,7 @@ plot <- ggplot(growth_summary, aes(x = site, y = mean_growth, pattern = treatmen
 # Display the plot
 print(plot)
 
-ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/kelp_growth/bwgrowth_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/kelp_growth/bwgrowth_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
 
 
 legend <- get_legend(plot)
@@ -230,7 +230,7 @@ plot <- ggplot(survival_summary, aes(x = site, y = mean_survival, pattern = grav
 # Display the plot
 print(plot)
 
-ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/gravel_size/bwsurv_gravel_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/gravel_size/bwsurv_gravel_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
 
 
 #GROWTH  ##########################################################################
@@ -294,7 +294,7 @@ plot <- ggplot(growth_summary, aes(x = site, y = mean_growth, pattern = gravel_s
 # Display the plot
 print(plot)
 
-ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/gravel_size/bwgrwt_gravel_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/gravel_size/bwgrwt_gravel_site_month.png", plot = plot, width = 15, height = 10, dpi = 300)
 
 ```
 
@@ -378,7 +378,7 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_surv, pattern = treatm
 
 plot 
 
-ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/kelp_survival/bwbar_surv_open_v_caged.png", plot = plot, width = 10, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/kelp_survival/bwbar_surv_open_v_caged.png", plot = plot, width = 10, height = 10, dpi = 300)
 
 
 #GROWTH ############################################################
@@ -457,8 +457,89 @@ plot <- ggplot(summary_stats, aes(x = treatment, y = mean_growth, pattern = trea
 
 plot 
 
-ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/kelp_growth/bwbar_grwt_open_v_caged.png", plot = plot, width = 10, height = 10, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/kelp_growth/bwbar_grwt_open_v_caged.png", plot = plot, width = 10, height = 10, dpi = 300)
 
+
+```
+#Changing length plot to reflect each individual length measured
+```{r}
+path <- "/Users/tessarehill/Desktop/Exclosures"
+
+# Load original kelp length data
+data.length.raw <- read.csv(paste(path, "data", "cleaned_green_gravel_monitoring.csv", sep = "/"))
+
+data.length.raw$month <- factor(data.length.raw$month, levels = c("April", "May", "June"))
+data.length.raw$plot_unique <- paste(data.length.raw$month, data.length.raw$site, data.length.raw$plot_id)
+
+# Make each kelp length measurement its own row
+data.length <- data.length.raw %>%
+      pivot_longer(kelp_total1:kelp_total5, names_to = "kelp_individual", values_to = "kelp_length_cm")
+
+# Remove zero data, which were supposed to be NA in original data table
+data.length <- data.length[!data.length$kelp_length_cm == 0,]
+
+# Merge with environmental variables for each plot and timepoint
+data.length <- merge(data.length[c("plot_unique", "kelp_length_cm")], data, by = "plot_unique")
+
+summary_stats <- data.length %>%
+    group_by(treatment) %>%
+    summarise(
+        mean_growth = mean(kelp_length_cm, na.rm = TRUE),
+        sd_growth = sd(kelp_length_cm, na.rm = TRUE),
+        n = n(),  # Sample size
+        se_growth = sd_growth / sqrt(n)  # Standard error
+    )
+
+summary_stats
+
+
+plot <- ggplot(summary_stats, aes(x = treatment, y = mean_growth, pattern = treatment)) +
+    geom_bar_pattern(
+        stat = "identity", 
+        position = position_dodge(), 
+        width = 0.7,
+        fill = "white",  # No fill color
+        color = "black",  # Add black border to all bars
+        pattern_density = 0.05,       
+        pattern_spacing = 0.05,       
+        pattern_fill = "black",       
+        pattern_color = "black",      
+        pattern_angle = 45            
+    ) +
+    geom_errorbar(
+        aes(
+            ymin = pmax(mean_growth - se_growth, 0),  
+            ymax = mean_growth + se_growth
+        ),
+        width = 0.2,  
+        color = "black",
+        position = position_dodge(0.7)
+    ) +
+   geom_text(
+        aes(label = paste0("n = ", n), y = mean_growth + se_growth + 10),  # Adjust position
+        size = 15, 
+        color = "black"
+    ) +
+    labs(
+        title = "Kelp Growth by Treatment",
+        x = "Treatment",
+        y = "Kelp Length (cm)"
+    ) +
+    theme_minimal() +
+    scale_pattern_manual(values = c("caged" = "crosshatch", "open" = "none")) +  
+    theme(
+        axis.line = element_line(color = "black"),
+        legend.position = "none",
+        plot.title = element_text(size = 38, face = "bold"),  
+        axis.text.x = element_text(size = 40),  
+        axis.text.y = element_text(size = 40),  
+        axis.title.x = element_text(size = 40, face = "bold"),  
+        axis.title.y = element_text(size = 40, face = "bold")  
+    )
+
+plot 
+
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/kelp_growth/bwbar_grwt_open_v_caged_new.png", plot = plot, width = 10, height = 10, dpi = 300)
 
 ```
 
@@ -923,3 +1004,14 @@ ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/kelp_survival/bwbar_su
 
 
 ```
+
+
+#Plotting kelp length as individuals
+```{r}
+data <- read.csv(paste(path, "data", "cleaned_data_R3.csv", sep = "/"))
+data$month <- factor(data$month, levels = c("April", "May", "June"))
+data$plot_unique <- paste(data$month, data$site, data$plot_id)
+
+
+```
+

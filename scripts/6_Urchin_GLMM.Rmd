@@ -46,7 +46,7 @@ library(visreg)
 
 # Insert your file path here
 ```{r}
-path <- "/Users/tessarehill/Library/CloudStorage/Dropbox/MSc/Exclosures"
+path <- "/Users/tessarehill/Desktop/Exclosures"
 ```
 
 # Load data 
