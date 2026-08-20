@@ -35,11 +35,11 @@ library(ggpattern)
 
 #load data 
 ```{r}
-transects <- read.csv("/Users/tessarehill/Desktop/Grazer_exclusion/processed_data/cleaned_monitoring_transects.csv")
+transects <- read.csv("/Users/tessarehill/Desktop/Exclosures/processed_data/cleaned_monitoring_transects.csv")
 #transects <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_monitoring_transects.csv")
 
 
-plots <- read.csv("/Users/tessarehill/Desktop/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring.csv")
+plots <- read.csv("/Users/tessarehill/Desktop/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
 #plots <- read.csv("/Users/tessarehill/Dropbox/MSc/Exclosures/processed_data/cleaned_green_gravel_monitoring.csv")
 ```
 
@@ -105,7 +105,7 @@ unique(transects$total_n_pu) #three occurences of purple urchin
 ```
 
 
-#Only baseline urchin densities (April)
+#Only baseline urchin and ts densities (April)
 ```{r}
 #create bar chart for total baseline urchin densities (April), across sites 
 april_data <- transects %>%
@@ -113,7 +113,7 @@ april_data <- transects %>%
 
 #set the desired order for the sites
 april_data$site <- factor(april_data$site, 
-                                 levels = c("Taylor", "Dixon", "Ed King", "Ellis N", "Ellis S", "Nanat"))
+                                 levels = c("Ed King","Taylor", "Dixon", "Ellis S","Ellis N",  "Nanat"))
 
 #create the bar plot (black & white)
 plot <- ggplot(april_data, aes(x = site, y = urchin_site_density, fill = site)) +
@@ -142,7 +142,37 @@ labs(
 plot
 
 
-ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/baseline_densities.png", plot = plot, width = 10, height = 8, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/urchin_densities/baseline_densities.png", plot = plot, width = 10, height = 8, dpi = 300)
+
+#now create one for turban snails 
+#create the bar plot (black & white)
+plot <- ggplot(april_data, aes(x = site, y = ts_site_density, fill = site)) +
+  geom_bar(stat = "identity", color = "black", fill = "grey") +  # Black outlines, grey fill
+  
+labs(
+  x = "Site",
+  y = expression(bold("Red Turban Snail Density (" * m^{-2} * ")"))
+
+) + 
+
+  
+  # Theme adjustments
+  theme_minimal() +
+  theme(
+    axis.line = element_line(color = "black"),
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),  # Larger title, centered
+    axis.text.x = element_text(size = 14, angle = 45, hjust = 1),  # Larger x-axis labels
+    axis.text.y = element_text(size = 14),  # Larger y-axis labels
+    axis.title.x = element_text(size = 16, face = "bold"),  # Larger x-axis title
+    axis.title.y = element_text(size = 16, face = "bold"),  # Larger y-axis title
+    legend.position = "none"
+  )
+
+#display the plot
+plot
+
+
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/turban_densities/baseline_densities.png", plot = plot, width = 10, height = 8, dpi = 300)
 ```
 
 #Density analysis (same as above, do urchin densities differ by site, but remove March and August data)
@@ -203,7 +233,7 @@ plot
 #plot without color 
 #set the desired order for the sites
 transects_new$site <- factor(transects_new$site, 
-                                 levels = c("Taylor", "Dixon", "Ed King", "Ellis N", "Ellis S", "Nanat"))
+                                 levels = c("Ed King","Taylor", "Dixon", "Ellis S","Ellis N",  "Nanat"))
 
 plot <- ggplot(transects_new, aes(x = site, y = urchin_site_density)) + 
   geom_boxplot() + 
@@ -223,8 +253,8 @@ plot <- ggplot(transects_new, aes(x = site, y = urchin_site_density)) +
 plot 
 
 # Save the plot
-#ggsave("/Users/tessarehill/Desktop/Grazer_exclusion/plots/urchin_densities/box_densities_by_site.png", 
-#       plot = plot, width = 10, height = 8, dpi = 300)
+ggsave("/Users/tessarehill/Desktop/Exclosures/plots/urchin_densities/box_densities_by_site.png", 
+       plot = plot, width = 10, height = 8, dpi = 300)
 
 
 ###adding shapes (to create a legend)
@@ -322,8 +352,8 @@ plot
 # Save the plot
 ggsave("/Users/tessarehill/Desktop/Exclosures/plots/turban_densities/box_densities_by_site.png", 
        plot = plot, width = 10, height = 8, dpi = 300)
-
 ```
+
 #Do urchin densities change across months? 
 ```{r}
 
