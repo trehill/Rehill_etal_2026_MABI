@@ -1,0 +1,308 @@
+---
+title: "6_Urchin_GLMM_R3_v4"
+author: "Lauren Dykman"
+date: "2026-08-13"
+output: html_document
+---
+
+# FINAL ANALYSIS RECOMMENDED BY LAUREN DYKMAN
+
+# Steps:
+
+# 1) Test correlation of all abiotic factors. This will be used later.
+
+# 2) Run global model with all main categorical experimental factors required (treatment, gravel size, month), all 2-way interactions between main categorical experimental factors, plus all abiotic and biotic factors.
+
+# 3) Perform backwards elimination to choose model that minimizes AIC, sequentially removing factor with highest p-value and re-running model.
+
+# 4) If final model includes two factors that co-vary, start again from step (2) but remove the least significant (highest p-value) of the co-varying factors from the global model.
+
+# 5) Repeat until you reach a final model that minimizes the AIC that does not contain covarying factors.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+```
+
+#Load libraries 
+```{r include=FALSE}
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(car)
+library(glmmTMB)
+library(DHARMa)
+library(ggplot2)
+library(broom)
+library(lme4)
+library(lmerTest)
+library(car)
+library(MuMIn)
+library(tibble)
+library(visreg)
+```
+
+# Insert your file path here
+```{r}
+path <- "/Users/tessarehill/Desktop/Exclosures"
+```
+
+# Load data 
+```{r}
+data <- read.csv(paste(path, "data", "cleaned_data_R3.csv", sep = "/"))
+data$month <- factor(data$month, levels = c("April", "May", "June"))
+```
+
+# Testing correlation
+```{r}
+cor.test(data$mean_temperature_c, data$max_temperature_c, method = "pearson") # 0.85, p = 2.2e-16
+cor.test(data$mean_temperature_c, data$mean_light_lux, method = "pearson") # 0.19
+cor.test(data$mean_temperature_c, data$bottom_do, method = "pearson") # 0.58
+cor.test(data$mean_temperature_c, data$bottom_salinity, method = "pearson") # 0.61
+cor.test(data$mean_temperature_c, data$mean_current, method = "pearson") # 0.21
+cor.test(data$max_temperature_c, data$mean_light_lux, method = "pearson") # 0.24
+cor.test(data$max_temperature_c, data$bottom_do, method = "pearson") # 0.36
+cor.test(data$max_temperature_c, data$bottom_salinity, method = "pearson") # 0.44
+cor.test(data$max_temperature_c, data$mean_current, method = "pearson") # 0.007
+cor.test(data$mean_light_lux, data$bottom_do, method = "pearson") # 0.04
+cor.test(data$mean_light_lux, data$bottom_salinity, method = "pearson") # 0.28
+cor.test(data$mean_light_lux, data$mean_current, method = "pearson") # 0.39
+cor.test(data$bottom_do, data$bottom_salinity, method = "pearson") # 0.86, p = 2.2e-16
+cor.test(data$bottom_do, data$mean_current, method = "pearson") # 0.003
+
+# Maximum temperature and mean temperature covary signifincatly.
+# Bottom salinity and dissolved oxygen covary significantly.
+```
+
+# Visualizing covarying factors
+```{r}
+plot(data$max_temperature_c ~ data$mean_temperature_c)
+plot(data$bottom_do ~ data$bottom_salinity)
+```
+
+# Standardize and scale abiotic predictors 
+```{r}
+data$mean_temperature_c <- scale(data$mean_temperature_c)
+data$max_temperature_c <- scale(data$max_temperature_c)
+data$mean_light_lux <- scale(data$mean_light_lux)
+data$bottom_do <- scale(data$bottom_do)
+data$bottom_salinity <- scale(data$bottom_salinity)
+data$mean_current <- scale(data$mean_current)
+```
+
+# Define function for selecting significant fixed effects
+```{r}
+select.model <- function(df, response, required.predictors, predictors, random, stat.dist) {
+  
+  # df = your data frame
+  # response = your response variable as a string, e.g. "kelp_length_cm"
+  # required.predictors = a list of fixed effects that you require in the model
+  # predictors = a list of your fixed effects that may be removed
+  # random = your random effect as a string, example "(1|site/plot_id)"
+  # stat.dist = the "family" of the model exactly as you would want it input, e.g. Gamma(link = "log") 
+  
+  formula <- as.formula(paste(response, "~",
+                              paste(c(required.predictors), collapse = " + "), "+",
+                              paste(c(predictors), collapse = " + "), "+", random))
+  
+  gm <- glmmTMB(formula, family = stat.dist, data = df)
+  
+  converged <-  FALSE
+  output <- as.data.frame(matrix(nrow = 0, ncol = 6))
+  p <- 1
+
+  while (converged == FALSE) {
+
+    print(length(predictors))
+
+    coef.table <- rownames_to_column(data.frame(coef(summary(gm))$cond),
+                                     var = "factor")
+    
+    words_to_remove <- "open|caged|large|small|April|May|June|July|August"
+    
+    coef.table <- coef.table %>% 
+      mutate(factor = str_remove_all(factor, words_to_remove))
+    
+    # Subset rows where the Estimate is NA
+    coef.select <- coef.table[coef.table$factor %in% predictors,]
+    row <- coef.select[which.max(coef.select$Pr...z..),]
+    print(row)
+    p <- row$Pr...z..
+    remove <- row$factor
+    print(paste("remove: ", remove))
+
+    predictors <- setdiff(predictors, remove)
+    print(predictors)
+
+    if (length(predictors) == 1) {
+      converged <- TRUE
+      print(converged)
+    }
+
+    formula <- as.formula(paste(response, "~",
+                              paste(c(required.predictors), collapse = " + "), "+",
+                              paste(c(predictors), collapse = " + "), "+", random))
+      
+    print(formula)
+    
+    gm <- glmmTMB(formula, family = stat.dist, data = df)
+
+    print(AIC(gm))
+
+    output <- rbind(output, cbind(row, AIC(gm)))
+
+  }
+  return(output)
+}
+```
+
+# QUESTION 1: How does caging and the abiotic environment drive urchin density?
+
+# Global model for urchin plot density with all fixed effects
+```{r include=FALSE}
+# Starting with all predictors
+
+#predictors.urchin <- c("max_temperature_c", "mean_temperature_c", "mean_current", "bottom_do", "bottom_salinity", "mean_light_lux", "treatment:month", "treatment:gravel_size", "gravel_size:month")
+
+# Remove max temperature because it covaries with mean temperature in the optimal model and it was less significant in the original global model
+
+predictors.urchin <- c("mean_temperature_c", "mean_current", "bottom_do", "bottom_salinity", "mean_light_lux", "treatment:month", "treatment:gravel_size", "gravel_size:month")
+
+formula <- as.formula(paste("urchin_density ~ treatment + gravel_size + month + ",
+            paste(c(predictors.urchin), collapse = " + "),
+            "+ (1 | site)"))
+
+global.model <- glmmTMB(formula,
+                      family = tweedie(link = "log"),
+                      data = data)
+
+summary(global.model)
+Anova(global.model)
+```
+
+# Selecting best model
+```{r}
+output <- select.model(data, "urchin_density", c("treatment", "gravel_size", "month"), predictors.urchin, "(1 | site)", tweedie(link = "log"))
+
+plot(output$`AIC(gm)`)
+```
+
+# Setting and examining the optimal model
+```{r}
+optimal.model <- glmmTMB(urchin_density ~ treatment + gravel_size + month + mean_temperature_c + mean_current + bottom_do + mean_light_lux + treatment:month + 
+    (1 | site), family = tweedie(link = "log"), data = data)
+
+summary(optimal.model)
+Anova(optimal.model)
+
+#Anova type 3
+Anova(optimal.model, type = 3)
+```
+
+# Visualizing model relationships
+```{r}
+visreg(optimal.model)
+visreg(optimal.model, "treatment", by = "month")
+```
+
+# Checking model fit and normality
+```{r include=FALSE}
+# Check for overdispersion
+testDispersion(optimal.model)
+
+simulationOutput <- simulateResiduals(fittedModel = optimal.model, plot = T)
+simulationOutput
+
+# Save the testDispersion plot
+png(paste(path, "plots","models", "urchin_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+testDispersion(optimal.model)
+dev.off()
+
+# Save the QQ plot
+png(paste(path, "plots", "models", "urchin_QQ_plot.png", sep = "/"), width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+# Save residual vs predictor plot
+png(paste(path, "plots", "models", "urchin_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
+```
+
+# CONCLUSIONS: Caging significantly reduced urchin densities. Caging interacted with month, where caging reduced urchin densities to a greater extent in June. Urchin densities were highest in June. Urchin densities decreased with increasing mean temperature and mean current. Urchin densities increased with increasing bottom dissolved oxygen and mean light lux.
+
+# QUESTION 2: How does the abiotic environment drive turban snail density?
+
+# I recommend including turban snail model in the manuscript because they are important grazers driving kelp size, and this ties nicely to Alec's masters. Plus it helps us address prior comment that turban snails seem to come out of nowhere.
+
+# Global model for turban snail plot density with all fixed effects
+```{r include=FALSE}
+# All factors
+#predictors.ts <- c("max_temperature_c", "mean_temperature_c", "mean_current", "bottom_do", "bottom_salinity", "mean_light_lux", "treatment:month", "treatment:gravel_size", "gravel_size:month")
+
+# Removing mean temperature because covaried with do and both included in final model
+predictors.ts <- c("max_temperature_c", "mean_current", "bottom_do", "bottom_salinity", "mean_light_lux", "treatment:month", "treatment:gravel_size", "gravel_size:month")
+
+formula <- as.formula(paste("ts_density ~ treatment + gravel_size + month +",
+            paste(c(predictors.ts), collapse = " + "),
+            "+ (1 | site)"))
+
+global.model <- glmmTMB(formula,
+                      family = tweedie(link = "log"),
+                      data = data)
+
+AIC(global.model)
+Anova(global.model)
+```
+
+# Selecting best model
+```{r}
+output <- select.model(data, "ts_density", c("treatment", "gravel_size", "month"), predictors.ts, "(1 | site)", tweedie(link = "log"))
+
+plot(output$`AIC(gm)`)
+```
+
+# Optimal model for environmental drivers of turban snail plot density
+```{r}
+optimal.model <- glmmTMB(ts_density ~ treatment + gravel_size + month + max_temperature_c + mean_light_lux + (1 | site),
+                      family = tweedie(link = "log"),
+                      data = data)
+
+summary(optimal.model)
+Anova(optimal.model)
+
+Anova(optimal.model, type = 3)
+```
+
+# Visualizing patterns
+```{r}
+visreg(optimal.model)
+```
+
+# Checking model fit and normality
+```{r include=FALSE}
+# Check for overdispersion
+testDispersion(optimal.model)
+
+simulationOutput <- simulateResiduals(fittedModel = optimal.model, plot = T)
+simulationOutput
+
+# Save the testDispersion plot
+png(paste(path, "plots", "models", "ts_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+testDispersion(optimal.model)
+dev.off()
+
+# Save the QQ plot
+png(paste(path, "plots","models", "ts_QQ_plot.png", sep = "/"), width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+# Save residual vs predictor plot
+png(paste(path, "plots", "models", "ts_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
+```
+
+# CONCLUSIONS: Caging significantly reduced turban snail density, regardless of the month. Turban snail density was highest in June and lowest in May. Gravel size had no influence on turban snail density. Turban snail density decreased with increasing maximum temperature, and increased with increasing mean light lux.

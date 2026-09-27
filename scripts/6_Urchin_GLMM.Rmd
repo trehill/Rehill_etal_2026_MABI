@@ -198,6 +198,7 @@ summary(optimal.model)
 Anova(optimal.model)
 
 #Anova type 3
+Anova(optimal.model, type = 2)
 Anova(optimal.model, type = 3)
 ```
 
@@ -212,7 +213,7 @@ visreg(optimal.model, "treatment", by = "month")
 # Check for overdispersion
 testDispersion(optimal.model)
 
-simulationOutput <- simulateResiduals(fittedModel = optimal.model, plot = T)
+simulationOutput <- simulateResiduals(fittedModel = optimal.model, plot = T, n = 10000)
 simulationOutput
 
 # Save the testDispersion plot
