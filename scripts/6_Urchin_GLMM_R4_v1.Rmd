@@ -1,0 +1,273 @@
+---
+title: "6_Urchin_GLMM_R3_v4"
+author: "Lauren Dykman"
+date: "2026-09-27"
+output: html_document
+---
+
+# FINAL ANALYSIS RECOMMENDED BY LAUREN DYKMAN
+
+# Start with full model including all three experimental factors (caging, gravel size, month) and all their two and three way interactions plus all environmental variables.
+
+# Run the full model and remove covarying factors, whichever had the smaller p-value.
+
+# The final model therefore includes all three experimental factors, all their two and three way interactions, and all environmental factors that do not covary.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+```
+
+#Load libraries 
+```{r include=FALSE}
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(car)
+library(glmmTMB)
+library(DHARMa)
+library(ggplot2)
+library(broom)
+library(lme4)
+library(lmerTest)
+library(car)
+library(MuMIn)
+library(tibble)
+library(visreg)
+```
+
+# Insert your file path here
+```{r}
+path <- "/Users/tessarehill/Desktop/Exclosures/"
+```
+
+# Load data 
+```{r}
+data <- read.csv(paste(path, "data", "cleaned_data_R3.csv", sep = "/"))
+data$month <- factor(data$month, levels = c("April", "May", "June"))
+```
+
+# Testing correlation
+```{r}
+cor.test(data$mean_temperature_c, data$max_temperature_c, method = "pearson") # 0.85, p = 2.2e-16
+cor.test(data$mean_temperature_c, data$mean_light_lux, method = "pearson") # 0.19
+cor.test(data$mean_temperature_c, data$bottom_do, method = "pearson") # 0.58
+cor.test(data$mean_temperature_c, data$bottom_salinity, method = "pearson") # 0.61
+cor.test(data$mean_temperature_c, data$mean_current, method = "pearson") # 0.21
+cor.test(data$max_temperature_c, data$mean_light_lux, method = "pearson") # 0.24
+cor.test(data$max_temperature_c, data$bottom_do, method = "pearson") # 0.36
+cor.test(data$max_temperature_c, data$bottom_salinity, method = "pearson") # 0.44
+cor.test(data$max_temperature_c, data$mean_current, method = "pearson") # 0.007
+cor.test(data$mean_light_lux, data$bottom_do, method = "pearson") # 0.04
+cor.test(data$mean_light_lux, data$bottom_salinity, method = "pearson") # 0.28
+cor.test(data$mean_light_lux, data$mean_current, method = "pearson") # 0.39
+cor.test(data$bottom_do, data$bottom_salinity, method = "pearson") # 0.86, p = 2.2e-16
+cor.test(data$bottom_do, data$mean_current, method = "pearson") # 0.003
+
+# Maximum temperature and mean temperature covary signifincatly.
+# Bottom salinity and dissolved oxygen covary significantly.
+```
+
+# Visualizing covarying factors
+```{r}
+plot(data$max_temperature_c ~ data$mean_temperature_c)
+plot(data$bottom_do ~ data$bottom_salinity)
+```
+
+# Standardize and scale abiotic predictors 
+```{r}
+data$mean_temperature_c <- scale(data$mean_temperature_c)
+data$max_temperature_c <- scale(data$max_temperature_c)
+data$mean_light_lux <- scale(data$mean_light_lux)
+data$bottom_do <- scale(data$bottom_do)
+data$bottom_salinity <- scale(data$bottom_salinity)
+data$mean_current <- scale(data$mean_current)
+```
+
+# QUESTION 1: How does caging and the abiotic environment drive urchin density?
+
+# Option 2: Model for urchin plot density with no model selection, just removing covarying factors.
+```{r include=FALSE}
+# Starting with all predictors
+
+predictors.urchin <- c("mean_temperature_c", "mean_current", "bottom_do", "mean_light_lux", "treatment:month", "treatment:gravel_size", "gravel_size:month", "treatment:gravel_size:month")
+
+formula <- as.formula(paste("urchin_density ~ treatment + gravel_size + month + ",
+            paste(c(predictors.urchin), collapse = " + "),
+            "+ (1 | site)"))
+
+global.model <- glmmTMB(formula,
+                      family = tweedie(link = "log"),
+                      data = data)
+
+summary(global.model)
+Anova(global.model, type = 3)
+
+urchin_model <- Anova(global.model, type = 3)
+urchin_model_summary <- summary(global.model)
+```
+
+# Significant: Removed max temperature because covaried with mean temperature. Removed bottom salinity because covaried with bottom do. treatment(+), month(+), mean_temperature_c(-), mean_current(-), bottom_do(+), mean_light_lux(+)
+
+# Setting and examining the optimal model
+
+# Visualizing model relationships
+```{r}
+visreg(global.model)
+visreg(global.model, "treatment", by = "month")
+```
+
+# Plotting main experimental treatments
+```{r}
+summary <- data %>%                          
+  group_by(treatment) %>%
+  summarise_at(vars(urchin_density),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = treatment, y = mean)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Treatment") +
+         ylab("Survival") +
+         theme_bw()
+
+# Plotting month
+
+summary <- data %>%                          
+  group_by(month) %>%
+  summarise_at(vars(urchin_density),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = month, y = mean)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Month") +
+         ylab("Survival") +
+         theme_bw()
+
+
+```
+
+# Checking model fit and normality
+```{r include=FALSE}
+# Check for overdispersion
+testDispersion(global.model)
+
+simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
+
+png(paste(path, "plots", "urchin_densities", "urchin_residuals_plot.png", sep = "/"), width = 1600, height = 800)
+plot(simulationOutput)
+dev.off()
+
+# Save the testDispersion plot
+png(paste(path, "plots", "urchin_densities",  "urchin_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+testDispersion(global.model)
+dev.off()
+
+# Save the QQ plot
+png(paste(path, "plots", "urchin_densities",  "urchin_QQ_plot.png", sep = "/"), width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+# Save residual vs predictor plot
+png(paste(path, "plots", "urchin_densities",  "urchin_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
+```
+
+# CONCLUSIONS: Caging significantly decreased urchin densities. Urchin densities were highest in May. Urchin densities decreased with increasing mean temperature and mean current. Urchin densities increased with increasing bottom dissolved oxygen and mean light lux.
+
+# QUESTION 2: How does the abiotic environment drive turban snail density?
+
+# Option 2: Model for turban snail plot density with no model selection, just removing covarying factors.
+```{r include=FALSE}
+# All factors except covarying ones
+predictors.ts <- c("max_temperature_c", "mean_current", "bottom_salinity", "mean_light_lux", "treatment:month", "treatment:gravel_size", "gravel_size:month", "treatment:gravel_size:month")
+
+formula <- as.formula(paste("ts_density ~ treatment + gravel_size + month +",
+            paste(c(predictors.ts), collapse = " + "),
+            "+ (1 | site)"))
+
+global.model <- glmmTMB(formula,
+                      family = tweedie(link = "log"),
+                      data = data)
+
+summary(global.model)
+Anova(global.model, type = 3)
+
+TS_model <- Anova(global.model, type = 3)
+TS_model_summary <- summary(global.model)
+```
+
+# Significant: Removed mean temperature because covaries with max temperature. Removed bottom do becasue it covaries with bottom salinity. treatment(+), month(+), max_temperature_c(-), mean_light_lux(+)
+
+# Visualizing patterns
+```{r}
+visreg(global.model)
+```
+
+```{r}
+summary <- data %>%                          
+  group_by(treatment) %>%
+  summarise_at(vars(ts_density),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = treatment, y = mean)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Treatment") +
+         ylab("Turban Snail Density") +
+         theme_bw()
+
+# Plotting month
+summary <- data %>%                          
+  group_by(month) %>%
+  summarise_at(vars(ts_density),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = month, y = mean)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Month") +
+         ylab("Turban Snail Density") +
+         theme_bw()
+```
+
+# Checking model fit and normality
+```{r include=FALSE}
+# Check for overdispersion
+testDispersion(global.model)
+
+simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
+
+png(paste(path, "plots", "turban_densities", "ts_residuals_plot.png", sep = "/"), width = 800, height = 400)
+plot(simulationOutput)
+dev.off()
+
+# Save the testDispersion plot
+png(paste(path, "plots", "turban_densities","ts_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+testDispersion(global.model)
+dev.off()
+
+# Save the QQ plot
+png(paste(path, "plots", "turban_densities","ts_QQ_plot.png", sep = "/"), width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+# Save residual vs predictor plot
+png(paste(path, "plots", "turban_densities", "ts_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
+```
+
+# CONCLUSIONS: Caging significantly reduced turban snail density. Turban snail density was highest in April and lowest in June. Gravel size had no influence on turban snail density. Turban snail density decreased with increasing maximum temperature, and increased with increasing mean light lux.

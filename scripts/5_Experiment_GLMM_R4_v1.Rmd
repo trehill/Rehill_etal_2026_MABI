@@ -1,0 +1,294 @@
+---
+title: "GLMMs"
+author: "Lauren Dykman"
+date: "2026-09-26"
+output: html_document
+---
+
+# FINAL ANALYSIS RECOMMENDED BY LAUREN DYKMAN
+
+# Start with full model including all three experimental factors (caging, gravel size, month) and all their two and three way interactions plus all environmental variables.
+
+# Run the full model and remove covarying factors, whichever had the smaller p-value.
+
+# The final model therefore includes all three experimental factors, all their two and three way interactions, and all environmental factors that do not covary.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+```
+
+# Load libraries 
+```{r include=FALSE}
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(car)
+library(glmmTMB)
+library(DHARMa)
+library(ggplot2)
+library(broom)
+library(lme4)
+library(lmerTest)
+library(stringi)
+library(car)
+library(MuMIn)
+library(tibble)
+library(visreg)
+```
+
+# Insert your file path here
+```{r}
+path <- "/Users/tessarehill/Desktop/Exclosures/"
+```
+
+# Load data
+```{r}
+data <- read.csv(paste(path, "processed_data", "cleaned_data_R3.csv", sep = "/"))
+data$month <- factor(data$month, levels = c("April", "May", "June"))
+data$plot_unique <- paste(data$month, data$site, data$plot_id)
+```
+
+# Correlation among biotic and abiotic predictors
+```{r}
+cor.test(data$urchin_density, data$urchin_site_density, method = "pearson") # 0.50
+cor.test(data$urchin_density, data$ts_density, method = "pearson") # 0.02
+cor.test(data$urchin_density, data$ts_site_density, method = "pearson") # 0.09
+cor.test(data$urchin_site_density, data$ts_density, method = "pearson") # 0.04
+cor.test(data$urchin_site_density, data$ts_site_density, method = "pearson") # 0.44
+cor.test(data$ts_density, data$ts_site_density, method = "pearson") # 0.37
+
+cor.test(data$urchin_density, data$mean_temperature_c, method = "pearson") # 0.07
+cor.test(data$urchin_density, data$max_temperature_c, method = "pearson") # 0.03
+cor.test(data$urchin_density, data$mean_light_lux, method = "pearson") # 0.15
+cor.test(data$urchin_density, data$bottom_do, method = "pearson") # 0.27
+cor.test(data$urchin_density, data$bottom_salinity, method = "pearson") # 0.24
+cor.test(data$urchin_density, data$mean_current, method = "pearson") # 0.07
+
+cor.test(data$ts_density, data$mean_temperature_c, method = "pearson") # 0.10
+cor.test(data$ts_density, data$max_temperature_c, method = "pearson") # 0.13
+cor.test(data$ts_density, data$mean_light_lux, method = "pearson") # 0.20
+cor.test(data$ts_density, data$bottom_do, method = "pearson") # 0.11
+cor.test(data$ts_density, data$bottom_salinity, method = "pearson") # 0.14
+cor.test(data$ts_density, data$mean_current, method = "pearson") # 0.08
+
+# None significant - can keep all in final models.
+# From Urchin script:
+#   Maximum temperature and mean temperature covary signifincatly.
+#   Bottom salinity and dissolved oxygen covary significantly.
+```
+
+# Standardize and scale predictors 
+```{r}
+data$urchin_density <- scale(data$urchin_density)
+data$urchin_site_density <- scale(data$urchin_site_density)
+data$ts_density <- scale(data$ts_density)
+data$ts_site_density <- scale(data$ts_site_density)
+data$mean_temperature_c <- scale(data$mean_temperature_c)
+data$max_temperature_c <- scale(data$max_temperature_c)
+data$mean_light_lux <- scale(data$mean_light_lux)
+data$bottom_do <- scale(data$bottom_do)
+data$bottom_salinity <- scale(data$bottom_salinity)
+data$mean_current <- scale(data$mean_current)
+```
+
+# QUESTION 1: What biotic and abiotic factors drive kelp survival?
+
+# Option 2: Model for kelp survival with no model selection, just removing covarying factors.
+```{r include=FALSE}
+# Starting with all predictors
+
+predictors.survival <- c("urchin_site_density", "ts_site_density", "urchin_density", "ts_density", "max_temperature_c", "mean_light_lux", "mean_current", "bottom_do", "treatment:month", "treatment:gravel_size", "gravel_size:month", "treatment:gravel_size:month") # Full model with covarying factors removed.
+
+formula <- as.formula(paste("cbind(n_kelp_gravel, n_gravel - n_kelp_gravel) ~ treatment + gravel_size + month +",
+            paste(c(predictors.survival), collapse = " + "), 
+            "+ (1 | site)"))
+
+global.model <- glmmTMB(formula, family = binomial, data = data)
+
+summary(global.model)
+Anova(global.model, type = 3)
+
+kelp_survival_model <- Anova(global.model, type = 3)
+kelp_survival_summary <- summary(global.model)
+```
+
+# Significant: Removed bottom salinity because rank deficient and mean temperature because it was not significant. treatment(-), gravel_size(-), month(-), urchin_site_density(-), max_temperature_c(+), mean_light_lux(-), bottom_do(+)
+
+# Plotting figure for the interaction between treatment and month
+```{r}
+# Plotting main treatment effect
+summary <- data %>%                          
+  group_by(gravel_size) %>%
+  summarise_at(vars(kelp_survival),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = gravel_size, y = mean)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Gravel Size") +
+         ylab("Survival") +
+         theme_bw()
+
+# Plotting treatment
+summary <- data %>%                          
+  group_by(treatment) %>%
+  summarise_at(vars(kelp_survival),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = treatment, y = mean, fill = treatment)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Month") +
+         ylab("Survival") +
+         theme_bw()
+```
+
+# Checking model fit and normality
+```{r include=FALSE}
+
+# Check for overdispersion
+testDispersion(global.model)
+
+simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
+simulationOutput
+
+png(paste(path, "plots", "kelp_survival", "survival_residuals_plot.png", sep = "/"), width = 800, height = 400)
+plot(simulationOutput)
+dev.off()
+
+# Save the testDispersion plot
+png(paste(path, "plots","kelp_survival", "survival_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+testDispersion(global.model)
+dev.off()
+
+# Save the QQ plot
+png(paste(path, "plots", "kelp_survival","survival_QQ_plot.png", sep = "/"), width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+# Save residual vs predictor plot
+png(paste(path, "plots", "kelp_survival","survival_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
+```
+
+# CONCLUSIONS: Kelp survival was significantly lower in open plots and on small gravel. Kelp survived significantly less in June. Kelp survival significantly decreased with increasing urchin site density and mean light lux. Kelp survival significantly increased with increasing maximum temperature and bottom dissolved oxygen. This may be because these conditions also correlated with increased urchin densities in the urchin model.
+
+# QUESTION 2: What biotic and abiotic factors drive kelp length?
+
+# Re-organizing the data sheets so each length measurement is a distinct data point, run stats with plot nested in site as a random effect.
+
+```{r}
+# Load original kelp length data
+data.length.raw <- read.csv(paste(path, "data", "cleaned_green_gravel_monitoring.csv", sep = "/"))
+
+data.length.raw$month <- factor(data.length.raw$month, levels = c("April", "May", "June"))
+data.length.raw$plot_unique <- paste(data.length.raw$month, data.length.raw$site, data.length.raw$plot_id)
+```
+
+# Creating kelp length data sheet
+```{r}
+# Make each kelp length measurement its own row
+data.length <- data.length.raw %>%
+      pivot_longer(kelp_total1:kelp_total5, names_to = "kelp_individual", values_to = "kelp_length_cm")
+
+# Remove zero data, which were supposed to be NA in original data table
+data.length <- data.length[!data.length$kelp_length_cm == 0,]
+
+# Merge with environmental variables for each plot and timepoint
+data.length <- merge(data.length[c("plot_unique", "kelp_length_cm")], data, by = "plot_unique")
+```
+
+# Option 2: Model for kelp length with no model selection, just removing covarying factors.
+```{r include=FALSE}
+# All predictors except those that covary
+predictors.length <- c("urchin_site_density", "ts_site_density", "urchin_density", "ts_density", "mean_temperature_c", "mean_light_lux", "mean_current", "bottom_salinity", "treatment:month", "treatment:gravel_size", "gravel_size:month", "treatment:gravel_size:month") # Removed covarying factors
+
+formula <- as.formula(paste("kelp_length_cm ~ treatment + gravel_size + month + ",
+            paste(c(predictors.length), collapse = " + "), 
+            "+ (1 | site/plot_id)"))
+
+global.model <- glmmTMB(formula, family = Gamma(link = "log"), data = data.length)
+
+summary(global.model)
+Anova(global.model, type = 3)
+
+kelp_length_model <- Anova(global.model, type = 3)
+kelp_length_model_summary <- summary(global.model)
+```
+# Summary: Removed bottom do because rank deficient. Removed maximum temperature because it covaries with mean temperature. month(+), urchin_site_density(-), ts_site_density(-), mean_temperature_c(-), mean_light_lux(+), mean_current(-), bottom_salinity(-), gravel_size:month(+)
+
+```{r}
+summary <- data.length %>%                          
+  group_by(treatment) %>%
+  summarise_at(vars(kelp_length_cm),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = treatment, y = mean)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Treatment") +
+         ylab("Survival") +
+         theme_bw()
+
+# Plotting interaction between treatment and month
+summary <- data.length %>%                          
+  group_by(gravel_size, month) %>%
+  summarise_at(vars(kelp_length_cm),
+               list(mean = ~mean(as.numeric(.), na.rm = TRUE),
+                    sd = ~sd(as.numeric(.), na.rm = TRUE),
+                    n = ~sum(!is.na(.))))
+summary$se <- summary$sd/sqrt(summary$n)
+
+ggplot(summary, aes(x = month, y = mean, fill = gravel_size)) +
+  geom_bar(position="dodge", stat="identity") +       
+         xlab("Month") +
+         ylab("Length") +
+         theme_bw()
+```
+
+# Visualizing model relationships
+```{r}
+visreg(global.model)
+visreg(global.model, "gravel_size", by = "month")
+visreg(global.model, "treatment", by = "month")
+```
+
+# Checking model fit and normality
+```{r}
+# Check for overdispersion
+testDispersion(global.model)
+
+simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
+simulationOutput
+
+png(paste(path, "plots", "kelp_growth", "length_residuals_plot.png", sep = "/"), width = 800, height = 400)
+plot(simulationOutput)
+dev.off()
+
+# Save the testDispersion plot
+png(paste(path, "plots","kelp_growth", "length_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+testDispersion(global.model)
+dev.off()
+
+# Save the QQ plot
+png(paste(path, "plots","kelp_growth", "length_QQ_plot.png", sep = "/"), width = 800, height = 600)
+plotQQunif(simulationOutput)  # Generate QQ plot
+dev.off()
+
+# Save residual vs predictor plot
+png(paste(path, "plots", "kelp_growth","length_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+plotResiduals(simulationOutput)
+dev.off()
+```
+
+# CONCLUSIONS: Gravel size interacted with month such that kelp were smaller on small gravel in April and May but larger on small gravel in June. Kelp length significantly decreased with increasing urchin site density, turban snail site density, mean temperature, mean current, and bottom salinity. Kelp length significantly increased with increasing mean light lux.
