@@ -46,7 +46,7 @@ path <- "/Users/tessarehill/Desktop/Exclosures/"
 
 # Load data
 ```{r}
-data <- read.csv(paste(path, "processed_data", "cleaned_data_R3.csv", sep = "/"))
+data <- read.csv(paste(path, "processed_data", "cleaned_data.csv", sep = "/"))
 data$month <- factor(data$month, levels = c("April", "May", "June"))
 data$plot_unique <- paste(data$month, data$site, data$plot_id)
 ```

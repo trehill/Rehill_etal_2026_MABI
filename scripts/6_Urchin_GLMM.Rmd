@@ -45,7 +45,7 @@ path <- "/Users/tessarehill/Desktop/Exclosures/"
 
 # Load data 
 ```{r}
-data <- read.csv(paste(path, "data", "cleaned_data_R3.csv", sep = "/"))
+data <- read.csv(paste(path, "data", "cleaned_data.csv", sep = "/"))
 data$month <- factor(data$month, levels = c("April", "May", "June"))
 ```
 

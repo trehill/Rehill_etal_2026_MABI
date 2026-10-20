@@ -180,7 +180,6 @@ write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_
 kelp_data <- kelp_data %>%
   filter(!month %in% c("August"))
 
-
 #save the cleaned dataframe to a new CSV file
 write.csv(kelp_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/cleaned_green_gravel_monitoring.csv", row.names = FALSE)
   
@@ -516,7 +515,7 @@ combined_data <- combined_data %>%
     .groups = "drop"
   )
 
-write.csv(combined_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/temp_summary.csv", row.names = FALSE)
+write.csv(combined_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/summary_temp.csv", row.names = FALSE)
 ```
 
 #Making relevant tilt variables 
@@ -600,14 +599,14 @@ ysi <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/
 
 hobo <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/HOBO/summary_hobo_light.csv")
 
-env <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/temp_summary.csv")
+env <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/summary_temp.csv")
 
 tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/summary_tilt.csv")
 
 ```
 
  
-  #merge dataframe 
+#merge dataframe 
 ```{r}
 #merge hobo with plots
 plots <- plots %>%

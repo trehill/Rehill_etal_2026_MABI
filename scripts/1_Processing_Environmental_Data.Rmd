@@ -163,11 +163,6 @@ hobo_summary <- hobo_daily_mean %>%
 
 hobo_summary
 
-
-
-#save table 
-write.csv(hobo_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/light_summary_supp.csv", row.names = FALSE)
-
 ```
 
 #ENV LOGGER DATA
@@ -326,9 +321,6 @@ tilt_summary <- tilt_filtered %>%
             mean_max_speed = mean(speed_upper), 
             max_max_speed = max(speed_upper))
                                     
-
-write.csv(tilt_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/tilt_summary.csv", row.names = FALSE)
-
 # Plot the smoothed data
 plot <- ggplot(tilt_summary, aes(x = date, y = mean_speed_mpers, color = Site)) + 
   geom_line() +  # Line plot for temperature over time
@@ -411,10 +403,6 @@ tilt_summary <- tilt_plot %>%
   )
 
 tilt_summary
-
-
-#save table 
-write.csv(tilt_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/current_summary_supp.csv", row.names = FALSE)
 
 ```
 
@@ -535,11 +523,6 @@ env_summary <- env_smoothed %>%
   )
 
 env_summary
-
-
-env_summary
-#save table 
-write.csv(env_summary, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/Range_supp/temp_summary_supp.csv", row.names = FALSE)
 
 ```
 
