@@ -520,7 +520,7 @@ write.csv(combined_data, "/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/proces
 
 #Making relevant tilt variables 
 ```{r}
-tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/tilt_summary.csv")
+tilt <- read.csv("/Users/tessarehill/Dropbox/MSc/Grazer_exclusion/processed_data/ENV/combined_tilt.csv")
 
 #SITE ############################
 unique(tilt$Site)

@@ -80,6 +80,30 @@ cor.test(data$ts_density, data$mean_current, method = "pearson") # 0.08
 #   Bottom salinity and dissolved oxygen covary significantly.
 ```
 
+#Plotting abiotic correlation
+```{r}
+cor_matrix <- cor(data[, c("mean_light_lux", "mean_temperature_c", "max_temperature_c",  "mean_current", "bottom_salinity",  "bottom_do", "bottom_ph" )], use = "complete.obs")
+
+#rename variables
+# Rename row and column names
+colnames(cor_matrix) <- rownames(cor_matrix) <- c("Light (lux)", "Temp (mean)", "Temp (max)", 
+                                                  "Current (mean)", "Bottom salinity", "Bottom DO", 
+                                                  "Bottom pH")
+
+#create the correlation plot
+plot <- ggcorrplot(
+  cor_matrix, 
+  method = "circle",   #use circles for visualization
+  lab = TRUE           #add correlation coefficients as labels
+)
+plot
+
+#save the plot
+ggsave("/Users/tessarehill/Dropbox/MSc/Exclosures/plots/models/abiotic_correlation_plot.png", plot = plot, width = 10, height = 8, dpi = 300)
+
+```
+
+
 # Standardize and scale predictors 
 ```{r}
 data$urchin_density <- scale(data$urchin_density)
@@ -159,17 +183,17 @@ testDispersion(global.model)
 simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
 simulationOutput
 
-png(paste(path, "plots", "kelp_survival", "survival_residuals_plot.png", sep = "/"), width = 800, height = 400)
+png(paste(path, "plots", "models", "survival_residuals_plot.png", sep = "/"), width = 800, height = 400)
 plot(simulationOutput)
 dev.off()
 
 # Save the testDispersion plot
-png(paste(path, "plots","kelp_survival", "survival_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots","models", "survival_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
 testDispersion(global.model)
 dev.off()
 
 # Save the QQ plot
-png(paste(path, "plots", "kelp_survival","survival_QQ_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models","survival_QQ_plot.png", sep = "/"), width = 800, height = 600)
 plotQQunif(simulationOutput)  # Generate QQ plot
 dev.off()
 
@@ -271,24 +295,25 @@ testDispersion(global.model)
 simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
 simulationOutput
 
-png(paste(path, "plots", "kelp_growth", "length_residuals_plot.png", sep = "/"), width = 800, height = 400)
+png(paste(path, "plots", "models", "length_residuals_plot.png", sep = "/"), width = 800, height = 400)
 plot(simulationOutput)
 dev.off()
 
 # Save the testDispersion plot
-png(paste(path, "plots","kelp_growth", "length_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots","models", "length_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
 testDispersion(global.model)
 dev.off()
 
 # Save the QQ plot
-png(paste(path, "plots","kelp_growth", "length_QQ_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots","models", "length_QQ_plot.png", sep = "/"), width = 800, height = 600)
 plotQQunif(simulationOutput)  # Generate QQ plot
 dev.off()
 
 # Save residual vs predictor plot
-png(paste(path, "plots", "kelp_growth","length_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models","length_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
 plotResiduals(simulationOutput)
 dev.off()
 ```
 
 # CONCLUSIONS: Gravel size interacted with month such that kelp were smaller on small gravel in April and May but larger on small gravel in June. Kelp length significantly decreased with increasing urchin site density, turban snail site density, mean temperature, mean current, and bottom salinity. Kelp length significantly increased with increasing mean light lux.
+

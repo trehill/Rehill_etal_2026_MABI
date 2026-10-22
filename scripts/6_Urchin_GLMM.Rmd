@@ -161,22 +161,22 @@ testDispersion(global.model)
 
 simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
 
-png(paste(path, "plots", "urchin_densities", "urchin_residuals_plot.png", sep = "/"), width = 1600, height = 800)
+png(paste(path, "plots", "models", "urchin_residuals_plot.png", sep = "/"), width = 1600, height = 800)
 plot(simulationOutput)
 dev.off()
 
 # Save the testDispersion plot
-png(paste(path, "plots", "urchin_densities",  "urchin_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models",  "urchin_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
 testDispersion(global.model)
 dev.off()
 
 # Save the QQ plot
-png(paste(path, "plots", "urchin_densities",  "urchin_QQ_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models",  "urchin_QQ_plot.png", sep = "/"), width = 800, height = 600)
 plotQQunif(simulationOutput)  # Generate QQ plot
 dev.off()
 
 # Save residual vs predictor plot
-png(paste(path, "plots", "urchin_densities",  "urchin_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models",  "urchin_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
 plotResiduals(simulationOutput)
 dev.off()
 ```
@@ -250,22 +250,22 @@ testDispersion(global.model)
 
 simulationOutput <- simulateResiduals(fittedModel = global.model, plot = T, re.form = NULL)
 
-png(paste(path, "plots", "turban_densities", "ts_residuals_plot.png", sep = "/"), width = 800, height = 400)
+png(paste(path, "plots", "models", "ts_residuals_plot.png", sep = "/"), width = 800, height = 400)
 plot(simulationOutput)
 dev.off()
 
 # Save the testDispersion plot
-png(paste(path, "plots", "turban_densities","ts_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models","ts_testDispersion_plot.png", sep = "/"), width = 800, height = 600)
 testDispersion(global.model)
 dev.off()
 
 # Save the QQ plot
-png(paste(path, "plots", "turban_densities","ts_QQ_plot.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models","ts_QQ_plot.png", sep = "/"), width = 800, height = 600)
 plotQQunif(simulationOutput)  # Generate QQ plot
 dev.off()
 
 # Save residual vs predictor plot
-png(paste(path, "plots", "turban_densities", "ts_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
+png(paste(path, "plots", "models", "ts_residuals_vs_predictor.png", sep = "/"), width = 800, height = 600)
 plotResiduals(simulationOutput)
 dev.off()
 ```
