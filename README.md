@@ -2,9 +2,7 @@
 
 ### This GitHub package contains data and scripts for producing the analyses and figures in the publication:
 
-Rehill T, Dykman LN, Schuster JM, Baum JK (2026) Grazing pressure limits giant kelp (*Macrocystis pyrifera*) recruitment and restoration potential in a temperate fjord. Marine Biology. DOI: 10.1007/s00227-026-04977-5
-
-Archived version (data and scripts): \[ADD DOI\]
+Rehill T, Dykman LN, Schuster JM, Baum JK (2026) Grazing pressure limits giant kelp (*Macrocystis pyrifera*) recruitment and restoration potential in a temperate fjord. Marine Biology. [accepted: 2026-10-10] DOI: 10.1007/s00227-026-04977-5
 
 ### Software Versions:
 
@@ -21,7 +19,7 @@ This GitHub package consists of four folders:
 
 ### Data and Metadata Tables:
 
-Raw and processed data tables are provided in the "raw\_data" and "processed\_data" folders in .csv format. Variable-level descriptions of every file are given in the data readme (0\_ReadMe) deposited with the data <!-- gdoc_comment_begin: c1 -->(? does this exist? is this the Borealis ReadMe?)<!-- gdoc_comment_end: c1 -->. The data files are:
+Raw and processed data tables are provided in the "raw\_data" and "processed\_data" folders in .csv format. Data are also permanently stored in the repository Borealis (https://borealisdata.ca/) in the "Kelp Rescue Initiative" collection associated with the above publication [DOI: https://doi.org/10.5683/SP4/CATTWB]. It is recommended to source data from Borealis because it includes comprehensive metadata and additional raw data files that were too large to upload to GitHub. The data files are:
 
 **Raw data (raw\_data)**
 
@@ -37,7 +35,7 @@ Raw and processed data tables are provided in the "raw\_data" and "processed\_da
 
 - metadata / site\_coordinates\_all.csv \- latitude and longitude of the six study sites with site-level grazer density class and nearby kelp forest status.
 
-- TILT  \- Files too large to upload \- authors will provide upon request. Email ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))
+- TILT  \- Files too large to upload \- available in Borealis [DOI: https://doi.org/10.5683/SP4/CATTWB] or by author upon request ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))
 
 **Processed data (processed\_data)**
 
@@ -51,8 +49,10 @@ Raw and processed data tables are provided in the "raw\_data" and "processed\_da
 
 - cleaned\_ysi\_measurement.csv \- bottom temperature, dissolved oxygen, salinity and pH by site and month.
 
-- ENV / combined\_env.csv \- all EnvLogger bottom temperature data combined across sites.  
-- ENV / combined\_tilt.csv \- All tilt/current data combined across sites (file too large to upload \- Files too large to upload \- authors will provide upon request. Email ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))  
+- ENV / combined\_env.csv \- all EnvLogger bottom temperature data combined across sites.
+  
+- ENV / combined\_tilt.csv \- All tilt current data combined across sites - file too large to upload - available in Borealis [DOI: https://doi.org/10.5683/SP4/CATTWB] or by author upon request ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))
+
 - ENV / monitoring\_periods.csv \- start and end dates of the monitoring intervals at each site.
 
 - ENV / summary\_env.csv \- mean and maximum bottom temperature per site and monitoring interval from EnvLoggers.
@@ -79,12 +79,13 @@ This script reads all raw logger files (HOBO, EnvLogger and tilt meter), combine
 
   - all HOBO logger files (raw\_data / HOBO)  
   - all ENV logger files (raw\_data / ENV)  
-  - all tilt meter files (raw\_data / TILT) (file too large to upload \- Files too large to upload \- authors will provide upon request. Email ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))  
+  - all tilt meter files (raw\_data / TILT) - files too large to upload - available in Borealis [DOI: https://doi.org/10.5683/SP4/CATTWB] or by author upon request ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))
+ 
 - Output:
 
   - processed\_data / ENV / HOBO / combined\_hobo.csv  
   - processed\_data / ENV / combined\_env.csv  
-  - processed\_data / ENV / combined\_tilt.csv;  (file too large to upload \- Files too large to upload \- authors will provide upon request. Email ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))  
+  - processed\_data / ENV / combined\_tilt.csv - file too large to upload - available in Borealis [DOI: https://doi.org/10.5683/SP4/CATTWB] or by author upon request ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))
   - plots / environmental\_supps / current.jpg  
   - plots / environmental\_supps / meanlight.jpg  
   - plots / environmental\_supps / meantemp.jpg  
@@ -101,7 +102,8 @@ This script cleans the raw urchin transect, kelp outplant plot and environmental
     - open plots \= total urchins / 1  
     - caged plots \= total urchins / 4.5  
     - the same calculation is used for red turban snails  
-  - kelp\_growth \= summed kelp length per plot  
+  - kelp\_growth \= summed kelp length per plot
+ 
 - Input:
 
   - raw\_data / green\_gravel\_monitoring.csv  
@@ -110,7 +112,8 @@ This script cleans the raw urchin transect, kelp outplant plot and environmental
   - processed\_data / ENV / HOBO / combined\_hobo.csv  
   - processed\_data / ENV / combined\_env.csv  
   - processed\_data / ENV / monitoring\_periods.csv  
-  - processed\_data / ENV / combined\_tilt.csv  (file too large to upload \- Files too large to upload \- authors will provide upon request. Email ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))  
+  - processed\_data / ENV / combined\_tilt.csv - file too large to upload - available in Borealis [DOI: https://doi.org/10.5683/SP4/CATTWB] or by author upon request ([laurenndykman@gmail.com](mailto:laurenndykman@gmail.com))
+
 - Output:
 
   - processed\_data / cleaned\_data.csv  
@@ -130,7 +133,8 @@ This script determines the mean depth of the sites (including the shallowest and
 - Input:
 
   - processed\_data / cleaned\_monitoring\_transects.csv  
-  - processed\_data / cleaned\_green\_gravel\_monitoring.csv  
+  - processed\_data / cleaned\_green\_gravel\_monitoring.csv
+ 
 - Output:
 
   - plots / grazer\_densities / grazer\_counts.png  
@@ -147,7 +151,8 @@ This script plots mean kelp survival and growth at each site and month by treatm
 
 - Input:
 
-  - processed\_data / cleaned\_green\_gravel\_monitoring.csv  
+  - processed\_data / cleaned\_green\_gravel\_monitoring.csv
+  
 - Output:
 
   - plots / gravel\_size / bwbar\_growth\_smallvlarge.png  
@@ -167,7 +172,8 @@ This script runs generalized linear mixed-effects models for kelp survival (bino
 
 - Input:
 
-  - processed\_data / cleaned\_data.csv  
+  - processed\_data / cleaned\_data.csv
+ 
 - Output:
 
   - plots / models / abiotic\_correlation\_plot.png&nbsp;  
@@ -185,7 +191,8 @@ This script runs a generalized linear mixed-effects model (Tweedie distribution)
 
 - Input:
 
-  - processed\_data / cleaned\_data.csv  
+  - processed\_data / cleaned\_data.csv
+
 - Output:
 
   - plots / models / urchin\_residuals\_plot.png&nbsp;  
@@ -199,7 +206,8 @@ This script creates a pairwise correlation plot among environmental variables wi
 
 - Input:
 
-  - processed\_data / cleaned\_data.csv  
+  - processed\_data / cleaned\_data.csv
+
 - Output:
 
   - figures / environmental\_supps / environmental\_scatterplot\_matrix.png
@@ -210,14 +218,15 @@ This script makes a map of the study sites, coloured by low, medium and high urc
 
 - Input:
 
-  - raw\_data / metadata / site\_coordinates\_all.csv  
+  - raw\_data / metadata / site\_coordinates\_all.csv
+
 - Output:
 
   - plots / maps / canada.png  
   - plots / maps / sites.png  
   - plots / maps / vancouver\_island.png
 
-#### 9\. Run august\_data.R <!-- gdoc_comment_begin: c2 -->(? is there a reason August data doesn't start with 9 and not Rmd format?)<!-- gdoc_comment_end: c2 -->
+#### 9\. Run august\_data.R
 
 This script plots the August 2024 survival and growth data for the supplement. August data were not analyzed in the main paper because storms damaged or displaced many plots.
 
@@ -225,7 +234,8 @@ This script plots the August 2024 survival and growth data for the supplement. A
 
   - raw\_data / green\_gravel\_monitoring.csv  
   - raw\_data / urchin\_monitoring\_transects.csv  
-  - processed\_data / ENV / monitoring\_periods.csv  
+  - processed\_data / ENV / monitoring\_periods.csv
+ 
 - Output:
 
   - plots / kelp\_survival / bwgrowth\_site\_august.png  
